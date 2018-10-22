@@ -17,7 +17,7 @@ import wx.xrc
 class secBootWin ( wx.Frame ):
 
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"nxpSecBoot", pos = wx.DefaultPosition, size = wx.Size( 1180,780 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"nxpSecBoot", pos = wx.DefaultPosition, size = wx.Size( 930,730 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 
 		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 		self.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
@@ -31,13 +31,40 @@ class secBootWin ( wx.Frame ):
 
 		self.SetMenuBar( self.m_menubar )
 
-		win_sizer = wx.BoxSizer( wx.VERTICAL )
+		bSizer_win = wx.BoxSizer( wx.VERTICAL )
 
-		self.m_notebook_systemSettings = wx.Notebook( self, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,100 ), 0 )
-		self.m_panel_targetSetup = wx.Panel( self.m_notebook_systemSettings, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		wSizer_logo = wx.WrapSizer( wx.HORIZONTAL, wx.WRAPSIZER_DEFAULT_FLAGS )
+
+		self.m_staticText_null1Logo = wx.StaticText( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 800,-1 ), 0 )
+		self.m_staticText_null1Logo.Wrap( -1 )
+
+		wSizer_logo.Add( self.m_staticText_null1Logo, 0, wx.ALL, 5 )
+
+		self.m_bitmap_nxp = wx.StaticBitmap( self, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.Size( 80,30 ), 0 )
+		wSizer_logo.Add( self.m_bitmap_nxp, 0, wx.ALL, 5 )
+
+
+		bSizer_win.Add( wSizer_logo, 1, wx.EXPAND, 5 )
+
+		wSizer_func = wx.WrapSizer( wx.HORIZONTAL, wx.WRAPSIZER_DEFAULT_FLAGS )
+
+		bSizer_setup = wx.BoxSizer( wx.VERTICAL )
+
+		self.m_notebook_targetSetup = wx.Notebook( self, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,100 ), 0 )
+		self.m_panel_targetSetup = wx.Panel( self.m_notebook_targetSetup, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		self.m_panel_targetSetup.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
 
 		wSizer_targetSetup = wx.WrapSizer( wx.HORIZONTAL, wx.WRAPSIZER_DEFAULT_FLAGS )
+
+		self.m_staticText_mcuSeries = wx.StaticText( self.m_panel_targetSetup, wx.ID_ANY, u"MCU Series:", wx.DefaultPosition, wx.Size( 80,-1 ), 0 )
+		self.m_staticText_mcuSeries.Wrap( -1 )
+
+		wSizer_targetSetup.Add( self.m_staticText_mcuSeries, 0, wx.ALL, 5 )
+
+		m_choice_mcuSeriesChoices = [ u"i.MXRT", u"LPC", u"Kinetis" ]
+		self.m_choice_mcuSeries = wx.Choice( self.m_panel_targetSetup, wx.ID_ANY, wx.DefaultPosition, wx.Size( 135,-1 ), m_choice_mcuSeriesChoices, 0 )
+		self.m_choice_mcuSeries.SetSelection( 0 )
+		wSizer_targetSetup.Add( self.m_choice_mcuSeries, 0, wx.ALL, 5 )
 
 		self.m_staticText_mcuDevice = wx.StaticText( self.m_panel_targetSetup, wx.ID_ANY, u"MCU Device:", wx.DefaultPosition, wx.Size( 80,-1 ), 0 )
 		self.m_staticText_mcuDevice.Wrap( -1 )
@@ -59,34 +86,127 @@ class secBootWin ( wx.Frame ):
 		self.m_choice_bootDevice.SetSelection( 0 )
 		wSizer_targetSetup.Add( self.m_choice_bootDevice, 0, wx.ALL, 5 )
 
-		self.m_staticText_secureBootType = wx.StaticText( self.m_panel_targetSetup, wx.ID_ANY, u"Secure Boot Type:", wx.DefaultPosition, wx.Size( 110,-1 ), 0 )
-		self.m_staticText_secureBootType.Wrap( -1 )
+		self.m_staticText_null1TargetSetup = wx.StaticText( self.m_panel_targetSetup, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 226,5 ), 0 )
+		self.m_staticText_null1TargetSetup.Wrap( -1 )
 
-		wSizer_targetSetup.Add( self.m_staticText_secureBootType, 0, wx.ALL, 5 )
+		wSizer_targetSetup.Add( self.m_staticText_null1TargetSetup, 0, wx.ALL, 5 )
 
-		m_choice_secureBootTypeChoices = [ u"Unsigned (XIP) image Boot", u"Signed (XIP) Image Boot", u"HAB Signed Encrypted Image Boot", u"BEE (Signed) Encrypted XIP Image Boot" ]
-		self.m_choice_secureBootType = wx.Choice( self.m_panel_targetSetup, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, m_choice_secureBootTypeChoices, 0 )
-		self.m_choice_secureBootType.SetSelection( 0 )
-		wSizer_targetSetup.Add( self.m_choice_secureBootType, 0, wx.ALL, 5 )
+		self.m_staticText_null2TargetSetup = wx.StaticText( self.m_panel_targetSetup, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 15,-1 ), 0 )
+		self.m_staticText_null2TargetSetup.Wrap( -1 )
+
+		wSizer_targetSetup.Add( self.m_staticText_null2TargetSetup, 0, wx.ALL, 5 )
+
+		self.m_button_BootDeviceConfiguration = wx.Button( self.m_panel_targetSetup, wx.ID_ANY, u"Boot Device Configuration", wx.DefaultPosition, wx.Size( 180,-1 ), 0 )
+		wSizer_targetSetup.Add( self.m_button_BootDeviceConfiguration, 0, wx.ALL, 5 )
 
 
 		self.m_panel_targetSetup.SetSizer( wSizer_targetSetup )
 		self.m_panel_targetSetup.Layout()
 		wSizer_targetSetup.Fit( self.m_panel_targetSetup )
-		self.m_notebook_systemSettings.AddPage( self.m_panel_targetSetup, u"Target Setup", False )
+		self.m_notebook_targetSetup.AddPage( self.m_panel_targetSetup, u"Target Setup", False )
 
-		win_sizer.Add( self.m_notebook_systemSettings, 1, wx.EXPAND |wx.ALL, 5 )
+		bSizer_setup.Add( self.m_notebook_targetSetup, 1, wx.EXPAND |wx.ALL, 5 )
 
-		self.m_notebook_bootSequence = wx.Notebook( self, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,400 ), 0 )
-		self.m_notebook_bootSequence.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+		self.m_notebook_portSetup = wx.Notebook( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_panel_portSetup = wx.Panel( self.m_notebook_portSetup, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		wSizer_portSetup = wx.WrapSizer( wx.HORIZONTAL, wx.WRAPSIZER_DEFAULT_FLAGS )
 
-		self.m_panel_comBootSeq = wx.Panel( self.m_notebook_bootSequence, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		self.m_panel_comBootSeq.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
-		self.m_panel_comBootSeq.SetBackgroundColour( wx.Colour( 160, 160, 160 ) )
+		self.m_staticText_null1PortSetup = wx.StaticText( self.m_panel_portSetup, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 35,-1 ), 0 )
+		self.m_staticText_null1PortSetup.Wrap( -1 )
 
-		comBootSeq_sizer = wx.WrapSizer( wx.HORIZONTAL, wx.WRAPSIZER_DEFAULT_FLAGS )
+		wSizer_portSetup.Add( self.m_staticText_null1PortSetup, 0, wx.ALL, 5 )
 
-		self.m_panel_doAuth = wx.Panel( self.m_panel_comBootSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.m_radioBtn_uart = wx.RadioButton( self.m_panel_portSetup, wx.ID_ANY, u"UART", wx.DefaultPosition, wx.Size( 60,-1 ), 0 )
+		wSizer_portSetup.Add( self.m_radioBtn_uart, 0, wx.ALL, 5 )
+
+		self.m_radioBtn_usbhid = wx.RadioButton( self.m_panel_portSetup, wx.ID_ANY, u"USB-HID", wx.DefaultPosition, wx.Size( 70,-1 ), 0 )
+		wSizer_portSetup.Add( self.m_radioBtn_usbhid, 0, wx.ALL, 5 )
+
+		self.m_staticText_portVid = wx.StaticText( self.m_panel_portSetup, wx.ID_ANY, u"COM Port:", wx.DefaultPosition, wx.Size( 60,-1 ), 0 )
+		self.m_staticText_portVid.Wrap( -1 )
+
+		wSizer_portSetup.Add( self.m_staticText_portVid, 0, wx.ALL, 5 )
+
+		m_choice_portVidChoices = []
+		self.m_choice_portVid = wx.Choice( self.m_panel_portSetup, wx.ID_ANY, wx.DefaultPosition, wx.Size( 155,-1 ), m_choice_portVidChoices, 0 )
+		self.m_choice_portVid.SetSelection( 0 )
+		wSizer_portSetup.Add( self.m_choice_portVid, 0, wx.ALL, 5 )
+
+		self.m_staticText_baudPid = wx.StaticText( self.m_panel_portSetup, wx.ID_ANY, u"Baudrate:", wx.DefaultPosition, wx.Size( 60,-1 ), 0 )
+		self.m_staticText_baudPid.Wrap( -1 )
+
+		wSizer_portSetup.Add( self.m_staticText_baudPid, 0, wx.ALL, 5 )
+
+		m_choice_baudPidChoices = []
+		self.m_choice_baudPid = wx.Choice( self.m_panel_portSetup, wx.ID_ANY, wx.DefaultPosition, wx.Size( 155,-1 ), m_choice_baudPidChoices, 0 )
+		self.m_choice_baudPid.SetSelection( 0 )
+		wSizer_portSetup.Add( self.m_choice_baudPid, 0, wx.ALL, 5 )
+
+		self.m_staticText_null2PortSetup = wx.StaticText( self.m_panel_portSetup, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 226,5 ), 0 )
+		self.m_staticText_null2PortSetup.Wrap( -1 )
+
+		wSizer_portSetup.Add( self.m_staticText_null2PortSetup, 0, wx.ALL, 5 )
+
+		self.m_staticText_null3PortSetup = wx.StaticText( self.m_panel_portSetup, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 40,-1 ), 0 )
+		self.m_staticText_null3PortSetup.Wrap( -1 )
+
+		wSizer_portSetup.Add( self.m_staticText_null3PortSetup, 0, wx.ALL, 5 )
+
+		self.m_bitmap_connectLed = wx.StaticBitmap( self.m_panel_portSetup, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.Size( 30,30 ), 0 )
+		wSizer_portSetup.Add( self.m_bitmap_connectLed, 0, wx.ALL, 5 )
+
+		self.m_button_connect = wx.Button( self.m_panel_portSetup, wx.ID_ANY, u"Connect", wx.DefaultPosition, wx.DefaultSize, 0 )
+		wSizer_portSetup.Add( self.m_button_connect, 0, wx.ALL, 5 )
+
+
+		self.m_panel_portSetup.SetSizer( wSizer_portSetup )
+		self.m_panel_portSetup.Layout()
+		wSizer_portSetup.Fit( self.m_panel_portSetup )
+		self.m_notebook_portSetup.AddPage( self.m_panel_portSetup, u"Port Setup", False )
+
+		bSizer_setup.Add( self.m_notebook_portSetup, 1, wx.EXPAND |wx.ALL, 5 )
+
+		self.m_notebook_deviceStatus = wx.Notebook( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_panel26 = wx.Panel( self.m_notebook_deviceStatus, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.m_notebook_deviceStatus.AddPage( self.m_panel26, u"Device Status", False )
+
+		bSizer_setup.Add( self.m_notebook_deviceStatus, 1, wx.EXPAND |wx.ALL, 5 )
+
+
+		wSizer_func.Add( bSizer_setup, 1, wx.EXPAND, 5 )
+
+		bSizer_boot = wx.BoxSizer( wx.VERTICAL )
+
+		wSizer_bootType = wx.WrapSizer( wx.HORIZONTAL, wx.WRAPSIZER_DEFAULT_FLAGS )
+
+		self.m_staticText_null1BootType = wx.StaticText( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 295,-1 ), 0 )
+		self.m_staticText_null1BootType.Wrap( -1 )
+
+		wSizer_bootType.Add( self.m_staticText_null1BootType, 0, wx.ALL, 5 )
+
+		self.m_staticText_secureBootType = wx.StaticText( self, wx.ID_ANY, u"Secure Boot Type:", wx.DefaultPosition, wx.Size( -1,-1 ), 0 )
+		self.m_staticText_secureBootType.Wrap( -1 )
+
+		wSizer_bootType.Add( self.m_staticText_secureBootType, 0, wx.ALL, 5 )
+
+		m_choice_secureBootTypeChoices = [ u"Unsigned (XIP) image Boot", u"Signed (XIP) Image Boot", u"HAB Signed Encrypted Image Boot", u"BEE (Signed) Encrypted XIP Image Boot" ]
+		self.m_choice_secureBootType = wx.Choice( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, m_choice_secureBootTypeChoices, 0 )
+		self.m_choice_secureBootType.SetSelection( 0 )
+		wSizer_bootType.Add( self.m_choice_secureBootType, 0, wx.ALL, 5 )
+
+
+		bSizer_boot.Add( wSizer_bootType, 1, wx.EXPAND, 5 )
+
+		self.m_notebook_imageSeq = wx.Notebook( self, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,400 ), 0 )
+		self.m_notebook_imageSeq.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+
+		self.m_panel_genSeq = wx.Panel( self.m_notebook_imageSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.m_panel_genSeq.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+		self.m_panel_genSeq.SetBackgroundColour( wx.Colour( 160, 160, 160 ) )
+
+		wSizer_genSeq = wx.WrapSizer( wx.HORIZONTAL, wx.WRAPSIZER_DEFAULT_FLAGS )
+
+		self.m_panel_doAuth = wx.Panel( self.m_panel_genSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		self.m_panel_doAuth.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNSHADOW ) )
 
 		bSizer_doAuth = wx.BoxSizer( wx.VERTICAL )
@@ -147,40 +267,9 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_doAuth.SetSizer( bSizer_doAuth )
 		self.m_panel_doAuth.Layout()
 		bSizer_doAuth.Fit( self.m_panel_doAuth )
-		comBootSeq_sizer.Add( self.m_panel_doAuth, 1, wx.EXPAND |wx.ALL, 5 )
+		wSizer_genSeq.Add( self.m_panel_doAuth, 1, wx.EXPAND |wx.ALL, 5 )
 
-		self.m_panel_progSrk = wx.Panel( self.m_panel_comBootSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		bSizer_progSrk = wx.BoxSizer( wx.VERTICAL )
-
-		self.m_panel_progSrk1_showSrk = wx.Panel( self.m_panel_progSrk, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		sbSizer_showSrk = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_progSrk1_showSrk, wx.ID_ANY, u"Step 2:" ), wx.VERTICAL )
-
-		self.m_staticText_srk256bit = wx.StaticText( sbSizer_showSrk.GetStaticBox(), wx.ID_ANY, u"Program below public SRK data (256bits) to Fuse SRK Region:", wx.DefaultPosition, wx.Size( 100,60 ), 0 )
-		self.m_staticText_srk256bit.Wrap( -1 )
-
-		sbSizer_showSrk.Add( self.m_staticText_srk256bit, 0, wx.ALL, 5 )
-
-		self.m_textCtrl_srk256bit = wx.TextCtrl( sbSizer_showSrk.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 100,140 ), wx.TE_MULTILINE )
-		self.m_textCtrl_srk256bit.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
-
-		sbSizer_showSrk.Add( self.m_textCtrl_srk256bit, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-
-
-		self.m_panel_progSrk1_showSrk.SetSizer( sbSizer_showSrk )
-		self.m_panel_progSrk1_showSrk.Layout()
-		sbSizer_showSrk.Fit( self.m_panel_progSrk1_showSrk )
-		bSizer_progSrk.Add( self.m_panel_progSrk1_showSrk, 1, wx.EXPAND |wx.ALL, 5 )
-
-		self.m_button_progSrk = wx.Button( self.m_panel_progSrk, wx.ID_ANY, u"Run blhost Tool", wx.DefaultPosition, wx.DefaultSize, 0 )
-		bSizer_progSrk.Add( self.m_button_progSrk, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-
-
-		self.m_panel_progSrk.SetSizer( bSizer_progSrk )
-		self.m_panel_progSrk.Layout()
-		bSizer_progSrk.Fit( self.m_panel_progSrk )
-		comBootSeq_sizer.Add( self.m_panel_progSrk, 1, wx.EXPAND |wx.ALL, 5 )
-
-		self.m_panel_genImage = wx.Panel( self.m_panel_comBootSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.m_panel_genImage = wx.Panel( self.m_panel_genSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		self.m_panel_genImage.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNSHADOW ) )
 
 		bSizer_genImage = wx.BoxSizer( wx.VERTICAL )
@@ -193,7 +282,7 @@ class secBootWin ( wx.Frame ):
 
 		sbSizer_browseApp.Add( self.m_staticText_appPath, 0, wx.ALL, 5 )
 
-		self.m_filePicker_appPath = wx.FilePickerCtrl( sbSizer_browseApp.GetStaticBox(), wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.*", wx.DefaultPosition, wx.Size( 180,-1 ), wx.FLP_DEFAULT_STYLE )
+		self.m_filePicker_appPath = wx.FilePickerCtrl( sbSizer_browseApp.GetStaticBox(), wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.*", wx.DefaultPosition, wx.Size( 260,-1 ), wx.FLP_DEFAULT_STYLE )
 		sbSizer_browseApp.Add( self.m_filePicker_appPath, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
 		self.m_staticText_bdPath = wx.StaticText( sbSizer_browseApp.GetStaticBox(), wx.ID_ANY, u"Matched BD File:", wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -201,7 +290,7 @@ class secBootWin ( wx.Frame ):
 
 		sbSizer_browseApp.Add( self.m_staticText_bdPath, 0, wx.ALL, 5 )
 
-		self.m_textCtrl_bdPath = wx.TextCtrl( sbSizer_browseApp.GetStaticBox(), wx.ID_ANY, u"example.bd", wx.DefaultPosition, wx.Size( 180,-1 ), 0 )
+		self.m_textCtrl_bdPath = wx.TextCtrl( sbSizer_browseApp.GetStaticBox(), wx.ID_ANY, u"example.bd", wx.DefaultPosition, wx.Size( 260,-1 ), 0 )
 		self.m_textCtrl_bdPath.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
 
 		sbSizer_browseApp.Add( self.m_textCtrl_bdPath, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
@@ -236,40 +325,9 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_genImage.SetSizer( bSizer_genImage )
 		self.m_panel_genImage.Layout()
 		bSizer_genImage.Fit( self.m_panel_genImage )
-		comBootSeq_sizer.Add( self.m_panel_genImage, 1, wx.EXPAND |wx.ALL, 5 )
+		wSizer_genSeq.Add( self.m_panel_genImage, 1, wx.EXPAND |wx.ALL, 5 )
 
-		self.m_panel_progDek = wx.Panel( self.m_panel_comBootSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		bSizer_progDek = wx.BoxSizer( wx.VERTICAL )
-
-		self.m_panel_progDek1_showDek = wx.Panel( self.m_panel_progDek, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		sbSizer_showDek = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_progDek1_showDek, wx.ID_ANY, u"Step 4:" ), wx.VERTICAL )
-
-		self.m_staticText_dek128bit = wx.StaticText( sbSizer_showDek.GetStaticBox(), wx.ID_ANY, u"Use below DEK data (128bits) to generate keyblob and program it to flash for HAB:", wx.DefaultPosition, wx.Size( 100,80 ), 0 )
-		self.m_staticText_dek128bit.Wrap( -1 )
-
-		sbSizer_showDek.Add( self.m_staticText_dek128bit, 0, wx.ALL, 5 )
-
-		self.m_textCtrl_dek128bit = wx.TextCtrl( sbSizer_showDek.GetStaticBox(), wx.ID_ANY, u"01234567\nABCDEFAB\n01234567\n89abcde", wx.DefaultPosition, wx.Size( 100,70 ), wx.TE_MULTILINE )
-		self.m_textCtrl_dek128bit.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
-
-		sbSizer_showDek.Add( self.m_textCtrl_dek128bit, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-
-
-		self.m_panel_progDek1_showDek.SetSizer( sbSizer_showDek )
-		self.m_panel_progDek1_showDek.Layout()
-		sbSizer_showDek.Fit( self.m_panel_progDek1_showDek )
-		bSizer_progDek.Add( self.m_panel_progDek1_showDek, 1, wx.EXPAND |wx.ALL, 5 )
-
-		self.m_button_progDek = wx.Button( self.m_panel_progDek, wx.ID_ANY, u"Run blhost Tool", wx.DefaultPosition, wx.DefaultSize, 0 )
-		bSizer_progDek.Add( self.m_button_progDek, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-
-
-		self.m_panel_progDek.SetSizer( bSizer_progDek )
-		self.m_panel_progDek.Layout()
-		bSizer_progDek.Fit( self.m_panel_progDek )
-		comBootSeq_sizer.Add( self.m_panel_progDek, 1, wx.EXPAND |wx.ALL, 5 )
-
-		self.m_panel_prepBee = wx.Panel( self.m_panel_comBootSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.m_panel_prepBee = wx.Panel( self.m_panel_genSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer_prepBee = wx.BoxSizer( wx.VERTICAL )
 
 		self.m_panel_prepBee1_beeKeyRegion = wx.Panel( self.m_panel_prepBee, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
@@ -336,9 +394,81 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_prepBee.SetSizer( bSizer_prepBee )
 		self.m_panel_prepBee.Layout()
 		bSizer_prepBee.Fit( self.m_panel_prepBee )
-		comBootSeq_sizer.Add( self.m_panel_prepBee, 1, wx.EXPAND |wx.ALL, 5 )
+		wSizer_genSeq.Add( self.m_panel_prepBee, 1, wx.EXPAND |wx.ALL, 5 )
 
-		self.m_panel_operBeeKey = wx.Panel( self.m_panel_comBootSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+
+		self.m_panel_genSeq.SetSizer( wSizer_genSeq )
+		self.m_panel_genSeq.Layout()
+		wSizer_genSeq.Fit( self.m_panel_genSeq )
+		self.m_notebook_imageSeq.AddPage( self.m_panel_genSeq, u"Image Generation Sequence", True )
+		self.m_panel_bootSeq = wx.Panel( self.m_notebook_imageSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.m_panel_bootSeq.SetBackgroundColour( wx.Colour( 160, 160, 160 ) )
+
+		wSizer_bootSeq = wx.WrapSizer( wx.HORIZONTAL, wx.WRAPSIZER_DEFAULT_FLAGS )
+
+		self.m_panel_progSrk = wx.Panel( self.m_panel_bootSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		bSizer_progSrk = wx.BoxSizer( wx.VERTICAL )
+
+		self.m_panel_progSrk1_showSrk = wx.Panel( self.m_panel_progSrk, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		sbSizer_showSrk = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_progSrk1_showSrk, wx.ID_ANY, u"Step 2:" ), wx.VERTICAL )
+
+		self.m_staticText_srk256bit = wx.StaticText( sbSizer_showSrk.GetStaticBox(), wx.ID_ANY, u"Program below public SRK data (256bits) to Fuse SRK Region:", wx.DefaultPosition, wx.Size( 100,60 ), 0 )
+		self.m_staticText_srk256bit.Wrap( -1 )
+
+		sbSizer_showSrk.Add( self.m_staticText_srk256bit, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_srk256bit = wx.TextCtrl( sbSizer_showSrk.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 100,140 ), wx.TE_MULTILINE )
+		self.m_textCtrl_srk256bit.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
+
+		sbSizer_showSrk.Add( self.m_textCtrl_srk256bit, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
+
+
+		self.m_panel_progSrk1_showSrk.SetSizer( sbSizer_showSrk )
+		self.m_panel_progSrk1_showSrk.Layout()
+		sbSizer_showSrk.Fit( self.m_panel_progSrk1_showSrk )
+		bSizer_progSrk.Add( self.m_panel_progSrk1_showSrk, 1, wx.EXPAND |wx.ALL, 5 )
+
+		self.m_button_progSrk = wx.Button( self.m_panel_progSrk, wx.ID_ANY, u"Run blhost Tool", wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer_progSrk.Add( self.m_button_progSrk, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
+
+
+		self.m_panel_progSrk.SetSizer( bSizer_progSrk )
+		self.m_panel_progSrk.Layout()
+		bSizer_progSrk.Fit( self.m_panel_progSrk )
+		wSizer_bootSeq.Add( self.m_panel_progSrk, 1, wx.EXPAND |wx.ALL, 5 )
+
+		self.m_panel_progDek = wx.Panel( self.m_panel_bootSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		bSizer_progDek = wx.BoxSizer( wx.VERTICAL )
+
+		self.m_panel_progDek1_showDek = wx.Panel( self.m_panel_progDek, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		sbSizer_showDek = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_progDek1_showDek, wx.ID_ANY, u"Step 4:" ), wx.VERTICAL )
+
+		self.m_staticText_dek128bit = wx.StaticText( sbSizer_showDek.GetStaticBox(), wx.ID_ANY, u"Use below DEK data (128bits) to generate keyblob and program it to flash for HAB:", wx.DefaultPosition, wx.Size( 100,80 ), 0 )
+		self.m_staticText_dek128bit.Wrap( -1 )
+
+		sbSizer_showDek.Add( self.m_staticText_dek128bit, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_dek128bit = wx.TextCtrl( sbSizer_showDek.GetStaticBox(), wx.ID_ANY, u"01234567\nABCDEFAB\n01234567\n89abcde", wx.DefaultPosition, wx.Size( 100,70 ), wx.TE_MULTILINE )
+		self.m_textCtrl_dek128bit.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
+
+		sbSizer_showDek.Add( self.m_textCtrl_dek128bit, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
+
+
+		self.m_panel_progDek1_showDek.SetSizer( sbSizer_showDek )
+		self.m_panel_progDek1_showDek.Layout()
+		sbSizer_showDek.Fit( self.m_panel_progDek1_showDek )
+		bSizer_progDek.Add( self.m_panel_progDek1_showDek, 1, wx.EXPAND |wx.ALL, 5 )
+
+		self.m_button_progDek = wx.Button( self.m_panel_progDek, wx.ID_ANY, u"Run blhost Tool", wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer_progDek.Add( self.m_button_progDek, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
+
+
+		self.m_panel_progDek.SetSizer( bSizer_progDek )
+		self.m_panel_progDek.Layout()
+		bSizer_progDek.Fit( self.m_panel_progDek )
+		wSizer_bootSeq.Add( self.m_panel_progDek, 1, wx.EXPAND |wx.ALL, 5 )
+
+		self.m_panel_operBeeKey = wx.Panel( self.m_panel_bootSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer_operBeeKey = wx.BoxSizer( wx.VERTICAL )
 
 		self.m_panel_operBeeKey1_readOtpmk = wx.Panel( self.m_panel_operBeeKey, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
@@ -381,19 +511,19 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_operBeeKey.SetSizer( bSizer_operBeeKey )
 		self.m_panel_operBeeKey.Layout()
 		bSizer_operBeeKey.Fit( self.m_panel_operBeeKey )
-		comBootSeq_sizer.Add( self.m_panel_operBeeKey, 1, wx.EXPAND |wx.ALL, 5 )
+		wSizer_bootSeq.Add( self.m_panel_operBeeKey, 1, wx.EXPAND |wx.ALL, 5 )
 
-		self.m_panel_flashImage = wx.Panel( self.m_panel_comBootSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.m_panel_flashImage = wx.Panel( self.m_panel_bootSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		self.m_panel_flashImage.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNSHADOW ) )
 
 		bSizer_flashImage = wx.BoxSizer( wx.VERTICAL )
 
-		self.m_panel_flashImage1_showImage = wx.Panel( self.m_panel_flashImage, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.m_panel_flashImage1_showImage = wx.Panel( self.m_panel_flashImage, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,-1 ), wx.TAB_TRAVERSAL )
 		self.m_panel_flashImage1_showImage.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNSHADOW ) )
 
 		sbSizer_showImage = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_flashImage1_showImage, wx.ID_ANY, u"Step 7:" ), wx.VERTICAL )
 
-		self.m_staticText_showImage = wx.StaticText( sbSizer_showImage.GetStaticBox(), wx.ID_ANY, u"Program final bootable image to flash:", wx.DefaultPosition, wx.Size( 90,100 ), 0 )
+		self.m_staticText_showImage = wx.StaticText( sbSizer_showImage.GetStaticBox(), wx.ID_ANY, u"Program final bootable image to flash:", wx.DefaultPosition, wx.Size( 120,100 ), 0 )
 		self.m_staticText_showImage.Wrap( -1 )
 
 		sbSizer_showImage.Add( self.m_staticText_showImage, 0, wx.ALL, 5 )
@@ -414,31 +544,36 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_flashImage.SetSizer( bSizer_flashImage )
 		self.m_panel_flashImage.Layout()
 		bSizer_flashImage.Fit( self.m_panel_flashImage )
-		comBootSeq_sizer.Add( self.m_panel_flashImage, 1, wx.EXPAND |wx.ALL, 5 )
+		wSizer_bootSeq.Add( self.m_panel_flashImage, 1, wx.EXPAND |wx.ALL, 5 )
 
 
-		self.m_panel_comBootSeq.SetSizer( comBootSeq_sizer )
-		self.m_panel_comBootSeq.Layout()
-		comBootSeq_sizer.Fit( self.m_panel_comBootSeq )
-		self.m_notebook_bootSequence.AddPage( self.m_panel_comBootSeq, u"Comprehensive Image Boot Sequence", True )
+		self.m_panel_bootSeq.SetSizer( wSizer_bootSeq )
+		self.m_panel_bootSeq.Layout()
+		wSizer_bootSeq.Fit( self.m_panel_bootSeq )
+		self.m_notebook_imageSeq.AddPage( self.m_panel_bootSeq, u"Image Boot Sequence", False )
 
-		win_sizer.Add( self.m_notebook_bootSequence, 1, wx.EXPAND |wx.ALL, 5 )
+		bSizer_boot.Add( self.m_notebook_imageSeq, 1, wx.EXPAND |wx.ALL, 5 )
 
-		self.m_notebook_log = wx.Notebook( self, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,120 ), 0 )
-		self.m_panel_log = wx.Panel( self.m_notebook_log, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.m_notebook_bootLog = wx.Notebook( self, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,-1 ), 0 )
+		self.m_panel_log = wx.Panel( self.m_notebook_bootLog, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		self.m_panel_log.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
 
 		wSizer_log = wx.WrapSizer( wx.HORIZONTAL, wx.WRAPSIZER_DEFAULT_FLAGS )
 
 		bSizer_showLog = wx.BoxSizer( wx.VERTICAL )
 
-		self.m_textCtrl_log = wx.TextCtrl( self.m_panel_log, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 1030,65 ), wx.TE_MULTILINE )
+		self.m_textCtrl_log = wx.TextCtrl( self.m_panel_log, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 530,85 ), wx.TE_MULTILINE )
 		bSizer_showLog.Add( self.m_textCtrl_log, 0, wx.ALL, 5 )
 
 
 		wSizer_log.Add( bSizer_showLog, 1, wx.EXPAND, 5 )
 
 		bSizer_logAction = wx.BoxSizer( wx.VERTICAL )
+
+		self.m_staticText_null1LogAction = wx.StaticText( self.m_panel_log, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( -1,3 ), 0 )
+		self.m_staticText_null1LogAction.Wrap( -1 )
+
+		bSizer_logAction.Add( self.m_staticText_null1LogAction, 0, wx.ALL, 5 )
 
 		self.m_button_clearLog = wx.Button( self.m_panel_log, wx.ID_ANY, u"Clear", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_button_clearLog.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
@@ -455,7 +590,7 @@ class secBootWin ( wx.Frame ):
 
 		bSizer_actionGauge = wx.BoxSizer( wx.VERTICAL )
 
-		self.m_gauge_action = wx.Gauge( self.m_panel_log, wx.ID_ANY, 100, wx.DefaultPosition, wx.Size( 1170,-1 ), wx.GA_HORIZONTAL )
+		self.m_gauge_action = wx.Gauge( self.m_panel_log, wx.ID_ANY, 100, wx.DefaultPosition, wx.Size( 630,-1 ), wx.GA_HORIZONTAL )
 		self.m_gauge_action.SetValue( 100 )
 		bSizer_actionGauge.Add( self.m_gauge_action, 0, wx.ALL, 5 )
 
@@ -466,12 +601,18 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_log.SetSizer( wSizer_log )
 		self.m_panel_log.Layout()
 		wSizer_log.Fit( self.m_panel_log )
-		self.m_notebook_log.AddPage( self.m_panel_log, u"Log", False )
+		self.m_notebook_bootLog.AddPage( self.m_panel_log, u"Log", False )
 
-		win_sizer.Add( self.m_notebook_log, 1, wx.EXPAND |wx.ALL, 5 )
+		bSizer_boot.Add( self.m_notebook_bootLog, 1, wx.EXPAND |wx.ALL, 5 )
 
 
-		self.SetSizer( win_sizer )
+		wSizer_func.Add( bSizer_boot, 1, wx.EXPAND, 5 )
+
+
+		bSizer_win.Add( wSizer_func, 1, wx.EXPAND, 5 )
+
+
+		self.SetSizer( bSizer_win )
 		self.Layout()
 		self.m_statusBar = self.CreateStatusBar( 1, wx.STB_SIZEGRIP, wx.ID_ANY )
 
