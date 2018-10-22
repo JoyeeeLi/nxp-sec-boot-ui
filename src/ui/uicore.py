@@ -10,6 +10,8 @@ class secBootUi(nxpSecBoot.secBootWin):
 
     def __init__(self, parent):
         nxpSecBoot.secBootWin.__init__(self, parent)
+        self.m_bitmap_nxp.SetBitmap(wx.Bitmap( u"../img/logo_nxp.png", wx.BITMAP_TYPE_ANY ))
+        self.m_bitmap_connectLed.SetBitmap(wx.Bitmap( u"../img/led_black.png", wx.BITMAP_TYPE_ANY ))
         self.setSecureBootSeqColor()
 
     def resetSecureBootSeqColor( self ):
