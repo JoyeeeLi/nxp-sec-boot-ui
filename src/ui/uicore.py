@@ -21,6 +21,7 @@ class secBootUi(nxpSecBoot.secBootWin):
         self.m_panel_progDek1_showDek.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_INVALID )
         self.resetKeyStorageRegionColor()
         self.m_panel_flashImage1_showImage.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_INVALID )
+        self.Refresh()
 
     def resetKeyStorageRegionColor( self ):
         self.m_panel_prepBee1_beeKeyRegion.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_INVALID )
@@ -29,6 +30,7 @@ class secBootUi(nxpSecBoot.secBootWin):
         self.m_panel_prepBee4_beeCryptoAlgo.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_INVALID )
         self.m_panel_operBeeKey1_readOtpmk.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_INVALID )
         self.m_panel_operBeeKey2_progBeeKey.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_INVALID )
+        self.Refresh()
 
     def setSecureBootSeqColor( self ):
         secureBootType = self.m_choice_secureBootType.GetString(self.m_choice_secureBootType.GetSelection())
@@ -59,6 +61,7 @@ class secBootUi(nxpSecBoot.secBootWin):
             self.m_panel_flashImage1_showImage.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_ACTIVE )
         else:
             pass
+        self.Refresh()
 
     def setKeyStorageRegionColor( self ):
         secureBootType = self.m_choice_secureBootType.GetString(self.m_choice_secureBootType.GetSelection())
@@ -77,6 +80,7 @@ class secBootUi(nxpSecBoot.secBootWin):
                 self.m_panel_operBeeKey2_progBeeKey.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_ACTIVE )
             else:
                 pass
+        self.Refresh()
 
 
 
