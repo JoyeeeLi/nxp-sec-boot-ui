@@ -33,9 +33,7 @@ import commands
 import memoryrange
 import peripherals
 import properties
-import registerdescription
 import status
-import bootsources
 
-__all__ = ["bltest", "commands", "memoryrange", "peripherals", "properties", "registerdescription", "status"]
+__all__ = ["bltest", "commands", "memoryrange", "peripherals", "properties", "status"]
 

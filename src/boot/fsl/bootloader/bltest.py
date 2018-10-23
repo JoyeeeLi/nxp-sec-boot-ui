@@ -31,17 +31,13 @@
 import sys
 import os
 import copy
-import array
 import json
 import time
-import pexpect
 
 from fsl import filetools
-from memoryrange import MemoryRange
 import peripherals
 import peripheralspeed
 import subprocess
-import bootsources
 
 # Allow this import to fail, which it will do on OS X.
 try:
@@ -68,10 +64,8 @@ kBlhostError_ReturnedError = -4
 # @param peripheral
 # @param port
 # @param loadTarget
-def createBootloader(target, vectorsDir, peripheral=peripherals.kPeripheral_Sim, speed=None, port=None, loadTarget=False, resetTarget=True, usePing=True):
-    if peripheral == peripherals.kPeripheral_Sim:
-        return BootloaderSimulator(target, vectorsDir)
-    elif peripheral.split(',')[0] in peripherals.Peripherals:
+def createBootloader(target, vectorsDir, peripheral, speed=None, port=None, loadTarget=False, resetTarget=True, usePing=True):
+    if peripheral.split(',')[0] in peripherals.Peripherals:
         return BootloaderDevice(target, vectorsDir, peripheral, speed, port, loadTarget, resetTarget, usePing)
     elif peripheral.split(',')[0] in peripherals.PeripheralsSDP:
         return BootloaderDeviceSDP(target, vectorsDir, peripheral, speed, port, resetTarget)
@@ -95,7 +89,7 @@ class Bootloader(object):
 
         ## Path to the directory containing test vectors.
         #
-        # This path is also used to find the blhost/blsim tool.
+        # This path is also used to find the blhost tool.
         self.vectorsDir = vectorsDir
 
         ## The full output of the last execution of blhost/blsim as a string.
@@ -119,7 +113,7 @@ class Bootloader(object):
         # @sa Peripherals
         self.peripheral = ''
 
-        ## timeout value for waiting return value from blhost/blsim
+        ## timeout value for waiting return value from blhost
         self.timeout = 600
 
         ## The fileLength will use to calculate timeout value of waiting response of blhost
@@ -184,46 +178,6 @@ class Bootloader(object):
         return actualResults
 
     ##
-    # @brief Verify a memory range.
-    #
-    # @param start The absolute memory address to start the comparison.
-    # @param arg2 Either a bytearray, integer, or file path.The type of @a arg2 determines what
-    #   the memory range will be compared against.<br>If @a arg2 is a bytearray, then it contains
-    #   the expected bytes. Length of comparison is determined by the length of the bytearray.<br>
-    #   If @a arg2 is an integer, the integer is the number of bytes to verify. In this case,
-    #   all bytes in the memory range are expected to be a constant value denoted by arg3.<br>
-    #   Finally, if @a arg2 is a valid path to a file in the @c vectors directory, then that file
-    #   contains the expected bytes. Length of comparison is determined by the size of the binary file.
-    # @param arg3 If arg2 is an integer, then this argument is an integer used as the byte value
-    #              for each byte in the expected array.
-    # @return True if the actual bytes equal the expected bytes; False otherwise.
-    # @throws ValueError In case 2nd parameter does not an expected type.
-    def verifyMemory(self, start, arg2, arg3=None):
-
-        # If the second argument is an array of expected bytes.
-        if type(arg2) == type(bytearray()):
-            expectedBytes = arg2
-            bootloaderBytes = self._readMemory(start, len(expectedBytes))
-            return bootloaderBytes == expectedBytes
-
-        # If the second argument is an integer representing
-        # the number of bytes to verify.
-        elif type(arg2) == type(0):
-            expectedBytes = array.array('c', [chr(arg3)]) * arg2
-            bootloaderBytes = self._readMemory(start, len(expectedBytes))
-            return bootloaderBytes == expectedBytes.tostring()
-
-        # If the second argument is the name of a file that contains
-        # the bytes to verify.
-        elif os.path.isfile(os.path.join(self.vectorsDir, arg2)):
-            expectedBytes = open(os.path.join(self.vectorsDir, arg2), 'rb').read()
-            bootloaderBytes = self._readMemory(start, len(expectedBytes))
-            return bootloaderBytes == expectedBytes
-
-        else:
-            raise ValueError('Second argument must be a bytearray, a filename, or an integer length.')
-
-    ##
     # @brief Verify a the results of the last command executed.
     #
     # @param expectedResults A list of the command response words not including the status word.
@@ -244,43 +198,11 @@ class Bootloader(object):
     #
     # @param args     command argument list
     def _getPeripheralAndSpeed(self, args):
-        peripheral = peripherals.kPeripheral_Sim
+        peripheral = peripherals.kPeripheral_UART
         peripheralSpeed = 0
-
         if '-u' in self._commandArgs:
             peripheral = peripherals.kPeripheral_USB
             peripheralSpeed = peripheralspeed.kUsbDefaultSpeed
-
-        elif '-b' in self._commandArgs:
-            peripheralArgIndex = self._commandArgs.index('-b') + 1
-            peripheralArgs = self._commandArgs[peripheralArgIndex].split(',')
-
-            if peripheralArgs[0] == peripherals.kPeripheral_SPI:
-                peripheral = peripherals.kPeripheral_SPI
-                if len(peripheralArgs) > 1:
-                    peripheralSpeed = long(peripheralArgs[1])
-                else:
-                    peripheralSpeed = peripheralspeed.kSpiDefaultSpeed
-            elif peripheralArgs[0] == peripherals.kPeripheral_I2C:
-                peripheral = peripherals.kPeripheral_I2C
-                if len(peripheralArgs) > 1:
-                    peripheralSpeed = long(peripheralArgs[2])
-                else:
-                    peripheralSpeed = peripheralspeed.kI2cDefaultSpeed
-            elif peripheralArgs[0] == peripherals.kPeripheral_CAN:
-                peripheral = peripherals.kPeripheral_CAN
-                if len(peripheralArgs) > 1:
-                    # '0' means 125k, '1' means 250k, '2' means 500k, '4' means 1000k
-                    power2 = long(peripheralArgs[1])
-                    # '4' is an exception
-                    if power2 == 4:
-                        power2 = power2 - 1
-                    peripheralSpeed = (1 << power2) * 125
-                else:
-                    peripheralSpeed = peripheralspeed.kCanDefaultSpeed
-            else:
-                raise ValueError('Invalid peripheral parameter: %s' % peripheralArgs[0])
-
         elif '-p' in self._commandArgs:
             peripheral = peripherals.kPeripheral_UART
             peripheralArgIndex = self._commandArgs.index('-p') + 1
@@ -289,10 +211,8 @@ class Bootloader(object):
                     peripheralSpeed = long(peripheralArgs[1])
             else:
                     peripheralSpeed = peripheralspeed.kUartDefaultSpeed
-
-        else: # peripheral is peripherals.kPeripheral_SIM
+        else:
             pass
-
         return peripheral, peripheralSpeed
 
     ##
@@ -314,7 +234,7 @@ class Bootloader(object):
         compensateSeconds = 20   # this value is used for compensating deviation
         if 'receive-sb-file' in args:
             timeout = 100 # don't know what is in SB file, so give it a long time
-        elif fileLength > 0 and peripheral != peripherals.kPeripheral_Sim :
+        elif fileLength > 0:
             actualLength  = long(fileLength) * 1.25 #actual length includes file length and other overhead such as framing header
             baseFileLength = 40960
             multiplicationFactors = actualLength / baseFileLength
@@ -325,19 +245,6 @@ class Bootloader(object):
                     timeout = (fixedProcessSeconds + 3.5 * basePeripheralSpeed / peripheralSpeed) * multiplicationFactors + compensateSeconds
                 else: # below is a workaround
                     timeout = (fixedProcessSeconds + 3.5 * basePeripheralSpeed / peripheralSpeed) * 1.5 * multiplicationFactors + compensateSeconds
-
-            elif peripheral == peripherals.kPeripheral_SPI:
-                fixedProcessSeconds = 50
-                basePeripheralSpeed = 250
-                timeout = (fixedProcessSeconds + 1.6 * basePeripheralSpeed/peripheralSpeed) * multiplicationFactors + compensateSeconds
-            elif peripheral == peripherals.kPeripheral_I2C:
-                fixedProcessSeconds = 18
-                basePeripheralSpeed = 100
-                timeout = (fixedProcessSeconds + 6 * basePeripheralSpeed/peripheralSpeed) * multiplicationFactors + compensateSeconds
-            elif peripheral == peripherals.kPeripheral_CAN:
-                fixedProcessSeconds = 18
-                basePeripheralSpeed = 100
-                timeout = (fixedProcessSeconds + 6 * basePeripheralSpeed/peripheralSpeed) * multiplicationFactors + compensateSeconds
             elif peripheral == peripherals.kPeripheral_USB:
                 fixedProcessSeconds = 9
                 timeout = fixedProcessSeconds *  multiplicationFactors + compensateSeconds
@@ -534,78 +441,6 @@ class Bootloader(object):
     ## @}
 
 ##
-# @brief The bootloader simulator.
-class BootloaderSimulator(Bootloader):
-
-    def __init__(self, target, vectorsDir):
-        super(BootloaderSimulator, self).__init__(target, vectorsDir)
-
-        self._toolName = os.path.abspath(os.path.join(vectorsDir, '..', 'blsim'))
-        self._commandArgs.append(self._toolName)
-        self._commandArgs.extend(['-s', vectorsDir])
-
-        self.peripheral = peripherals.kPeripheral_Sim
-
-        # Make the tool executable on OS X. It loses the x bit when Bamboo copies it.
-        if sys.platform == 'darwin':
-            filetools.makeExecutable(self._toolName)
-
-        self._commandArgs.extend(['-j', '--'])
-
-    ##
-    # @brief Read memory from simulator file.
-    #
-    # Figure out the correct simulator file by looking at the start parameter
-    # and read the length of bytes from the file.
-    #
-    # @param start The beginning address of the memory range to read.
-    # @param length The number of bytes to read after the start address.
-    # @return A byte_array containing the bytes read from the simulator file.
-    def _readMemory(self, start, length):
-
-        returnBytes = bytearray()
-        memoryRange = self._getRegion(start)
-
-        # Validate 'start' parameter
-        if memoryRange == None:
-            raise ValueError('Invalid "start" parameter.')
-
-        # Validate 'length' parameter
-        if start + length > memoryRange.start + memoryRange.length:
-            raise ValueError('Invalid "length" parameter.')
-
-        # Read simulated memory bytes from appropriate file.
-        with open(os.path.join(self.vectorsDir, memoryRange.simulatorFilename), 'rb') as fileObj:
-            fileObj.seek(start - memoryRange.start)
-            returnBytes = fileObj.read(length)
-
-        return returnBytes
-
-    ##
-    # @brief Return empty timeout argument list.
-    #
-    # blsim doesn't support the timeout argument used by blhost, so this method is overridden
-    # to return an empty list.
-    def _getTimeoutArgument(self, args):
-        return []
-
-    ##
-    # @brief set-property command
-    # @todo Make it so we don't have to reinit state here when using set-property with blsim.
-    def setProperty(self, tag, value):
-        # Save current args and insert -i to reinit state.
-        savedArgs = copy.copy(self._commandArgs)
-        #self._commandArgs.insert(1, '-i')
-
-        # Call to superclass' implementation.
-        results = super(BootloaderSimulator, self).setProperty(tag, value)
-
-        # Restore previous args.
-        self._commandArgs = savedArgs
-
-        return results
-
-##
 # @brief The bootloader running on a real device.
 class BootloaderDevice(Bootloader):
 
@@ -626,33 +461,10 @@ class BootloaderDevice(Bootloader):
 
         if peripheralDevice == peripherals.kPeripheral_USB:
             self._commandArgs.extend(['-u'])
+        elif peripheralDevice == peripherals.kPeripheral_UART:
+            self._commandArgs.extend(['-p', self._port + ',' + self._speed])
         else:
-            if peripheralDevice == peripherals.kPeripheral_UART:
-                self._commandArgs.extend(['-p', self._port + ',' + self._speed])
-            else:
-                self._commandArgs.extend(['-p', self._port + ',' + str(peripheralspeed.kBuspalUartDefaultSpeed)])
-
-        if peripheralDevice == peripherals.kPeripheral_UART:
             pass
-        elif peripheralDevice in [peripherals.kPeripheral_SPI, peripherals.kPeripheral_I2C, peripherals.kPeripheral_CAN]:
-
-            if self.peripheral == peripherals.kPeripheral_SPI:
-                peripheralParams = self.peripheral + ',' + self._speed
-            elif self.peripheral == peripherals.kPeripheral_I2C:
-                kDefaultI2cSlaveAddress = '0x10'
-                peripheralParams = self.peripheral + ',' + kDefaultI2cSlaveAddress + ',' + self._speed
-            elif self.peripheral == peripherals.kPeripheral_CAN:    
-                kDefaultCanSlaveRxTxId = '0x321,0x123'
-                peripheralParams = self.peripheral + ',' + self._speed + ',' + kDefaultCanSlaveRxTxId
-
-            self._commandArgs.extend(['-b', peripheralParams])
-            if not usePing:
-                self._commandArgs.extend(['-n'])
-            pass
-        elif peripheralDevice == peripherals.kPeripheral_USB:
-            pass
-        else:
-            raise ValueError('Invalid peripheral parameter: %s' % peripheralDevice)
 
         # Make the tool executable on OS X. It loses the x bit when Bamboo copies it.
         if sys.platform == 'darwin':
@@ -679,62 +491,23 @@ class BootloaderDevice(Bootloader):
     def __exit__(self, type, value, traceback):
         self.close()
         return False # Don't suppress exceptions
-    
-    def _getConvertedCanSpeedParam(self, useSelfSpeed, speed):
-        if useSelfSpeed == True:
-            if self._speed == '':
-                unconvertedSpeed = peripheralspeed.kCanDefaultSpeed
-            else:
-                unconvertedSpeed = self._speed    
-        else:
-            unconvertedSpeed = speed
-        
-        convertedSpeed = ''
-        if type(unconvertedSpeed) == type(''):
-            if unconvertedSpeed.find('k'):
-                unconvertedSpeed = long(unconvertedSpeed.split('k')[0])
-            elif unconvertedSpeed.find('m'):
-                unconvertedSpeed = long(unconvertedSpeed.split('m')[0])*1000
-            else:
-                unconvertedSpeed = long(unconvertedSpeed)
-        
-        if unconvertedSpeed == 125:
-            convertedSpeed = '0'
-        elif unconvertedSpeed == 250:
-            convertedSpeed = '1'
-        elif unconvertedSpeed == 500:
-            convertedSpeed = '2'
-        elif unconvertedSpeed == 1000:
-            convertedSpeed = '4'
-        else:
-            raise ValueError('Unsupported can speed parameter')
-        
-        return convertedSpeed
-            
 
     def _updatePeripheralSpeed(self):
         peripheral = self.peripheral.split(',')[0]
-        if peripheral == peripherals.kPeripheral_CAN:
-            self._speed = self._getConvertedCanSpeedParam(True, '')
-        else:          
-            if type(self._speed) == type(''):
-                if self._speed == '':
-                    if peripheral == peripherals.kPeripheral_UART:
-                        self._speed = str(peripheralspeed.kUartDefaultSpeed)
-                    elif peripheral == peripherals.kPeripheral_SPI:
-                        self._speed = str(peripheralspeed.kSpiDefaultSpeed)
-                    elif peripheral == peripherals.kPeripheral_I2C:
-                        self._speed = str(peripheralspeed.kI2cDefaultSpeed)
-                    else:
-                        pass
-                elif self._speed.find('k'):
-                    self._speed = self._speed.split('k')[0]
+        if type(self._speed) == type(''):
+            if self._speed == '':
+                if peripheral == peripherals.kPeripheral_UART:
+                    self._speed = str(peripheralspeed.kUartDefaultSpeed)
                 else:
                     pass
-            elif type(self._speed) == type(0):
-                self._speed = str(self._speed)
+            elif self._speed.find('k'):
+                self._speed = self._speed.split('k')[0]
             else:
-                raise ValueError('Invalid peripheral speed parameter: %s' % self._speed)
+                pass
+        elif type(self._speed) == type(0):
+            self._speed = str(self._speed)
+        else:
+            raise ValueError('Invalid peripheral speed parameter: %s' % self._speed)
         
     def _generateCommandArgs(self):
         self._toolName = os.path.abspath(os.path.join(self.vectorsDir, '..', 'blhost'))
@@ -746,18 +519,6 @@ class BootloaderDevice(Bootloader):
             self._commandArgs.extend(['-u'])
         else:
             self._commandArgs.extend(['-p', self._port])
-
-        if peripheralDevice == peripherals.kPeripheral_UART:
-            pass
-        elif peripheralDevice in [peripherals.kPeripheral_SPI, peripherals.kPeripheral_I2C, peripherals.kPeripheral_CAN]:
-            self._commandArgs.extend(['-b', self.peripheral])
-            if not self._usePing:
-                self._commandArgs.extend(['-n'])
-            pass
-        elif peripheralDevice == peripherals.kPeripheral_USB:
-            pass
-        else:
-            raise ValueError('Invalid peripheral parameter: %s' % peripheralDevice)
 
         self._commandArgs.extend(['-j', '--'])
 
@@ -808,72 +569,6 @@ class BootloaderDevice(Bootloader):
             self._commandArgs[portArgIndex] = ','.join(portArgs)
         else:
             raise ValueError('Requires a UART peripheral.')
-
-
-    ##
-    # @brief Set the clock frequency of the spi
-    #
-    def setSpiFrequency(self, frequency):
-        peripheralArgIndex = 0
-        findStatus = False
-
-        for i in range(0, len(self._commandArgs)):
-            # if self._commandArgs[i] is not null and contains bootloader.peripherals.kPeripheral_SPI
-            if self._commandArgs[i] and self._commandArgs[i].find(peripherals.kPeripheral_SPI) > -1:
-                findStatus = True
-                peripheralArgIndex = i
-                break
-
-        if findStatus:
-            speedString = str(frequency)
-            self._commandArgs[peripheralArgIndex] = peripherals.kPeripheral_SPI + ',' + speedString
-
-        else:
-            raise ValueError('Requires a SPI peripheral')
-
-
-    ##
-    # @brief Set the clock frequency and slave address of the i2c
-    #
-    def setI2cParameters(self, frequency, slaveAddress = 0x10):
-        peripheralArgIndex = 0
-        findStatus = False
-
-        for i in range(0, len(self._commandArgs)):
-            # if self._commandArgs[i] is not null and contains peripherals.kPeripheral_I2C
-            if self._commandArgs[i] and self._commandArgs[i].find(peripherals.kPeripheral_I2C) > -1:
-                findStatus = True
-                peripheralArgIndex = i
-                break
-
-
-        if findStatus:
-            speedString = str(frequency)
-            self._commandArgs[peripheralArgIndex] = peripherals.kPeripheral_I2C + ',' + hex(slaveAddress) + ',' + speedString
-
-        else:
-            raise ValueError('Requires a I2C peripheral')
-
-    ##
-    # @brief Set the clock frequency and slave rx/ tx address of the can
-    #
-    def setCanParameters(self, frequency, slaveRxId = 0x321, slaveTxId = 0x123):
-        peripheralArgIndex = 0
-        findStatus = False
-
-        for i in range(0, len(self._commandArgs)):
-            # if self._commandArgs[i] is not null and contains peripherals.kPeripheral_CAN
-            if self._commandArgs[i] and self._commandArgs[i].find(peripherals.kPeripheral_CAN) > -1:
-                findStatus = True
-                peripheralArgIndex = i
-                break
-
-        if findStatus:
-            speedString = self._getConvertedCanSpeedParam(False, frequency)
-            self._commandArgs[peripheralArgIndex] = peripherals.kPeripheral_CAN + ',' + speedString + ',' + hex(slaveRxId) + ',' + hex(slaveTxId)
-
-        else:
-            raise ValueError('Requires a CAN peripheral')
 
     ##
     # @brief Set the timeout value for waiting return value from blhost/blsim

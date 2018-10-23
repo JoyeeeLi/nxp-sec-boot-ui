@@ -31,7 +31,6 @@
 import os
 import elf
 from . import commands, memoryrange, peripherals
-from . import bootsources
 from .. import misc, debugger_utils
 
 ##
@@ -44,9 +43,7 @@ class Target(object):
         self.cpu = cpu
         self.board = board
         self.build = build
-        
-        self.isCore1Present = misc.get_dict_default(kwargs, "isCore1Present", False)
-        
+
         self.baseDir = misc.get_dict_default(kwargs, 'baseDir', '.')
         self.elfFilename = misc.get_dict_default(kwargs, 'elfFilename', None)
         self.binFilename = misc.get_dict_default(kwargs, 'binFilename', None)
@@ -54,49 +51,11 @@ class Target(object):
         self.availableCommands = misc.get_dict_default(kwargs, 'availableCommands', 0)
         self.availablePeripherals = misc.get_dict_default(kwargs, 'availablePeripherals', 0)
         self.supportedPeripheralSpeed_uart = misc.get_dict_default(kwargs, 'supportedPeripheralSpeed_uart', None)
-        self.supportedPeripheralSpeed_i2c = misc.get_dict_default(kwargs, 'supportedPeripheralSpeed_i2c', None)
-        self.supportedPeripheralSpeed_spi = misc.get_dict_default(kwargs, 'supportedPeripheralSpeed_spi', None)
-        self.supportedPeripheralSpeed_can = misc.get_dict_default(kwargs, 'supportedPeripheralSpeed_can', None)
         self.deviceMemoryAccessable = misc.get_dict_default(kwargs, 'deviceMemoryAccessable', False)
         self.systemDeviceId = misc.get_dict_default(kwargs, 'systemDeviceId', 0)
-        self.bootFrom = misc.get_dict_default(kwargs, 'bootFrom', bootsources.kFlashLoader_Flash)
         self.testWorkingDir = misc.get_dict_default(kwargs, 'testWorkingDir', None)
-        self.targetDemoApp = misc.get_dict_default(kwargs, 'targetDemoApp', None)
         self.debuggerType = misc.get_dict_default(kwargs, 'debugger', None)
-        
-        self.kSIM_AddressFor8BitModuleClockGate = misc.get_dict_default(kwargs, 'kSIM_AddressFor8BitModuleClockGate', 0)
-        self.kClockGatePosFor8BitModule = misc.get_dict_default(kwargs, 'kClockGatePosFor8BitModule', 0)
-        self.kAccessAddressFor8BitModuleStart = misc.get_dict_default(kwargs, 'kAccessAddressFor8BitModuleStart', 0)
-        self.kAccessLengthFor8BitModule = misc.get_dict_default(kwargs, 'kAccessLengthFor8BitModule', 0)
-        
-        self.kSIM_AddressFor16BitModuleClockGate = misc.get_dict_default(kwargs, 'kSIM_AddressFor16BitModuleClockGate', 0)
-        self.kClockGatePosFor16BitModule = misc.get_dict_default(kwargs, 'kClockGatePosFor16BitModule', 0)
-        self.kAccessAddressFor16BitModuleStart = misc.get_dict_default(kwargs, 'kAccessAddressFor16BitModuleStart', 0)
-        self.kAccessLengthFor16BitModule = misc.get_dict_default(kwargs, 'kAccessLengthFor16BitModule', 0)
-        
-        self.kSIM_AddressFor32BitModuleClockGate = misc.get_dict_default(kwargs, 'kSIM_AddressFor32BitModuleClockGate', 0)
-        self.kClockGatePosFor32BitModule = misc.get_dict_default(kwargs, 'kClockGatePosFor32BitModule', 0)
-        self.kAccessAddressFor32BitModuleStart = misc.get_dict_default(kwargs, 'kAccessAddressFor32BitModuleStart', 0)
-        self.kAccessLengthFor32BitModule = misc.get_dict_default(kwargs, 'kAccessLengthFor32BitModule', 0)
-        
-        self.isCrcCheckSupported = misc.get_dict_default(kwargs, 'isCrcCheckSupported', False)
-        self.isEncryptionSupported = misc.get_dict_default(kwargs, 'isEncryptionSupported', False)
-        self.encryptionModuleType = misc.get_dict_default(kwargs, 'encryptionModuleType', None)
-        self.mmcauBinFileAppPlatform = misc.get_dict_default(kwargs, 'mmcauBinFileAppPlatform', None)
-        # For system restoration test case
-        self.isSystemRestorationCheckSupported = misc.get_dict_default(kwargs, 'isSystemRestorationCheckSupported', False)
-        self.registerDescription = misc.get_dict_default(kwargs, 'registerDescription', {})
-        self.wdogModuleInfo = misc.get_dict_default(kwargs, 'wdogModuleInfo', 0)
-        self.isWdogMustBeDisabledForExecuteCase = misc.get_dict_default(kwargs, 'isWdogMustBeDisabledForExecuteCase', False)
-
-        self.isSDK20FlashDriver = misc.get_dict_default(kwargs, 'isSDK20FlashDriver', True)
-        self.isHardwareSwapForReliableUpdate = misc.get_dict_default(kwargs, 'isHardwareSwapForReliableUpdate', False)
-        self.defaultBackupAppAddrForReliableUpdate = misc.get_dict_default(kwargs, 'defaultBackupAppAddrForReliableUpdate', 0)
-
         self.isExtendedSBFileSupported = misc.get_dict_default(kwargs, 'isExtendedSBFileSupported', False)
-        self.hasErasableIFR = misc.get_dict_default(kwargs, 'hasErasableIFR', True)
-          
-        self.ledDemoAppVectorAddrForExecuteCase = misc.get_dict_default(kwargs, 'ledDemoAppVectorAddrForExecuteCase', 0)
 
         self._debugger = debugger_utils.createDebugger(self.debuggerType)
         self._debugger.open()

@@ -29,8 +29,4 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 kUartDefaultSpeed = 115200
-kSpiDefaultSpeed  = 400
-kI2cDefaultSpeed  = 400
 kUsbDefaultSpeed  = 12000000
-kCanDefaultSpeed  = 500
-kBuspalUartDefaultSpeed = 57600

@@ -38,33 +38,19 @@ kDefaultPeripheral = 'uart'
 
 PeripheralPraramsDict = {
         'uart' : PeripheralParams('uart', '57600', 'COM36'),
-#        'spi'  : PeripheralParams('spi', '', 'COM113'),
-#        'i2c'  : PeripheralParams('i2c', '', 'COM113'),
-#        'can'  : PeripheralParams('can', '', 'COM115'),
-#        'usb'  : PeripheralParams('usb', '', '')
+        'usb'  : PeripheralParams('usb', '', '')
     }
-
 
 peripheral = os.environ.get('KIBBLE_PERIPHERAL', PeripheralPraramsDict[kDefaultPeripheral].peripheral)
 speed = os.environ.get('KIBBLE_SPEED', PeripheralPraramsDict[kDefaultPeripheral].speed)
 port = os.environ.get('KIBBLE_PORT', PeripheralPraramsDict[kDefaultPeripheral].port)
 usePing = os.environ.get('KIBBLE_USE_PING', 'True').lower() == 'true'
-#bl_clockFlags = os.environ.get('CLOCK_FLAG', 0xFF)
-#bl_clockDivider = os.environ.get("CLOCK_DIV", 0xFF)
-bl_clockFlags = 0xFF
-bl_clockDivider = 0xFF
-
-supportUsb = False
 
 loadTarget = False
 resetTarget = False
 
-treatFlashLoaderAsBootLoader = True
-
 kibble_device = ''
 debugger_if = 'SWD'
-
-SystemCoreClock = 48000000 
 
 ##
 # @brief Define which target to test.

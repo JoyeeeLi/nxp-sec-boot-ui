@@ -32,29 +32,21 @@ from collections import namedtuple
 
 ##
 # @brief Supported bootloader peripherals.
-kPeripheral_Sim  = 'sim'
 kPeripheral_UART = 'uart'
-kPeripheral_I2C  = 'i2c'
-kPeripheral_SPI  = 'spi'
 kPeripheral_USB  = 'usb'
-kPeripheral_CAN  = 'can'
 
 ##
 # @brief Supported SDP peripherals.
 kPeripheral_SDP_UART = 'sdp_uart'
 kPeripheral_SDP_USB = 'sdp_usb'
 
-Peripherals = [kPeripheral_Sim, kPeripheral_UART, kPeripheral_I2C, kPeripheral_SPI, kPeripheral_USB, kPeripheral_CAN]
+Peripherals = [kPeripheral_UART, kPeripheral_USB]
 PeripheralsSDP = [kPeripheral_SDP_UART, kPeripheral_SDP_USB]
 
 PeripheralMask = namedtuple('PeripheralMask', 'name, propertyMask')
 
 PeripheralMasks = {
-    kPeripheral_Sim         : PeripheralMask(kPeripheral_Sim,         0x00),
     kPeripheral_UART        : PeripheralMask(kPeripheral_UART,        0x01),
-    kPeripheral_I2C         : PeripheralMask(kPeripheral_I2C,         0x02),
-    kPeripheral_SPI         : PeripheralMask(kPeripheral_SPI,         0x04),
-    kPeripheral_USB         : PeripheralMask(kPeripheral_USB,         0x10),
-    kPeripheral_CAN         : PeripheralMask(kPeripheral_CAN,         0x20)
+    kPeripheral_USB         : PeripheralMask(kPeripheral_USB,         0x10)
 }
 
