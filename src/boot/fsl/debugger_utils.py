@@ -32,9 +32,9 @@ import sys, os, time
 import serial
 import pexpect
 import subprocess
-import serialpexpect
+#import serialpexpect
 import subprocess
-from pyOCD.board import MbedBoard
+#from pyOCD.board import MbedBoard
 import bltestconfig
 
 ##

@@ -37,7 +37,7 @@ PeripheralParams = namedtuple('PeripheralParams', 'peripheral, speed, port')
 kDefaultPeripheral = 'uart'
 
 PeripheralPraramsDict = {
-        'uart' : PeripheralParams('uart', '115200', 'COM1'),
+        'uart' : PeripheralParams('uart', '57600', 'COM36'),
 #        'spi'  : PeripheralParams('spi', '', 'COM113'),
 #        'i2c'  : PeripheralParams('i2c', '', 'COM113'),
 #        'can'  : PeripheralParams('can', '', 'COM115'),
@@ -73,8 +73,7 @@ SystemCoreClock = 48000000
 # target = 'L4KS', 'fpga', 'iar', 'Release'
 # If manual testing, replace the second parameter of os.environ.get() with the target information
 ##
-#kibble_cpu = os.environ.get("KIBBLE_CPU", "MK65F18") 
-kibble_cpu = os.environ.get("KIBBLE_CPU", "K32W042S1M2")           # e.g. os.environ.get("KIBBLE_CPU", "L4KS")
+kibble_cpu = os.environ.get("KIBBLE_CPU", "MK65F18")
 kibble_board = os.environ.get("KIBBLE_BOARD", "fpga")       # e.g. os.environ.get("KIBBLE_BOARD", "fpga")    
 kibble_compiler = os.environ.get("KIBBLE_COMPILER", "iar")       # e.g. os.environ.get("KIBBLE_COMPILER", "iar")  
 kibble_build = os.environ.get("KIBBLE_BUILD", "Release")    # e.g. os.environ.get("KIBBLE_BUILD", "Release")
