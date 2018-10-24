@@ -400,7 +400,7 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_genSeq.SetSizer( wSizer_genSeq )
 		self.m_panel_genSeq.Layout()
 		wSizer_genSeq.Fit( self.m_panel_genSeq )
-		self.m_notebook_imageSeq.AddPage( self.m_panel_genSeq, u"Image Generation Sequence", True )
+		self.m_notebook_imageSeq.AddPage( self.m_panel_genSeq, u"Image Generation Sequence", False )
 		self.m_panel_bootSeq = wx.Panel( self.m_notebook_imageSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		self.m_panel_bootSeq.SetBackgroundColour( wx.Colour( 160, 160, 160 ) )
 
@@ -550,7 +550,7 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_bootSeq.SetSizer( wSizer_bootSeq )
 		self.m_panel_bootSeq.Layout()
 		wSizer_bootSeq.Fit( self.m_panel_bootSeq )
-		self.m_notebook_imageSeq.AddPage( self.m_panel_bootSeq, u"Image Boot Sequence", False )
+		self.m_notebook_imageSeq.AddPage( self.m_panel_bootSeq, u"Image Boot Sequence", True )
 
 		bSizer_boot.Add( self.m_notebook_imageSeq, 1, wx.EXPAND |wx.ALL, 5 )
 
@@ -619,6 +619,7 @@ class secBootWin ( wx.Frame ):
 		self.Centre( wx.BOTH )
 
 		# Connect Events
+		self.m_button_connect.Bind( wx.EVT_BUTTON, self.callbackConnectToDevice )
 		self.m_choice_secureBootType.Bind( wx.EVT_CHOICE, self.callbackSwitchSecureBootType )
 		self.m_choice_keyStorageRegion.Bind( wx.EVT_CHOICE, self.callbackSwitchKeyStorageRegion )
 
@@ -627,6 +628,9 @@ class secBootWin ( wx.Frame ):
 
 
 	# Virtual event handlers, overide them in your derived class
+	def callbackConnectToDevice( self, event ):
+		event.Skip()
+
 	def callbackSwitchSecureBootType( self, event ):
 		event.Skip()
 

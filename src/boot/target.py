@@ -28,10 +28,10 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import os
-import elf
-from . import commands, memoryrange, peripherals
-from .. import misc, debugger_utils
+import sys, os
+import commands, memoryrange, peripherals
+sys.path.append(os.path.abspath(".."))
+from utils import misc, elf
 
 ##
 # Bootloader target definition.
@@ -51,14 +51,7 @@ class Target(object):
         self.availableCommands = misc.get_dict_default(kwargs, 'availableCommands', 0)
         self.availablePeripherals = misc.get_dict_default(kwargs, 'availablePeripherals', 0)
         self.supportedPeripheralSpeed_uart = misc.get_dict_default(kwargs, 'supportedPeripheralSpeed_uart', None)
-        self.deviceMemoryAccessable = misc.get_dict_default(kwargs, 'deviceMemoryAccessable', False)
-        self.systemDeviceId = misc.get_dict_default(kwargs, 'systemDeviceId', 0)
         self.testWorkingDir = misc.get_dict_default(kwargs, 'testWorkingDir', None)
-        self.debuggerType = misc.get_dict_default(kwargs, 'debugger', None)
-        self.isExtendedSBFileSupported = misc.get_dict_default(kwargs, 'isExtendedSBFileSupported', False)
-
-        self._debugger = debugger_utils.createDebugger(self.debuggerType)
-        self._debugger.open()
         
         self.elfObject = None
         self.reservedRanges = []
@@ -160,45 +153,4 @@ class Target(object):
         # Requested range not contained in any reserved range, so full range is free
         return fullRange
 
-    ##
-    # @brief Reset the target by an external means.
-    #
-    def reset(self):
-        return self._debugger.reset()
-
-    ##
-    # @brief 
-    #
-    def readMemOneItem(self, addr, itemType):
-        return self._debugger.readMemOneItem(addr, itemType)
-
-    ##
-    # @brief 
-    #
-    def writeMemOneItem(self, addr, value, itemType):
-        return self._debugger.writeMemOneItem(addr, value, itemType)
-    
-    ##
-    # @brief 
-    #
-    def getPC(self):
-        return self._debugger.getPC()    
-    
-    ##
-    # @brief Unlock the target by an external means.
-    #
-    def unlock(self):
-        return self._debugger.unlock()
-    
-    ##
-    # @brief Flash bootloader binary.
-    #
-    def flashBinary(self):
-        return self._debugger.flashBinary(self.binFilename)
-    
-    ##
-    # @brief Close the target.
-    #
-    def close(self):
-        return self._debugger.close()
         

@@ -29,25 +29,20 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys, os
-from fsl.bootloader.memoryrange import MemoryRange
-from fsl.debugger_utils import kDebuggerType_JLink
-import bltestconfig
+sys.path.append(os.path.abspath(".."))
+from boot.memoryrange import MemoryRange
 
 cpu = 'MIMXRT1021'
-board = bltestconfig.target[1]
-compiler = bltestconfig.target[2]
-build = bltestconfig.target[3]
+board = 'EVK'
+compiler = 'iar'
+build = 'Release'
 
 availablePeripherals = 0x11
 availableCommands = 0x5EFDF
 supportedPeripheralSpeed_uart = [4800, 9600, 19200, 57600, 115200] # @todo Verify
-deviceMemoryAccessable = True
-systemDeviceId = 0x04500008
-
 elfFilename = os.path.join(os.path.dirname(__file__), compiler, board, 'output', build, board + '.elf')
 binFilename = os.path.join(os.path.dirname(__file__), compiler, board, 'output', build, board + '.bin')
 testWorkingDir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'test', 'working')
-debugger = kDebuggerType_JLink
 
 # memory map
 memoryRange = {

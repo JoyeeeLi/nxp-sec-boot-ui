@@ -1,17 +1,22 @@
 import wx
 import sys, os
-from ui import uicore
+from run import runcore
 
-class secBootMain(uicore.secBootUi):
+class secBootMain(runcore.secBootRun):
 
     def __init__(self, parent):
-        uicore.secBootUi.__init__(self, parent)
+        runcore.secBootRun.__init__(self, parent)
 
     def callbackSwitchSecureBootType( self, event ):
         self.setSecureBootSeqColor()
 
     def callbackSwitchKeyStorageRegion( self, event ):
         self.setKeyStorageRegionColor()
+
+    def callbackConnectToDevice( self, event ):
+        self.refreshTargetSetupObject()
+        self.connectToDevice()
+        status, results = self.sdphost.readRegister(0x401F46F0)
 
 if __name__ == '__main__':
     app = wx.App()

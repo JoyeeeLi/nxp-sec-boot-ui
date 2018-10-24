@@ -33,17 +33,11 @@ import os
 import copy
 import json
 import time
-
-from fsl import filetools
 import peripherals
 import peripheralspeed
 import subprocess
-
-# Allow this import to fail, which it will do on OS X.
-try:
-    from fsl import debugger_utils
-except:
-    pass
+sys.path.append(os.path.abspath(".."))
+from utils import filetools
 
 # Constants for command JSON response dictionary keys.
 kCmdResponse_Command = "command"
@@ -64,11 +58,11 @@ kBlhostError_ReturnedError = -4
 # @param peripheral
 # @param port
 # @param loadTarget
-def createBootloader(target, vectorsDir, peripheral, speed=None, port=None, vid=None, pid=None, loadTarget=False, resetTarget=True, usePing=True):
+def createBootloader(target, vectorsDir, peripheral, speed=None, port=None, vid=None, pid=None, usePing=True):
     if peripheral.split(',')[0] in peripherals.Peripherals:
-        return BootloaderDevice(target, vectorsDir, peripheral, speed, port, vid, pid, loadTarget, resetTarget, usePing)
+        return BootloaderDevice(target, vectorsDir, peripheral, speed, port, vid, pid, usePing)
     elif peripheral.split(',')[0] in peripherals.PeripheralsSDP:
-        return BootloaderDeviceSDP(target, vectorsDir, peripheral, speed, port, vid, pid, resetTarget)
+        return BootloaderDeviceSDP(target, vectorsDir, peripheral, speed, port, vid, pid)
     else:
         raise ValueError("Unrecognized peripheral '{}'".format(peripheral.split(',')[0]))
 
@@ -474,14 +468,12 @@ class Bootloader(object):
 # @brief The bootloader running on a real device.
 class BootloaderDevice(Bootloader):
 
-    def __init__(self, target, vectorsDir, peripheral, speed, port, vid, pid, loadTarget, resetTarget, usePing):
+    def __init__(self, target, vectorsDir, peripheral, speed, port, vid, pid, usePing):
         super(BootloaderDevice, self).__init__(target, vectorsDir)
         self._speed = speed
         self._port = port
         self._vid = vid
         self._pid = pid
-        self._loadTarget = loadTarget
-        self._resetTarget = resetTarget
         self._usePing = usePing
         self._toolName = os.path.abspath(os.path.join(vectorsDir, '..', 'blhost'))
         self._commandArgs.append(self._toolName)
@@ -501,18 +493,6 @@ class BootloaderDevice(Bootloader):
         # Make the tool executable on OS X. It loses the x bit when Bamboo copies it.
         if sys.platform == 'darwin':
             filetools.makeExecutable(self._toolName)
-
-        # Load and start the bootloader firmware.
-        if self._loadTarget:
-            self.target.flashBinary()
-            self.target.reset()
-            time.sleep(3)
-
-        # Reset the target running the bootloader firmware.
-        if self._resetTarget and not self._loadTarget:
-            self.target.reset()
-           # if self.peripheral == peripherals.kPeripheral_USB:
-            time.sleep(3)
 
         self._commandArgs.extend(['-j', '--'])
 
@@ -635,13 +615,12 @@ class BootloaderDevice(Bootloader):
 # @brief The bootloader running on a real device, SDP mode.
 class BootloaderDeviceSDP(Bootloader):
 
-    def __init__(self, target, vectorsDir, peripheral, speed, port, vid, pid, resetTarget):
+    def __init__(self, target, vectorsDir, peripheral, speed, port, vid, pid):
         super(BootloaderDeviceSDP, self).__init__(target, vectorsDir)
         self._speed = speed
         self._port = port
         self._vid = vid
         self._pid = pid
-        self._resetTarget = resetTarget
         self._toolName = os.path.abspath(os.path.join(vectorsDir, '..', 'sdphost'))
         self._commandArgs.append(self._toolName)
         self.peripheral = peripheral
@@ -658,15 +637,7 @@ class BootloaderDeviceSDP(Bootloader):
         if sys.platform == 'darwin':
             filetools.makeExecutable(self._toolName)
 
-        # Reset the target running the bootloader firmware.
-        if self._resetTarget:
-            self.target.reset()
-            time.sleep(3)
-
         self._commandArgs.extend(['-j', '--'])
-
-    def close(self):
-        self.target.close()
 
     def __exit__(self, type, value, traceback):
         self.close()
