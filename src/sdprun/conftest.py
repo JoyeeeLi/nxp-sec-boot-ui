@@ -30,19 +30,14 @@
 
 import sys
 import os
-
-sys.path.append(os.path.abspath("../bin"))
-
-import pytest
+import bltestconfig
+sys.path.append(os.path.abspath("../boot"))
 from fsl.bootloader import bltest
 from fsl.bootloader import target
 
-import bltestconfig
-
 ##
 # @brief
-@pytest.fixture(scope="module")
-def tgt(request):
+def tgt():
     # Build path to target directory and config file.
     cpu = bltestconfig.target[0].lower()
     targetBaseDir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'targets', cpu)
@@ -63,27 +58,11 @@ def tgt(request):
 
     # Execute the target config script.
     execfile(targetConfigFile, globals(), targetConfig)
-    
-    # Create targetRegs dict and merge it into targetConfig dict
-    targetRegsFile = os.path.join(targetBaseDir, 'bltargetregs.py')
-    if os.path.isfile(targetRegsFile):
-        targetRegs = locals().copy()
-        targetRegs['__file__'] = targetRegsFile
-        targetRegs['__name__'] = 'bltargetregs'
-        execfile(targetRegsFile, globals(), targetRegs)
-        
-        targetConfig.update(targetRegs)
 
     # Create the target object.
-    return target.Target(**targetConfig)
+    tgt =  target.Target(**targetConfig)
 
-##
-# @brief
-@pytest.fixture(scope="function")
-def bl(request, tgt):
-    bl = bltest.createBootloader(tgt, bltestconfig.vectorsDir, bltestconfig.peripheral, bltestconfig.speed, bltestconfig.port,
+    bl = bltest.createBootloader(tgt, bltestconfig.vectorsDir, bltestconfig.peripheral, bltestconfig.speed, bltestconfig.port, bltestconfig.vid, bltestconfig.pid,
                                 bltestconfig.loadTarget, bltestconfig.resetTarget, bltestconfig.usePing)
-    def closeBootloader():
-        bl.close()
-    request.addfinalizer(closeBootloader)
     return bl
+

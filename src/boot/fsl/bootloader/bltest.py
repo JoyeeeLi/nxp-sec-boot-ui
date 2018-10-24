@@ -64,11 +64,11 @@ kBlhostError_ReturnedError = -4
 # @param peripheral
 # @param port
 # @param loadTarget
-def createBootloader(target, vectorsDir, peripheral, speed=None, port=None, loadTarget=False, resetTarget=True, usePing=True):
+def createBootloader(target, vectorsDir, peripheral, speed=None, port=None, vid=None, pid=None, loadTarget=False, resetTarget=True, usePing=True):
     if peripheral.split(',')[0] in peripherals.Peripherals:
-        return BootloaderDevice(target, vectorsDir, peripheral, speed, port, loadTarget, resetTarget, usePing)
+        return BootloaderDevice(target, vectorsDir, peripheral, speed, port, vid, pid, loadTarget, resetTarget, usePing)
     elif peripheral.split(',')[0] in peripherals.PeripheralsSDP:
-        return BootloaderDeviceSDP(target, vectorsDir, peripheral, speed, port, resetTarget)
+        return BootloaderDeviceSDP(target, vectorsDir, peripheral, speed, port, vid, pid, resetTarget)
     else:
         raise ValueError("Unrecognized peripheral '{}'".format(peripheral.split(',')[0]))
 
@@ -474,10 +474,12 @@ class Bootloader(object):
 # @brief The bootloader running on a real device.
 class BootloaderDevice(Bootloader):
 
-    def __init__(self, target, vectorsDir, peripheral, speed, port, loadTarget, resetTarget, usePing):
+    def __init__(self, target, vectorsDir, peripheral, speed, port, vid, pid, loadTarget, resetTarget, usePing):
         super(BootloaderDevice, self).__init__(target, vectorsDir)
         self._speed = speed
         self._port = port
+        self._vid = vid
+        self._pid = pid
         self._loadTarget = loadTarget
         self._resetTarget = resetTarget
         self._usePing = usePing
@@ -490,7 +492,7 @@ class BootloaderDevice(Bootloader):
         self._updatePeripheralSpeed()
 
         if peripheralDevice == peripherals.kPeripheral_USB:
-            self._commandArgs.extend(['-u'])
+            self._commandArgs.extend(['-u', self._vid + ',' + self._pid])
         elif peripheralDevice == peripherals.kPeripheral_UART:
             self._commandArgs.extend(['-p', self._port + ',' + self._speed])
         else:
@@ -633,10 +635,12 @@ class BootloaderDevice(Bootloader):
 # @brief The bootloader running on a real device, SDP mode.
 class BootloaderDeviceSDP(Bootloader):
 
-    def __init__(self, target, vectorsDir, peripheral, speed, port, resetTarget):
+    def __init__(self, target, vectorsDir, peripheral, speed, port, vid, pid, resetTarget):
         super(BootloaderDeviceSDP, self).__init__(target, vectorsDir)
         self._speed = speed
         self._port = port
+        self._vid = vid
+        self._pid = pid
         self._resetTarget = resetTarget
         self._toolName = os.path.abspath(os.path.join(vectorsDir, '..', 'sdphost'))
         self._commandArgs.append(self._toolName)
@@ -646,7 +650,7 @@ class BootloaderDeviceSDP(Bootloader):
         self._updatePeripheralSpeed()
 
         if peripheralDevice == peripherals.kPeripheral_SDP_USB:
-            self._commandArgs.extend(['-u'])
+            self._commandArgs.extend(['-u', self._vid + ',' + self._pid])
         else:
             self._commandArgs.extend(['-p', self._port + ',' + self._speed])
 
@@ -682,13 +686,30 @@ class BootloaderDeviceSDP(Bootloader):
         else:
             raise ValueError('Invalid peripheral speed parameter: %s' % self._speed)
 
+    def setVidPid(self, vid, pid):
+        findStatus = False
+        for i in range(0, len(self._commandArgs)):
+            if self._commandArgs[i] and self._commandArgs[i].find('-u') > -1:
+                findStatus = True
+                peripheralArgIndex = i
+                break
+
+        if findStatus:
+            peripheralString = '-u ' + str(vid) + ',' + str(pid)
+            self._commandArgs[peripheralArgIndex] = peripheralString
+
+        else:
+            raise ValueError('Requires a USB peripheral')
+
     ## @name SDP commands
     ## @{
 
     ##
     # @brief SDP read-register command
-    def readRegister(self, address, format, numBytes, filePath):
-        return self._executeCommand('read-register', address, format, numBytes, filePath)
+    def readRegister(self, address, format=32, numBytes=1, filename='readRegister.dat'):
+        fullFileName = os.path.join(self.vectorsDir, filename)
+
+        return self._executeCommand('read-register', address, format, numBytes, fullFileName)
 
     ##
     # @brief SDP write-register command

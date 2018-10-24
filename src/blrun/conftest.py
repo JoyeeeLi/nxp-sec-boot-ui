@@ -40,10 +40,7 @@ from fsl.bootloader import target
 def tgt():
     # Build path to target directory and config file.
     cpu = bltestconfig.target[0].lower()
-    if cpu == 'sim':
-        targetBaseDir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'validation', 'blsim')
-    else:
-        targetBaseDir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'targets', cpu)
+    targetBaseDir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'targets', cpu)
     targetConfigFile = os.path.join(targetBaseDir, 'bltargetconfig.py')
 
     # Check for existing target directory.
@@ -62,20 +59,10 @@ def tgt():
     # Execute the target config script.
     execfile(targetConfigFile, globals(), targetConfig)
 
-    # Create targetRegs dict and merge it into targetConfig dict
-    targetRegsFile = os.path.join(targetBaseDir, 'bltargetregs.py')
-    if os.path.isfile(targetRegsFile):
-        targetRegs = locals().copy()
-        targetRegs['__file__'] = targetRegsFile
-        targetRegs['__name__'] = 'bltargetregs'
-        execfile(targetRegsFile, globals(), targetRegs)
-
-        targetConfig.update(targetRegs)
-
     # Create the target object.
     tgt =  target.Target(**targetConfig)
 
-    bl = bltest.createBootloader(tgt, bltestconfig.vectorsDir, bltestconfig.peripheral, bltestconfig.speed, bltestconfig.port,
+    bl = bltest.createBootloader(tgt, bltestconfig.vectorsDir, bltestconfig.peripheral, bltestconfig.speed, bltestconfig.port, bltestconfig.vid, bltestconfig.pid,
                                 bltestconfig.loadTarget, bltestconfig.resetTarget, bltestconfig.usePing)
     return bl
 

@@ -32,64 +32,20 @@ import sys
 import os
 import stat
 import time
-import shared_utils
-import common_util
-
-sys.path.append(os.path.abspath("../bin"))
+import conftest
+sys.path.append(os.path.abspath("../boot"))
 from fsl import bootloader
 from fsl.bootloader.memoryrange import MemoryRange
-from fsl.bootloader import bootsources
 from fsl.bootloader import properties
-import pytest
-
-TEMP_FILE_INDEX = 0
-kReadFileName   = 'sdp_read-register_rfile'
 
 ##
 # @brief Test the SDP read-register command.
 class TestReadRegister:
-    @pytest.fixture(autouse=True)
-    def setup(self, bl, request):
-        bl.target.reset()
-        shared_utils.timeSleepManager(bl, 'customized')
+    def test_readRegister(self, bl):
+        status, results = bl.readRegister(0x401F46F0)
 
-    @pytest.mark.parametrize(("format", "requestedBytes"), [
-            ## Test Cases for RAM:    
-                ## 1. Read 8-bit RAM location for various number of bytes
-                (8,    1),
-                (8,    2),
-                (8,    3),
-                (8,    4),
-                (8,    5),
-                (8,    64),
-                (8,    65),
-                ## 1. Read 16-bit RAM location for various number of bytes
-                (16,    1),
-                (16,    2),
-                (16,    3),
-                (16,    4),
-                (16,    5),
-                (16,    64),
-                (16,    65),
-                ## 1. Read 32-bit RAM location for various number of bytes
-                (32,    1),
-                (32,    2),
-                (32,    3),
-                (32,    4),
-                (32,    5),
-                (32,    64),
-                (32,    65),
-                ])  
-    def test_read_ram_xFormat_xNumbytes(self, bl, format, requestedBytes):
-        global TEMP_FILE_INDEX                       
-        readFilePath = os.path.abspath(os.path.join(bl.vectorsDir, kReadFileName+str(TEMP_FILE_INDEX)+'.dat'))
-        # Create independent temp file for every test to reduce file-handling issue.
-        TEMP_FILE_INDEX += 1
-        
-        memoryRange = bl.target.memoryRange['ram']
-        address = memoryRange.start     
-        status, results = bl.readRegister(address, format, requestedBytes, readFilePath)
-        assert status == bootloader.status.kSDP_Status_HabEnabled or status == bootloader.status.kSDP_Status_HabDisabled
-        # Just check the number of bytes returned, not the values.
-        assert os.path.getsize(readFilePath) == requestedBytes
+if __name__ == '__main__':
+    myAllCommands = TestReadRegister()
+    tgt = conftest.tgt()
+    myAllCommands.test_readRegister(tgt)
 

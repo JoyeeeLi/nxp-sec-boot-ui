@@ -32,21 +32,21 @@ import sys
 import os
 from collections import namedtuple
 
-PeripheralParams = namedtuple('PeripheralParams', 'peripheral, speed, port')
+PeripheralParams = namedtuple('PeripheralParams', 'peripheral, speed, port, vid, pid')
 
-kDefaultPeripheral = 'sdp_uart'
+kDefaultPeripheral = 'sdp_usb'
 
 PeripheralPraramsDict = {
-        'sdp_uart' : PeripheralParams('sdp_uart', '115200', 'COM40'),
-        'sdp_usb'  : PeripheralParams('sdp_usb', '', '')
+        'sdp_uart' : PeripheralParams('sdp_uart', '57600', 'COM36', '',       ''),
+        'sdp_usb'  : PeripheralParams('sdp_usb',  '',      '',      '0x1fc9', '0x0130')
     }
 
 peripheral = os.environ.get('KIBBLE_PERIPHERAL', PeripheralPraramsDict[kDefaultPeripheral].peripheral)
 speed = os.environ.get('KIBBLE_SPEED', PeripheralPraramsDict[kDefaultPeripheral].speed)
 port = os.environ.get('KIBBLE_PORT', PeripheralPraramsDict[kDefaultPeripheral].port)
+vid = os.environ.get('KIBBLE_VID', PeripheralPraramsDict[kDefaultPeripheral].vid)
+pid = os.environ.get('KIBBLE_PID', PeripheralPraramsDict[kDefaultPeripheral].pid)
 usePing = 'false'
-
-supportUsb = False
 
 loadTarget = False
 resetTarget = True
@@ -61,8 +61,8 @@ debugger_if = 'SWD'
 # target = 'L4KS', 'fpga', 'iar', 'Release'
 # If manual testing, replace the second parameter of os.environ.get() with the target information
 ##
-kibble_cpu = os.environ.get("KIBBLE_CPU", "K32H844P_ROM")           # e.g. os.environ.get("KIBBLE_CPU", "L4KS")
-kibble_board = os.environ.get("KIBBLE_BOARD", "none")               # e.g. os.environ.get("KIBBLE_BOARD", "fpga")    
+kibble_cpu = os.environ.get("KIBBLE_CPU", "MIMXRT1021")           # e.g. os.environ.get("KIBBLE_CPU", "L4KS")
+kibble_board = os.environ.get("KIBBLE_BOARD", "EVK")               # e.g. os.environ.get("KIBBLE_BOARD", "fpga")
 kibble_compiler = os.environ.get("KIBBLE_COMPILER", "none")         # e.g. os.environ.get("KIBBLE_COMPILER", "iar")  
 kibble_build = os.environ.get("KIBBLE_BUILD", "none")               # e.g. os.environ.get("KIBBLE_BUILD", "Release")
 

@@ -32,18 +32,20 @@ import sys
 import os
 from collections import namedtuple
 
-PeripheralParams = namedtuple('PeripheralParams', 'peripheral, speed, port')
+PeripheralParams = namedtuple('PeripheralParams', 'peripheral, speed, port, vid, pid')
 
 kDefaultPeripheral = 'uart'
 
 PeripheralPraramsDict = {
-        'uart' : PeripheralParams('uart', '57600', 'COM36'),
-        'usb'  : PeripheralParams('usb', '', '')
+        'uart' : PeripheralParams('uart', '57600', 'COM36', '',       ''),
+        'usb'  : PeripheralParams('usb',  '',      '',      '0x15a2', '0x0073')
     }
 
 peripheral = os.environ.get('KIBBLE_PERIPHERAL', PeripheralPraramsDict[kDefaultPeripheral].peripheral)
 speed = os.environ.get('KIBBLE_SPEED', PeripheralPraramsDict[kDefaultPeripheral].speed)
 port = os.environ.get('KIBBLE_PORT', PeripheralPraramsDict[kDefaultPeripheral].port)
+vid = os.environ.get('KIBBLE_VID', PeripheralPraramsDict[kDefaultPeripheral].vid)
+pid = os.environ.get('KIBBLE_PID', PeripheralPraramsDict[kDefaultPeripheral].pid)
 usePing = os.environ.get('KIBBLE_USE_PING', 'True').lower() == 'true'
 
 loadTarget = False
@@ -63,8 +65,6 @@ kibble_cpu = os.environ.get("KIBBLE_CPU", "MIMXRT1021")
 kibble_board = os.environ.get("KIBBLE_BOARD", "EVK")       # e.g. os.environ.get("KIBBLE_BOARD", "fpga")
 kibble_compiler = os.environ.get("KIBBLE_COMPILER", "iar")       # e.g. os.environ.get("KIBBLE_COMPILER", "iar")  
 kibble_build = os.environ.get("KIBBLE_BUILD", "Release")    # e.g. os.environ.get("KIBBLE_BUILD", "Release")
-
-#kibble_device = os.environ.get("KIBBLE_DEVICE", "MKV58F1M0xxx22") 
 
 target = kibble_cpu, kibble_board, kibble_compiler, kibble_build
 
