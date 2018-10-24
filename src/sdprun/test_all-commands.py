@@ -39,13 +39,14 @@ from fsl.bootloader.memoryrange import MemoryRange
 from fsl.bootloader import properties
 
 ##
-# @brief Test the SDP read-register command.
-class TestReadRegister:
+# @brief Test the SDP all commands.
+class TestAllCommands(object):
+
     def test_readRegister(self, bl):
         status, results = bl.readRegister(0x401F46F0)
 
 if __name__ == '__main__':
-    myAllCommands = TestReadRegister()
+    myAllCommands = TestAllCommands()
     tgt = conftest.tgt()
     myAllCommands.test_readRegister(tgt)
 
