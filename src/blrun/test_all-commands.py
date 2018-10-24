@@ -37,29 +37,31 @@ from fsl import bootloader
 from fsl.bootloader import properties
 
 ##
-# @brief Test the bootloader get property command.
-class TestGetProperty(object):
+# @brief Test the bootloader all commands.
+class TestAllCommands(object):
 
-    def test_version(self, bl):
+    def test_getProperty(self, bl):
         status, results = bl.getProperty(bootloader.properties.kPropertyTag_CurrentVersion)
-        if status == bootloader.status.kStatus_Success:
-            print 'CMD Status Success'
-        # Test for version 1.0.0 or version 1.1.0 or version 1.2.0
-        if (results[0] == properties.kBootloaderVersion_1_0_0) or \
-            (results[0] == properties.kBootloaderVersion_1_1_0) or \
-            (results[0] == properties.kBootloaderVersion_1_1_1) or \
-            (results[0] == properties.kBootloaderVersion_1_2_0) or \
-            (results[0] == properties.kBootloaderVersion_1_3_0) or \
-            (results[0] == properties.kBootloaderVersion_1_4_0) or \
-            (results[0] == properties.kBootloaderVersion_1_4_1) or \
-            (results[0] == properties.kBootloaderVersion_1_5_0) or \
-            (results[0] == properties.kBootloaderVersion_1_5_1) or \
-            (results[0] == properties.kBootloaderVersion_2_0_0) or \
-            (results[0] == properties.kBootloaderVersion_2_1_0):
-            print 'CMD Result Success'
+
+    def test_fillMemory(self, bl):
+        status, results = bl.fillMemory(0x2000, 0x4, 0x12345678)
+
+    def test_readMemory(self, bl):
+        status, results = bl.readMemory(0x2000, 0x4)
+
+    def test_efuseReadOnce(self, bl):
+        status, results = bl.efuseReadOnce(0x2F)
+
+    def test_listMemory(self, bl):
+        status, results = bl.listMemory()
+
 
 if __name__ == '__main__':
-    myGetProperty = TestGetProperty()
+    myAllCommands = TestAllCommands()
     tgt = conftest.tgt()
-    myGetProperty.test_version(tgt)
+    myAllCommands.test_getProperty(tgt)
+    myAllCommands.test_fillMemory(tgt)
+    myAllCommands.test_readMemory(tgt)
+    myAllCommands.test_efuseReadOnce(tgt)
+    myAllCommands.test_listMemory(tgt)
 

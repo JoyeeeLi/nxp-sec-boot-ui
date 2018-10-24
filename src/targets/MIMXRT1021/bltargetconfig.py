@@ -30,74 +30,24 @@
 
 import sys, os
 from fsl.bootloader.memoryrange import MemoryRange
-#from fsl.debugger_utils import kDebuggerType_JLink
-from fsl.debugger_utils import kDebuggerType_Mbed
-from fsl.bootloader import bootsources
-from fsl.bootloader import encryptiontypes
+from fsl.debugger_utils import kDebuggerType_JLink
 import bltestconfig
-
-# board = fpga, rom
-# build = Debug, Release
-# file  = bootloader.elf 
 
 cpu = 'MIMXRT1021'
 board = bltestconfig.target[1]
 compiler = bltestconfig.target[2]
 build = bltestconfig.target[3]
 
-availablePeripherals = 0x11 #0x02
-availableCommands = 0x5EFDF #0x07
-maximumPacketSize = 512
+availablePeripherals = 0x11
+availableCommands = 0x5EFDF
 supportedPeripheralSpeed_uart = [4800, 9600, 19200, 57600, 115200] # @todo Verify
-supportedPeripheralSpeed_i2c = [5, 50, 100, 400]                           # @todo Verify
-supportedPeripheralSpeed_spi = [5, 10, 20, 50, 100, 200, 500]  # @todo Verify
-systemDeviceId = 0x04500008                   # !!!prepare to delete
-
 deviceMemoryAccessable = True
+systemDeviceId = 0x04500008
 
-# new
-kAccessLengthFor8BitModule = 1
-kAccessLengthFor16BitModule = 2
-kAccessLengthFor32BitModule = 8
-
-# read/write register
-# width8BitsAddress = 0x400B4002     # EWM Compare Low Register (CMPL)
-# width16BitsAddress = 0x403B4000    # AOI BFCRT010
-# width32BitsAddress = 0x401B8000    # GPIO data registe (DR)
-
-# read/write/fill memory
-interalRAMidName = ['itcm', 'dtcm', 'ram']
-interalFlashidName = []
-# externalMemoryName = ['SerialNORorEEPROM']
-
-## eeprom
-# SerialNORorEEPROM = [0x110, 0xc0100530]   # SPI1, PCS0, NOR Flash, 256B Page, 64KB Sector, 16MB Device
-# new
-
-#bootFrom = bootsources.bootSourcesDict['Freedom_Bootloader'] #kBootLoader = 0x04 
-bootloaderType = 0x02 # bootsources.kBootRAM_ExecuteRAM
-
-isCrcCheckSupported = False
-isSystemRestorationCheckSupported = False
-isEncryptionSupported = True
-isCore1Present = False
-encryptionModuleType = encryptiontypes.kEncryptionType_mmCAU
-mmcauBinFileAppPlatform = encryptiontypes.kMmcauBinFileAppPlatformType_cm0p
-
-
-ledDemoFileName = 'led_demo_MIMXRT1021_evk_ram.bin'
-ledDemoStartAddress = 0x0000a000
-ledDemoApplicationBinary = 0x20208400   # not use
-flashloaderFileName = 'ivt_flashloader_MIMXRT1021_ocram.bin'
-flashloaderStartAddress = 0x20208000
-flashloaderIvtOffset = 0x20208400   # RAM resident bootloader entry address
-isWdogMustBeDisabledForExecuteCase = True
-
-# elfFilename = os.path.join(os.path.dirname(__file__), compiler, board, 'output', build, 'rom_bootloader.elf')
-# workingDir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'test', 'working')
-# targetResetApp = os.path.join(workingDir, 'reset' + '_' + cpu.lower() + '_' + board.lower() + '.out')
-#debugger = kDebuggerType_JLink
-debugger = kDebuggerType_Mbed
+elfFilename = os.path.join(os.path.dirname(__file__), compiler, board, 'output', build, board + '.elf')
+binFilename = os.path.join(os.path.dirname(__file__), compiler, board, 'output', build, board + '.bin')
+testWorkingDir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'test', 'working')
+debugger = kDebuggerType_JLink
 
 # memory map
 memoryRange = {
