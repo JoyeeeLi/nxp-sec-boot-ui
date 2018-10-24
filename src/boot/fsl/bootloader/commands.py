@@ -44,15 +44,16 @@ kCommandTag_Call                  = 0x0a
 kCommandTag_Reset                 = 0x0b
 kCommandTag_SetProperty           = 0x0c
 kCommandTag_FlashEraseAllUnsecure = 0x0d
-
 kCommandTag_FlashProgramOnce      = 0x0e,
 kCommandTag_FlashReadOnce         = 0x0f,
 kCommandTag_FlashReadResource     = 0x10,
-kCommandTag_ConfigureQuadSpi      = 0x11,
-kCommandTag_ReliableUpdate        = 0x12
+kCommandTag_ConfigureMemory       = 0x11,
+kCommandTag_ReliableUpdate        = 0x12,
+kCommandTag_GenerateKeyBlob       = 0x13,
+kCommandTag_KeyProvisoning        = 0x15,
 
 Command = namedtuple('Command', 'tag, propertyMask, name')
-    
+
 Commands = {
     kCommandTag_FlashEraseAll         : Command(kCommandTag_FlashEraseAll,         0x00000001, 'flash-erase-all'),
     kCommandTag_FlashEraseRegion      : Command(kCommandTag_FlashEraseRegion,      0x00000002, 'flash-erase-region'),
@@ -70,7 +71,9 @@ Commands = {
     kCommandTag_FlashProgramOnce      : Command(kCommandTag_FlashProgramOnce,      0x00002000, 'flash-program-once'),
     kCommandTag_FlashReadOnce         : Command(kCommandTag_FlashReadOnce,         0x00004000, 'flash-read-once'),
     kCommandTag_FlashReadResource     : Command(kCommandTag_FlashReadResource,     0x00008000, 'flash-read-resource'),
-    kCommandTag_ConfigureQuadSpi      : Command(kCommandTag_ConfigureQuadSpi,      0x00010000, 'configure-quadspi'),
-    kCommandTag_ReliableUpdate        : Command(kCommandTag_ReliableUpdate,        0x00020000, 'reliable-update')    
+    kCommandTag_ConfigureMemory       : Command(kCommandTag_ConfigureMemory,       0x00010000, 'configure-memory'),
+    kCommandTag_ReliableUpdate        : Command(kCommandTag_ReliableUpdate,        0x00100000, 'reliable-update'),
+    kCommandTag_GenerateKeyBlob       : Command(kCommandTag_GenerateKeyBlob,       0x00200000, 'generate-key-blob'),
+    kCommandTag_KeyProvisoning        : Command(kCommandTag_KeyProvisoning,        0x00400000, 'key-provisioning'),
 }
 

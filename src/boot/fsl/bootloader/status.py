@@ -43,6 +43,7 @@ kStatusGroup_SBLoader = 101
 kStatusGroup_MemoryInterface = 102
 kStatusGroup_PropertyStore = 103
 kStatusGroup_AppCrcCheck = 104
+kStatusGroup_Packetizer = 105
 kStatusGroup_ReliableUpdate = 106
 
 # Generic status codes.
@@ -51,6 +52,8 @@ kStatus_Fail                        = mkstatus(kStatusGroup_Generic, 1)
 kStatus_ReadOnly                    = mkstatus(kStatusGroup_Generic, 2)
 kStatus_OutOfRange                  = mkstatus(kStatusGroup_Generic, 3)
 kStatus_InvalidArgument             = mkstatus(kStatusGroup_Generic, 4)
+kStatus_Timeout                     = mkstatus(kStatusGroup_Generic, 5),
+kStatus_NoTransferInProgress        = mkstatus(kStatusGroup_Generic, 6)
 
 # Flash driver errors.
 kStatus_FlashSizeError              = mkstatus(kStatusGroup_FlashDriver, 0)
@@ -112,6 +115,10 @@ kStatusMemoryReadFailed             = mkstatus(kStatusGroup_MemoryInterface, 1)
 kStatusMemoryWriteFailed            = mkstatus(kStatusGroup_MemoryInterface, 2)
 kStatusMemoryCumulativeWrite        = mkstatus(kStatusGroup_MemoryInterface, 3)
 kStatusMemoryAppOverlapWithExecuteOnlyRegion    = mkstatus(kStatusGroup_MemoryInterface, 4)
+kStatusMemoryNotConfigured          = mkstatus(kStatusGroup_MemoryInterface, 5)   # 0x27dd
+kStatusMemoryAlignmentError         = mkstatus(kStatusGroup_MemoryInterface, 6)
+kStatusMemoryVerifyFailed           = mkstatus(kStatusGroup_MemoryInterface, 7)
+kStatusMemoryWriteProtected         = mkstatus(kStatusGroup_MemoryInterface, 8)
 
 # Property store errors.
 kStatus_UnknownProperty             = mkstatus(kStatusGroup_PropertyStore, 0)
@@ -133,6 +140,9 @@ kStatus_QspiFlashCommandFailure     = mkstatus(kStatusGroup_QuadSPIDriver, 3)
 kStatus_QspiFlashUnknownProperty    = mkstatus(kStatusGroup_QuadSPIDriver, 4)
 kStatus_QspiNotConfigured           = mkstatus(kStatusGroup_QuadSPIDriver, 5)
 kStatus_QspiCommandNotSupported     = mkstatus(kStatusGroup_QuadSPIDriver, 6)
+
+# Packetizer status errors.
+kStatus_PacketizerStatusNoOutput    = mkstatus(kStatusGroup_Packetizer, 0)   # The name of this attribute has not been verified
 
 # Reliable update errors.
 kStatus_ReliableUpdateSuccess                     = mkstatus(kStatusGroup_ReliableUpdate, 0)

@@ -226,10 +226,10 @@ class Bootloader(object):
         maxLength = self.target.memoryRange['ram'].length;
         if self.target.memoryRange.has_key('flash'):
             maxLength = max(maxLength, self.target.memoryRange['flash'].length)
-        if self.target.memoryRange.has_key('spiFlash'):  
+        if self.target.memoryRange.has_key('spiFlash'):
             maxLength = max(maxLength, self.target.memoryRange['spiFlash'].length)
         fileLength = min(fileLength, maxLength)
-        
+
         timeout = 10
         compensateSeconds = 20   # this value is used for compensating deviation
         if 'receive-sb-file' in args:
@@ -253,9 +253,9 @@ class Bootloader(object):
             timeout = 0.1 * self.eraseLength / self.target.memoryRange["flash"].flashSectorSize + compensateSeconds
         else:  # for other commands, 10 seconds timeout is enough
             timeout = 10 # default timeout value : 10 seconds
-         
+
         self.fileLength = 0
-        self.eraseLength = 0   
+        self.eraseLength = 0
 
         self.timeout = long(timeout)
 
@@ -308,9 +308,9 @@ class Bootloader(object):
 
     ##
     # @brief flash-erase-all command
-    def flashEraseAll(self):
+    def flashEraseAll(self, memoryid=0):
         self.eraseLength = self.target.memoryRange["flash"].length
-        return self._executeCommand('flash-erase-all')
+        return self._executeCommand('flash-erase-all', memoryid)
 
     ##
     # @brief flash-erase-all-unsecure command
@@ -320,9 +320,9 @@ class Bootloader(object):
 
     ##
     # flash-erase-region command
-    def flashEraseRegion(self, address, length):
+    def flashEraseRegion(self, address, length, memoryid=0):
         self.eraseLength = length + 65536 # it is a approximate value but it is enough for calculation
-        return self._executeCommand('flash-erase-region', address, length)
+        return self._executeCommand('flash-erase-region', address, length, memoryid)
 
     ##
     # @brief read-memory command
@@ -330,11 +330,11 @@ class Bootloader(object):
     # response = [ bytes-read ]
     #
     # @todo Default filename to a (new?) temp file rather than reusing the same file.
-    def readMemory(self, address, length, filename='readMemory.dat'):
+    def readMemory(self, address, length, filename='readMemory.dat', memoryid=0):
         fullFileName = os.path.join(self.vectorsDir, filename)
 
         self.fileLength = length
-        status = self._executeCommand('read-memory', address, length, fullFileName)
+        status = self._executeCommand('read-memory', address, length, fullFileName, memoryid)
 
         if status == 0:
             return status, open(fullFileName)
@@ -351,7 +351,7 @@ class Bootloader(object):
     #                 the filename parameter will be used as string data to be written to
     #                 the memory beginning at the address parameter.
     # @returns Status of the
-    def writeMemory(self, address, filename):
+    def writeMemory(self, address, filename, memoryid=0):
         createdTempFile = False
         fullFileName = os.path.join(self.vectorsDir, filename)
 
@@ -362,7 +362,7 @@ class Bootloader(object):
 
             createdTempFile = True
         self.fileLength = os.path.getsize(fullFileName)
-        status, results = self._executeCommand('write-memory', address, fullFileName)
+        status, results = self._executeCommand('write-memory', address, fullFileName, memoryid)
 
         if createdTempFile:
             os.remove(fullFileName)
@@ -378,12 +378,12 @@ class Bootloader(object):
         self.fileLength = length
         self.eraseLength = 0
         return self._executeCommand('fill-memory', address, length, pattern, unit)
-    
+
     ##
-    # @brief configure-quadspi command
-    def configureQuadSpi(self, index, address):
-        return self._executeCommand('configure-quadspi', index, address)
-    
+    # @brief configure-memory command
+    def configureMemory(self, memoryid, address):
+        return self._executeCommand('configure-memory', memoryid, address)
+
 
     ##
     # @brief flash-security-disable command
@@ -392,8 +392,8 @@ class Bootloader(object):
 
     ##
     # @brief get-property command
-    def getProperty(self, tag, externalMemoryId=0):
-        return self._executeCommand('get-property', tag, externalMemoryId)
+    def getProperty(self, tag, memoryid=0):
+        return self._executeCommand('get-property', tag, memoryid)
 
     ##
     # @brief receive-sb-file command
@@ -427,16 +427,46 @@ class Bootloader(object):
     # @brief flash-program-once command
     def flashProgramOnce(self, index, byte_count, data):
         return self._executeCommand('flash-program-once', index, byte_count, data)
-    
+
     ##
     # @brief flash-read-once command
     def flashReadOnce(self, index, byte_count):
         return self._executeCommand('flash-read-once', index, byte_count)
-    
+
     ##
     # @brief reliable-update command
     def reliableUpdate(self, address):
-        return self._executeCommand('reliable-update', address)    
+        return self._executeCommand('reliable-update', address)
+
+    ##
+    # @brief generate-key-blob command
+    def generateKeyBlob(self, dekfilename, blobfilename):
+        return self._executeCommand('generate-key-blob', dekfilename, blobfilename)
+
+    ##
+    # @brief key-provisioning command
+    def keyProvisioning(self, operation, *args):
+        return self._executeCommand('key-provisioning', operation)
+
+    ##
+    # @brief flash-image command
+    def flashImage(self, filename, erase=1, memoryid=0):
+        return self._executeCommand('flash-image', filename, erase, memoryid)
+
+    ##
+    # @brief list-memory command
+    def listMemory(self):
+        return self._executeCommand('list-memory')
+
+    ##
+    # @brief efuse-program-once command
+    def efuseProgramOnce(self, address, data, lock=0):
+        return self._executeCommand('efuse-program-once', address, data, lock)
+
+    ##
+    # @brief efuse-read-once command
+    def efuseReadOnce(self, address):
+        return self._executeCommand('efuse-read-once', address)
 
     ## @}
 
@@ -447,7 +477,7 @@ class BootloaderDevice(Bootloader):
     def __init__(self, target, vectorsDir, peripheral, speed, port, loadTarget, resetTarget, usePing):
         super(BootloaderDevice, self).__init__(target, vectorsDir)
         self._speed = speed
-        self._port = port     
+        self._port = port
         self._loadTarget = loadTarget
         self._resetTarget = resetTarget
         self._usePing = usePing
@@ -456,7 +486,7 @@ class BootloaderDevice(Bootloader):
 
         self.peripheral = peripheral
         peripheralDevice = peripheral.split(',')[0]
-        
+
         self._updatePeripheralSpeed()
 
         if peripheralDevice == peripherals.kPeripheral_USB:
@@ -508,7 +538,7 @@ class BootloaderDevice(Bootloader):
             self._speed = str(self._speed)
         else:
             raise ValueError('Invalid peripheral speed parameter: %s' % self._speed)
-        
+
     def _generateCommandArgs(self):
         self._toolName = os.path.abspath(os.path.join(self.vectorsDir, '..', 'blhost'))
         self._commandArgs = []
@@ -598,15 +628,15 @@ class BootloaderDevice(Bootloader):
         returnBytes = open(os.path.join(self.vectorsDir, 'readMemory.dat'), 'rb').read()
 
         return returnBytes
-        
+
 ##
 # @brief The bootloader running on a real device, SDP mode.
 class BootloaderDeviceSDP(Bootloader):
 
     def __init__(self, target, vectorsDir, peripheral, speed, port, resetTarget):
         super(BootloaderDeviceSDP, self).__init__(target, vectorsDir)
-        self._speed = speed     
-        self._port = port     
+        self._speed = speed
+        self._port = port
         self._resetTarget = resetTarget
         self._toolName = os.path.abspath(os.path.join(vectorsDir, '..', 'sdphost'))
         self._commandArgs.append(self._toolName)
@@ -619,7 +649,7 @@ class BootloaderDeviceSDP(Bootloader):
             self._commandArgs.extend(['-u'])
         else:
             self._commandArgs.extend(['-p', self._port + ',' + self._speed])
-            
+
         # Make the tool executable on OS X. It loses the x bit when Bamboo copies it.
         if sys.platform == 'darwin':
             filetools.makeExecutable(self._toolName)
@@ -630,14 +660,14 @@ class BootloaderDeviceSDP(Bootloader):
             time.sleep(3)
 
         self._commandArgs.extend(['-j', '--'])
-        
+
     def close(self):
         self.target.close()
 
     def __exit__(self, type, value, traceback):
         self.close()
         return False # Don't suppress exceptions
-        
+
     def _updatePeripheralSpeed(self):
         peripheral = self.peripheral.split(',')[0]
         if type(self._speed) == type(''):
@@ -651,7 +681,7 @@ class BootloaderDeviceSDP(Bootloader):
             self._speed = str(self._speed)
         else:
             raise ValueError('Invalid peripheral speed parameter: %s' % self._speed)
-            
+
     ## @name SDP commands
     ## @{
 
@@ -659,7 +689,7 @@ class BootloaderDeviceSDP(Bootloader):
     # @brief SDP read-register command
     def readRegister(self, address, format, numBytes, filePath):
         return self._executeCommand('read-register', address, format, numBytes, filePath)
-        
+
     ##
     # @brief SDP write-register command
     def writeRegister(self, address, format, value):
