@@ -56,6 +56,8 @@ class secBootMain(runcore.secBootRun):
             self.resetMcuDevice()
             self.connectStage = uidef.kConnectStage_Rom
             self.updateConnectStatus('black')
+            usbIdList = self.getUsbid()
+            self.adjustPortSetupValue(self.connectStage, usbIdList)
         else:
             pass
 

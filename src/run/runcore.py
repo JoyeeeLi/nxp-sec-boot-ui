@@ -13,6 +13,10 @@ def createTarget(device):
     # Build path to target directory and config file.
     if device == uidef.kMcuDevice_iMXRT102x:
         cpu = "MIMXRT1021"
+    elif device == uidef.kMcuDevice_iMXRT105x:
+        cpu = "MIMXRT1052"
+    elif device == uidef.kMcuDevice_iMXRT106x:
+        cpu = "MIMXRT1062"
     else:
         pass
     targetBaseDir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'targets', cpu)
@@ -114,6 +118,14 @@ class secBootRun(uicore.secBootUi):
             cpu = "MIMXRT1021"
             loadAddr = 0x20208000
             jumpAddr = 0x20208400
+        elif self.mcuDevice == uidef.kMcuDevice_iMXRT105x:
+            cpu = "MIMXRT1052"
+            loadAddr = 0x20000000
+            jumpAddr = 0x20000400
+        elif self.mcuDevice == uidef.kMcuDevice_iMXRT106x:
+            cpu = "MIMXRT1062"
+            loadAddr = 0x20000000
+            jumpAddr = 0x20000400
         else:
             pass
         flashloaderBinFile = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'targets', cpu, 'ivt_flashloader.bin')

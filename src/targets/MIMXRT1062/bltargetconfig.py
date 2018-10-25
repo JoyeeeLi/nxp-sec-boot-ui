@@ -32,12 +32,16 @@ import sys, os
 sys.path.append(os.path.abspath(".."))
 from boot.memoryrange import MemoryRange
 
-cpu = 'MIMXRT1021'
+cpu = 'MIMXRT1062'
 board = 'EVK'
 compiler = 'iar'
 build = 'Release'
 
 availablePeripherals = 0x11
+romUsbVid = '0x1FC9'
+romUsbPid = '0x0135'
+flashloaderUsbVid = '0x15A2'
+flashloaderUsbPid = '0x0073'
 availableCommands = 0x5EFDF
 supportedPeripheralSpeed_uart = [4800, 9600, 19200, 57600, 115200] # @todo Verify
 elfFilename = os.path.join(os.path.dirname(__file__), compiler, board, 'output', build, board + '.elf')
