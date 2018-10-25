@@ -43,7 +43,7 @@ class secBootUi(nxpSecBoot.secBootWin):
         self.m_radioBtn_usbhid.SetValue(False)
         self.setPortSetupValue()
 
-    def adjustPortSetupValue( self, connectStage=uidef.kConnectStage_Rom ):
+    def adjustPortSetupValue( self, connectStage=uidef.kConnectStage_Rom, usbIdList=[] ):
         self.isUartPortSelected = self.m_radioBtn_uart.GetValue()
         self.isUsbhidPortSelected = self.m_radioBtn_usbhid.GetValue()
         self.m_choice_portVid.Clear()
@@ -67,12 +67,18 @@ class secBootUi(nxpSecBoot.secBootWin):
         elif self.isUsbhidPortSelected:
             self.m_staticText_portVid.SetLabel('VID:')
             self.m_staticText_baudPid.SetLabel('PID:')
+            usbVid = [None]
+            usbPid = [None]
             if connectStage == uidef.kConnectStage_Rom:
-                self.m_choice_portVid.SetItems(rundef.kUsbVid_Sdphost)
-                self.m_choice_baudPid.SetItems(rundef.kUsbPid_Sdphost)
+                usbVid[0] = usbIdList[0]
+                usbPid[0] = usbIdList[1]
+                self.m_choice_portVid.SetItems(usbVid)
+                self.m_choice_baudPid.SetItems(usbPid)
             elif connectStage == uidef.kConnectStage_Flashloader:
-                self.m_choice_portVid.SetItems(rundef.kUsbVid_Blhost)
-                self.m_choice_baudPid.SetItems(rundef.kUsbPid_Blhost)
+                usbVid[0] = usbIdList[2]
+                usbPid[0] = usbIdList[3]
+                self.m_choice_portVid.SetItems(usbVid)
+                self.m_choice_baudPid.SetItems(usbPid)
             else:
                 pass
         else:
@@ -80,8 +86,8 @@ class secBootUi(nxpSecBoot.secBootWin):
         self.m_choice_portVid.SetSelection(0)
         self.m_choice_baudPid.SetSelection(0)
 
-    def setPortSetupValue( self, connectStage=uidef.kConnectStage_Rom ):
-        self.adjustPortSetupValue(connectStage)
+    def setPortSetupValue( self, connectStage=uidef.kConnectStage_Rom, usbIdList=[] ):
+        self.adjustPortSetupValue(connectStage, usbIdList)
         self.updatePortSetupValue()
 
     def updatePortSetupValue( self ):
@@ -104,8 +110,11 @@ class secBootUi(nxpSecBoot.secBootWin):
             self.m_button_connect.SetLabel('Connect to Flashloader')
             self.m_bitmap_connectLed.SetBitmap(wx.Bitmap( u"../img/led_yellow.png", wx.BITMAP_TYPE_ANY ))
         elif color == 'green':
-            self.m_button_connect.SetLabel('Disconnect')
+            self.m_button_connect.SetLabel('Access external memory')
             self.m_bitmap_connectLed.SetBitmap(wx.Bitmap( u"../img/led_green.png", wx.BITMAP_TYPE_ANY ))
+        elif color == 'blue':
+            self.m_button_connect.SetLabel('Reset device')
+            self.m_bitmap_connectLed.SetBitmap(wx.Bitmap( u"../img/led_blue.png", wx.BITMAP_TYPE_ANY ))
         elif color == 'red':
             self.m_button_connect.SetLabel('Reconnect')
             self.m_bitmap_connectLed.SetBitmap(wx.Bitmap( u"../img/led_red.png", wx.BITMAP_TYPE_ANY ))

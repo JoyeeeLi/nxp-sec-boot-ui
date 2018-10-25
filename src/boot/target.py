@@ -50,9 +50,13 @@ class Target(object):
         self.memoryRange = misc.get_dict_default(kwargs, 'memoryRange', {})
         self.availableCommands = misc.get_dict_default(kwargs, 'availableCommands', 0)
         self.availablePeripherals = misc.get_dict_default(kwargs, 'availablePeripherals', 0)
+        self.romUsbVid = misc.get_dict_default(kwargs, 'romUsbVid', None)
+        self.romUsbPid = misc.get_dict_default(kwargs, 'romUsbPid', None)
+        self.flashloaderUsbVid = misc.get_dict_default(kwargs, 'flashloaderUsbVid', None)
+        self.flashloaderUsbPid = misc.get_dict_default(kwargs, 'flashloaderUsbPid', None)
         self.supportedPeripheralSpeed_uart = misc.get_dict_default(kwargs, 'supportedPeripheralSpeed_uart', None)
         self.testWorkingDir = misc.get_dict_default(kwargs, 'testWorkingDir', None)
-        
+
         self.elfObject = None
         self.reservedRanges = []
 

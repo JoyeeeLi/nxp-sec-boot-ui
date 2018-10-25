@@ -4,6 +4,7 @@ import sys, os
 kConnectStage_Rom            = 1
 kConnectStage_Flashloader    = 2
 kConnectStage_ExternalMemory = 3
+kConnectStage_Reset          = 4
 
 kBootSeqColor_Invalid  = wx.Colour( 160, 160, 160 )
 kBootSeqColor_Inactive = wx.Colour( 166, 255, 255 )

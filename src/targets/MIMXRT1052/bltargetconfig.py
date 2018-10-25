@@ -38,10 +38,6 @@ compiler = 'iar'
 build = 'Release'
 
 availablePeripherals = 0x11
-romUsbVid = '0x1FC9'
-romUsbPid = '0x0130'
-flashloaderUsbVid = '0x15A2'
-flashloaderUsbPid = '0x0073'
 availableCommands = 0x5EFDF
 supportedPeripheralSpeed_uart = [4800, 9600, 19200, 57600, 115200] # @todo Verify
 elfFilename = os.path.join(os.path.dirname(__file__), compiler, board, 'output', build, board + '.elf')
@@ -62,10 +58,10 @@ memoryRange = {
     # Winbond W29GL128CH9T            (x8/x16 bits, 64B Page/128KB Sector/128Mb Device,  Non-ADM, Asynchronous)
     # Spansion S29GL128S90TFI020      (x16 bits,    512B Page/128KB Sector/128Mb Device, Non-ADM, Asynchronous)
     'SEMC_Parallel_NOR' : MemoryRange(0x90000000, 0x01000000, 0x91000000, 'state_ex_Paralle_NOR.dat', True, True, 0x20, 0x20000),
-    
+
     # Serial NOR over FlexSPI module (IS25LP064A-JBLE) (8MB)
     'FlexSPI_Serial_NOR' : MemoryRange(0x60000000, 0x00800000, 0x60800000, 'state_ex_Paralle_NOR.dat', True, True, 0x100, 0x10000),
-    
+
     # SEMC Raw NAND (Micron MT29F16G08ABACAWP:C) 0x0 - 0x80000000 2GB
     # Macronix MX30LF4GE8AB-TI        (x8 bits, 2KB Page/128KB Block/4Gb Device,  0bit ECC, 3.3V)
     # Micron MT29F4G08ABBDAWP         (x8 bits, 2KB Page/128KB Block/4Gb Device,  4bit ECC, 1.8V)
@@ -73,7 +69,7 @@ memoryRange = {
     # Micron MT29F16G08ABACAWP:C      (x8 bits, 4KB Page/512KB Block/16Gb Device, 4bit ECC, 3.3V)
     # Winbond W29N01GVSIAA            (x8 bits, 2KB Page/128KB Block/1Gb Device,  1bit ECC, 3.3V)
     'SEMC_Raw_NAND' : MemoryRange(0x100000, 0x0FF00000, 0x0FF00000, 'state_ex_raw_NAND.dat', True, False, 0x1000, 0x80000),
-    
+
     # LPSPI Serial NOR/EEPROM, 128KB (Micron MT25QL128ABA1ESE-OSIT)
     # Onsemi CAT25512HU5I-GT3         (EEPROM,    1-bit SPI,    20MHz,      128B Page/512Kb Device)
     # Micron MT25QL128ABA1ESE-OSIT    (NOR Flash, Multiple I/O, 133MHz-STR, 64B Page/4-32-64KB Sector/128Mb Device)

@@ -2,6 +2,7 @@
 import sys
 import os
 import rundef
+import boot
 sys.path.append(os.path.abspath(".."))
 from ui import uicore
 from ui import uidef
@@ -47,6 +48,11 @@ class secBootRun(uicore.secBootUi):
         self.blhost = None
         self.sdphost = None
 
+    def getUsbid( self ):
+        # Create the target object.
+        tgt = createTarget(self.mcuDevice)
+        return [tgt.romUsbVid, tgt.romUsbPid, tgt.flashloaderUsbVid, tgt.flashloaderUsbPid]
+
     def connectToDevice( self , connectStage):
         # Create the target object.
         tgt = createTarget(self.mcuDevice)
@@ -59,37 +65,74 @@ class secBootRun(uicore.secBootUi):
                 sdpPeripheral = 'sdp_uart'
                 uartComPort = self.uartComPort
                 uartBaudrate = int(self.uartBaudrate)
+                usbVid = ''
+                usbPid = ''
             elif self.isUsbhidPortSelected:
                 sdpPeripheral = 'sdp_usb'
                 uartComPort = ''
                 uartBaudrate = ''
+                usbVid = tgt.romUsbVid
+                usbPid = tgt.romUsbPid
             else:
                 pass
             self.sdphost = bltest.createBootloader(tgt,
                                                    sdphostVectorsDir,
                                                    sdpPeripheral,
                                                    uartBaudrate, uartComPort,
-                                                   rundef.kUsbVid_Sdphost[0],
-                                                   rundef.kUsbPid_Sdphost[0])
+                                                   usbVid, usbPid)
         elif connectStage == uidef.kConnectStage_Flashloader:
             if self.isUartPortSelected:
                 blPeripheral = 'uart'
                 uartComPort = self.uartComPort
                 uartBaudrate = int(self.uartBaudrate)
+                usbVid = ''
+                usbPid = ''
             elif self.isUsbhidPortSelected:
                 blPeripheral = 'usb'
                 uartComPort = ''
                 uartBaudrate = ''
+                usbVid = tgt.flashloaderUsbVid
+                usbPid = tgt.flashloaderUsbPid
             else:
                 pass
             self.blhost = bltest.createBootloader(tgt,
                                                   blhostVectorsDir,
                                                   blPeripheral,
                                                   uartBaudrate, uartComPort,
-                                                  rundef.kUsbVid_Blhost[0],
-                                                  rundef.kUsbPid_Blhost[0],
+                                                  usbVid, usbPid,
                                                   True)
         elif connectStage == uidef.kConnectStage_ExternalMemory:
             pass
 
+    def pingRom( self ):
+        status, results, cmdStr = self.sdphost.errorStatus()
+        self.m_textCtrl_log.write(cmdStr + "\n")
+        return (status == boot.status.kSDP_Status_HabEnabled or status == boot.status.kSDP_Status_HabDisabled)
 
+    def jumpToFlashloader( self ):
+        if self.mcuDevice == uidef.kMcuDevice_iMXRT102x:
+            cpu = "MIMXRT1021"
+            loadAddr = 0x20208000
+            jumpAddr = 0x20208400
+        else:
+            pass
+        flashloaderBinFile = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'targets', cpu, 'ivt_flashloader.bin')
+        status, results, cmdStr = self.sdphost.writeFile(loadAddr, flashloaderBinFile)
+        self.m_textCtrl_log.write(cmdStr + "\n")
+        if status != boot.status.kSDP_Status_HabEnabled and status != boot.status.kSDP_Status_HabDisabled:
+            return False
+        status, results, cmdStr = self.sdphost.jumpAddress(jumpAddr)
+        self.m_textCtrl_log.write(cmdStr + "\n")
+        if status != boot.status.kSDP_Status_HabEnabled and status != boot.status.kSDP_Status_HabDisabled:
+            return False
+        return True
+
+    def pingFlashloader( self ):
+        status, results, cmdStr = self.blhost.getProperty(boot.properties.kPropertyTag_CurrentVersion)
+        self.m_textCtrl_log.write(cmdStr + "\n")
+        return (status == boot.status.kStatus_Success)
+
+    def resetMcuDevice( self ):
+        status, results, cmdStr = self.blhost.reset()
+        self.m_textCtrl_log.write(cmdStr + "\n")
+        return (status == boot.status.kStatus_Success)
