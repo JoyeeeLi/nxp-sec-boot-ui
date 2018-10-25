@@ -147,7 +147,7 @@ class secBootWin ( wx.Frame ):
 
 		wSizer_portSetup.Add( self.m_staticText_null2PortSetup, 0, wx.ALL, 5 )
 
-		self.m_staticText_null3PortSetup = wx.StaticText( self.m_panel_portSetup, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 40,-1 ), 0 )
+		self.m_staticText_null3PortSetup = wx.StaticText( self.m_panel_portSetup, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 10,-1 ), 0 )
 		self.m_staticText_null3PortSetup.Wrap( -1 )
 
 		wSizer_portSetup.Add( self.m_staticText_null3PortSetup, 0, wx.ALL, 5 )
@@ -155,7 +155,7 @@ class secBootWin ( wx.Frame ):
 		self.m_bitmap_connectLed = wx.StaticBitmap( self.m_panel_portSetup, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.Size( 30,30 ), 0 )
 		wSizer_portSetup.Add( self.m_bitmap_connectLed, 0, wx.ALL, 5 )
 
-		self.m_button_connect = wx.Button( self.m_panel_portSetup, wx.ID_ANY, u"Connect", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_button_connect = wx.Button( self.m_panel_portSetup, wx.ID_ANY, u"Connect to ROM", wx.DefaultPosition, wx.Size( 150,-1 ), 0 )
 		wSizer_portSetup.Add( self.m_button_connect, 0, wx.ALL, 5 )
 
 
@@ -400,7 +400,7 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_genSeq.SetSizer( wSizer_genSeq )
 		self.m_panel_genSeq.Layout()
 		wSizer_genSeq.Fit( self.m_panel_genSeq )
-		self.m_notebook_imageSeq.AddPage( self.m_panel_genSeq, u"Image Generation Sequence", False )
+		self.m_notebook_imageSeq.AddPage( self.m_panel_genSeq, u"Image Generation Sequence", True )
 		self.m_panel_bootSeq = wx.Panel( self.m_notebook_imageSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		self.m_panel_bootSeq.SetBackgroundColour( wx.Colour( 160, 160, 160 ) )
 
@@ -550,7 +550,7 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_bootSeq.SetSizer( wSizer_bootSeq )
 		self.m_panel_bootSeq.Layout()
 		wSizer_bootSeq.Fit( self.m_panel_bootSeq )
-		self.m_notebook_imageSeq.AddPage( self.m_panel_bootSeq, u"Image Boot Sequence", True )
+		self.m_notebook_imageSeq.AddPage( self.m_panel_bootSeq, u"Image Boot Sequence", False )
 
 		bSizer_boot.Add( self.m_notebook_imageSeq, 1, wx.EXPAND |wx.ALL, 5 )
 
@@ -619,22 +619,30 @@ class secBootWin ( wx.Frame ):
 		self.Centre( wx.BOTH )
 
 		# Connect Events
+		self.m_radioBtn_uart.Bind( wx.EVT_RADIOBUTTON, self.callbackSetUartPort )
+		self.m_radioBtn_usbhid.Bind( wx.EVT_RADIOBUTTON, self.callbackSetUsbhidPort )
 		self.m_button_connect.Bind( wx.EVT_BUTTON, self.callbackConnectToDevice )
-		self.m_choice_secureBootType.Bind( wx.EVT_CHOICE, self.callbackSwitchSecureBootType )
-		self.m_choice_keyStorageRegion.Bind( wx.EVT_CHOICE, self.callbackSwitchKeyStorageRegion )
+		self.m_choice_secureBootType.Bind( wx.EVT_CHOICE, self.callbackSetSecureBootType )
+		self.m_choice_keyStorageRegion.Bind( wx.EVT_CHOICE, self.callbackSetKeyStorageRegion )
 
 	def __del__( self ):
 		pass
 
 
 	# Virtual event handlers, overide them in your derived class
+	def callbackSetUartPort( self, event ):
+		event.Skip()
+
+	def callbackSetUsbhidPort( self, event ):
+		event.Skip()
+
 	def callbackConnectToDevice( self, event ):
 		event.Skip()
 
-	def callbackSwitchSecureBootType( self, event ):
+	def callbackSetSecureBootType( self, event ):
 		event.Skip()
 
-	def callbackSwitchKeyStorageRegion( self, event ):
+	def callbackSetKeyStorageRegion( self, event ):
 		event.Skip()
 
 

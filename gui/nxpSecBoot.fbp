@@ -1766,7 +1766,7 @@
                                                             <event name="OnMouseEvents"></event>
                                                             <event name="OnMouseWheel"></event>
                                                             <event name="OnPaint"></event>
-                                                            <event name="OnRadioButton"></event>
+                                                            <event name="OnRadioButton">callbackSetUartPort</event>
                                                             <event name="OnRightDClick"></event>
                                                             <event name="OnRightDown"></event>
                                                             <event name="OnRightUp"></event>
@@ -1861,7 +1861,7 @@
                                                             <event name="OnMouseEvents"></event>
                                                             <event name="OnMouseWheel"></event>
                                                             <event name="OnPaint"></event>
-                                                            <event name="OnRadioButton"></event>
+                                                            <event name="OnRadioButton">callbackSetUsbhidPort</event>
                                                             <event name="OnRightDClick"></event>
                                                             <event name="OnRightDown"></event>
                                                             <event name="OnRightUp"></event>
@@ -2383,7 +2383,7 @@
                                                             <property name="pos"></property>
                                                             <property name="resize">Resizable</property>
                                                             <property name="show">1</property>
-                                                            <property name="size">40,-1</property>
+                                                            <property name="size">10,-1</property>
                                                             <property name="style"></property>
                                                             <property name="subclass">; ; forward_declare</property>
                                                             <property name="toolbar_pane">0</property>
@@ -2549,7 +2549,7 @@
                                                             <property name="gripper">0</property>
                                                             <property name="hidden">0</property>
                                                             <property name="id">wxID_ANY</property>
-                                                            <property name="label">Connect</property>
+                                                            <property name="label">Connect to ROM</property>
                                                             <property name="margins"></property>
                                                             <property name="markup">0</property>
                                                             <property name="max_size"></property>
@@ -2570,7 +2570,7 @@
                                                             <property name="pressed"></property>
                                                             <property name="resize">Resizable</property>
                                                             <property name="show">1</property>
-                                                            <property name="size"></property>
+                                                            <property name="size">150,-1</property>
                                                             <property name="style"></property>
                                                             <property name="subclass">; ; forward_declare</property>
                                                             <property name="toolbar_pane">0</property>
@@ -3071,7 +3071,7 @@
                                                 <event name="OnAux2Up"></event>
                                                 <event name="OnChar"></event>
                                                 <event name="OnCharHook"></event>
-                                                <event name="OnChoice">callbackSwitchSecureBootType</event>
+                                                <event name="OnChoice">callbackSetSecureBootType</event>
                                                 <event name="OnEnterWindow"></event>
                                                 <event name="OnEraseBackground"></event>
                                                 <event name="OnKeyDown"></event>
@@ -3190,7 +3190,7 @@
                                         <object class="notebookpage" expanded="0">
                                             <property name="bitmap"></property>
                                             <property name="label">Image Generation Sequence</property>
-                                            <property name="select">0</property>
+                                            <property name="select">1</property>
                                             <object class="wxPanel" expanded="0">
                                                 <property name="BottomDockable">1</property>
                                                 <property name="LeftDockable">1</property>
@@ -5636,7 +5636,7 @@
                                                                                     <event name="OnAux2Up"></event>
                                                                                     <event name="OnChar"></event>
                                                                                     <event name="OnCharHook"></event>
-                                                                                    <event name="OnChoice">callbackSwitchKeyStorageRegion</event>
+                                                                                    <event name="OnChoice">callbackSetKeyStorageRegion</event>
                                                                                     <event name="OnEnterWindow"></event>
                                                                                     <event name="OnEraseBackground"></event>
                                                                                     <event name="OnKeyDown"></event>
@@ -6363,7 +6363,7 @@
                                         <object class="notebookpage" expanded="0">
                                             <property name="bitmap"></property>
                                             <property name="label">Image Boot Sequence</property>
-                                            <property name="select">1</property>
+                                            <property name="select">0</property>
                                             <object class="wxPanel" expanded="0">
                                                 <property name="BottomDockable">1</property>
                                                 <property name="LeftDockable">1</property>
@@ -8742,11 +8742,11 @@
                                                     <property name="name">wSizer_log</property>
                                                     <property name="orient">wxHORIZONTAL</property>
                                                     <property name="permission">none</property>
-                                                    <object class="sizeritem" expanded="0">
+                                                    <object class="sizeritem" expanded="1">
                                                         <property name="border">5</property>
                                                         <property name="flag">wxEXPAND</property>
                                                         <property name="proportion">1</property>
-                                                        <object class="wxBoxSizer" expanded="0">
+                                                        <object class="wxBoxSizer" expanded="1">
                                                             <property name="minimum_size"></property>
                                                             <property name="name">bSizer_showLog</property>
                                                             <property name="orient">wxVERTICAL</property>

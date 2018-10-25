@@ -1,35 +1,7 @@
 #! /usr/bin/env python
-
-# Copyright (c) 2013 Freescale Semiconductor, Inc.
-# All rights reserved.
-#
-# Redistribution and use in source and binary forms, with or without modification,
-# are permitted provided that the following conditions are met:
-#
-# o Redistributions of source code must retain the above copyright notice, this list
-#   of conditions and the following disclaimer.
-#
-# o Redistributions in binary form must reproduce the above copyright notice, this
-#   list of conditions and the following disclaimer in the documentation and/or
-#   other materials provided with the distribution.
-#
-# o Neither the name of Freescale Semiconductor, Inc. nor the names of its
-#   contributors may be used to endorse or promote products derived from this
-#   software without specific prior written permission.
-#
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
-# ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-# ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 import sys
 import os
+import rundef
 sys.path.append(os.path.abspath(".."))
 from ui import uicore
 from ui import uidef
@@ -75,22 +47,48 @@ class secBootRun(uicore.secBootUi):
         self.blhost = None
         self.sdphost = None
 
-    def connectToDevice( self ):
+    def connectToDevice( self , connectStage):
         # Create the target object.
         tgt = createTarget(self.mcuDevice)
 
         vectorsDir = os.path.join(os.path.dirname(__file__), 'working', 'vectors')
-        peripheral = 'usb'
-        self.blhost = bltest.createBootloader(tgt,
-                                              vectorsDir,
-                                              peripheral,
-                                              '', '',
-                                              '0x15a2', '0x0073',
-                                              True)
 
-        peripheral = 'sdp_usb'
-        self.sdphost = bltest.createBootloader(tgt,
-                                               vectorsDir,
-                                               peripheral,
-                                               '', '',
-                                               '0x1fc9', '0x0130')
+        if connectStage == uidef.CONNECT_STAGE_ROM:
+            if self.isUartPortSelected:
+                sdpPeripheral = 'sdp_uart'
+                uartComPort = self.uartComPort
+                uartBaudrate = int(self.uartBaudrate)
+            elif self.isUsbhidPortSelected:
+                sdpPeripheral = 'sdp_usb'
+                uartComPort = ''
+                uartBaudrate = ''
+            else:
+                pass
+            self.sdphost = bltest.createBootloader(tgt,
+                                                   vectorsDir,
+                                                   sdpPeripheral,
+                                                   uartBaudrate, uartComPort,
+                                                   rundef.SDPHOST_USBHID_VID[0],
+                                                   rundef.SDPHOST_USBHID_PID[0])
+        elif connectStage == uidef.CONNECT_STAGE_FLASHLOADER:
+            if self.isUartPortSelected:
+                blPeripheral = 'uart'
+                uartComPort = self.uartComPort
+                uartBaudrate = int(self.uartBaudrate)
+            elif self.isUsbhidPortSelected:
+                blPeripheral = 'usb'
+                uartComPort = ''
+                uartBaudrate = ''
+            else:
+                pass
+            self.blhost = bltest.createBootloader(tgt,
+                                                  vectorsDir,
+                                                  blPeripheral,
+                                                  uartBaudrate, uartComPort,
+                                                  rundef.BLHOST_USBHID_VID[0],
+                                                  rundef.BLHOST_USBHID_PID[0],
+                                                  True)
+        elif connectStage == uidef.CONNECT_STAGE_EXTERNAL_MEMORY:
+            pass
+
+

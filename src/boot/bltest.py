@@ -279,6 +279,7 @@ class Bootloader(object):
         # Convert all args to strings.
         theArgs = [str(x) for x in theArgs]
         print "Executing:", " ".join(theArgs)
+        commandString = str("Executing " + " ".join(theArgs))
 
         # Execute the command.
         process = subprocess.Popen(theArgs, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -295,7 +296,7 @@ class Bootloader(object):
         self.commandStatus = self.commandResults[kCmdResponse_Status][kCmdResponse_Value]
         self.commandStatusDescription = self.commandResults[kCmdResponse_Status][kCmdResponse_Description]
 
-        return self.commandStatus, self.commandResults[kCmdResponse_Response]
+        return self.commandStatus, self.commandResults[kCmdResponse_Response], commandString
 
     ## @name Bootloader commands
     ## @{
