@@ -4,6 +4,7 @@ import sys
 import os
 from run import runcore
 from ui import uidef
+import boot
 
 class secBootMain(runcore.secBootRun):
 
@@ -30,15 +31,35 @@ class secBootMain(runcore.secBootRun):
         self.updatePortSetupValue()
         self.connectToDevice(self.connectStage)
         if self.connectStage == uidef.kConnectStage_Rom:
-            status, results, cmdStr = self.sdphost.readRegister(0x401F46F0)
-            self.m_textCtrl_log.write("[CMD Action]: " + cmdStr + "\n")
-
+            self.jumpToFlashloader()
+            self.updateConnectStatus('yellow')
             self.connectStage = uidef.kConnectStage_Flashloader
             self.adjustPortSetupValue(self.connectStage)
         elif self.connectStage == uidef.kConnectStage_Flashloader:
-            pass
+            status, results, cmdStr = self.blhost.getProperty(boot.properties.kPropertyTag_CurrentVersion)
+            self.m_textCtrl_log.write("[CMD Action]: " + cmdStr + "\n")
+            self.updateConnectStatus('green')
         elif self.connectStage == uidef.kConnectStage_ExternalMemory:
             pass
+
+    def jumpToFlashloader( self ):
+        status, results, cmdStr = self.sdphost.errorStatus()
+        self.m_textCtrl_log.write("[CMD Action]: " + cmdStr + "\n")
+        if status != boot.status.kSDP_Status_HabEnabled and status != boot.status.kSDP_Status_HabDisabled:
+            return
+        if self.mcuDevice == uidef.kMcuDevice_iMXRT102x:
+            cpu = "MIMXRT1021"
+        else:
+            pass
+        flashloaderBinFile = os.path.join(os.path.dirname(__file__), 'targets', cpu, 'ivt_flashloader.bin')
+        status, results, cmdStr = self.sdphost.writeFile(0x20208000, flashloaderBinFile)
+        self.m_textCtrl_log.write("[CMD Action]: " + cmdStr + "\n")
+        if status != boot.status.kSDP_Status_HabEnabled and status != boot.status.kSDP_Status_HabDisabled:
+            return
+        status, results, cmdStr = self.sdphost.jumpAddress(0x20208400)
+        self.m_textCtrl_log.write("[CMD Action]: " + cmdStr + "\n")
+        if status != boot.status.kSDP_Status_HabEnabled and status != boot.status.kSDP_Status_HabDisabled:
+            return
 
 if __name__ == '__main__':
     app = wx.App()

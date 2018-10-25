@@ -14,7 +14,7 @@ class secBootUi(nxpSecBoot.secBootWin):
     def __init__(self, parent):
         nxpSecBoot.secBootWin.__init__(self, parent)
         self.m_bitmap_nxp.SetBitmap(wx.Bitmap( u"../img/logo_nxp.png", wx.BITMAP_TYPE_ANY ))
-        self.m_bitmap_connectLed.SetBitmap(wx.Bitmap( u"../img/led_black.png", wx.BITMAP_TYPE_ANY ))
+        self.updateConnectStatus()
 
         self.mcuSeries = None
         self.mcuDevice = None
@@ -93,6 +93,22 @@ class secBootUi(nxpSecBoot.secBootWin):
         elif self.isUsbhidPortSelected:
             self.usbhidVid = self.m_choice_portVid.GetString(self.m_choice_portVid.GetSelection())
             self.usbhidPid = self.m_choice_baudPid.GetString(self.m_choice_baudPid.GetSelection())
+        else:
+            pass
+
+    def updateConnectStatus( self, color='black' ):
+        if color == 'black':
+            self.m_button_connect.SetLabel('Connect to ROM')
+            self.m_bitmap_connectLed.SetBitmap(wx.Bitmap( u"../img/led_black.png", wx.BITMAP_TYPE_ANY ))
+        elif color == 'yellow':
+            self.m_button_connect.SetLabel('Connect to Flashloader')
+            self.m_bitmap_connectLed.SetBitmap(wx.Bitmap( u"../img/led_yellow.png", wx.BITMAP_TYPE_ANY ))
+        elif color == 'green':
+            self.m_button_connect.SetLabel('Disconnect')
+            self.m_bitmap_connectLed.SetBitmap(wx.Bitmap( u"../img/led_green.png", wx.BITMAP_TYPE_ANY ))
+        elif color == 'red':
+            self.m_button_connect.SetLabel('Reconnect')
+            self.m_bitmap_connectLed.SetBitmap(wx.Bitmap( u"../img/led_red.png", wx.BITMAP_TYPE_ANY ))
         else:
             pass
 

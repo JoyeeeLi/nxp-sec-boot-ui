@@ -51,7 +51,8 @@ class secBootRun(uicore.secBootUi):
         # Create the target object.
         tgt = createTarget(self.mcuDevice)
 
-        vectorsDir = os.path.join(os.path.dirname(__file__), 'working', 'vectors')
+        blhostVectorsDir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'blhost', 'win', 'vectors')
+        sdphostVectorsDir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'sdphost', 'win', 'vectors')
 
         if connectStage == uidef.kConnectStage_Rom:
             if self.isUartPortSelected:
@@ -65,7 +66,7 @@ class secBootRun(uicore.secBootUi):
             else:
                 pass
             self.sdphost = bltest.createBootloader(tgt,
-                                                   vectorsDir,
+                                                   sdphostVectorsDir,
                                                    sdpPeripheral,
                                                    uartBaudrate, uartComPort,
                                                    rundef.kUsbVid_Sdphost[0],
@@ -82,7 +83,7 @@ class secBootRun(uicore.secBootUi):
             else:
                 pass
             self.blhost = bltest.createBootloader(tgt,
-                                                  vectorsDir,
+                                                  blhostVectorsDir,
                                                   blPeripheral,
                                                   uartBaudrate, uartComPort,
                                                   rundef.kUsbVid_Blhost[0],
