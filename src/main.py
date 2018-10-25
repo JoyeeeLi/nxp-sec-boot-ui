@@ -10,7 +10,7 @@ class secBootMain(runcore.secBootRun):
     def __init__(self, parent):
         runcore.secBootRun.__init__(self, parent)
 
-        self.connectStage = uidef.CONNECT_STAGE_ROM
+        self.connectStage = uidef.kConnectStage_Rom
 
     def callbackSetSecureBootType( self, event ):
         self.setSecureBootSeqColor()
@@ -29,15 +29,15 @@ class secBootMain(runcore.secBootRun):
         self.updateTargetSetupValue()
         self.updatePortSetupValue()
         self.connectToDevice(self.connectStage)
-        if self.connectStage == uidef.CONNECT_STAGE_ROM:
+        if self.connectStage == uidef.kConnectStage_Rom:
             status, results, cmdStr = self.sdphost.readRegister(0x401F46F0)
             self.m_textCtrl_log.write("[CMD Action]: " + cmdStr + "\n")
 
-            self.connectStage = uidef.CONNECT_STAGE_FLASHLOADER
+            self.connectStage = uidef.kConnectStage_Flashloader
             self.adjustPortSetupValue(self.connectStage)
-        elif self.connectStage == uidef.CONNECT_STAGE_FLASHLOADER:
+        elif self.connectStage == uidef.kConnectStage_Flashloader:
             pass
-        elif self.connectStage == uidef.CONNECT_STAGE_EXTERNAL_MEMORY:
+        elif self.connectStage == uidef.kConnectStage_ExternalMemory:
             pass
 
 if __name__ == '__main__':

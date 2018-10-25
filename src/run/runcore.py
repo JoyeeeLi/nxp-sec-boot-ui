@@ -10,7 +10,7 @@ from boot import target
 
 def createTarget(device):
     # Build path to target directory and config file.
-    if device == uidef.MCU_DEVICE_iMXRT102x:
+    if device == uidef.kMcuDevice_iMXRT102x:
         cpu = "MIMXRT1021"
     else:
         pass
@@ -53,7 +53,7 @@ class secBootRun(uicore.secBootUi):
 
         vectorsDir = os.path.join(os.path.dirname(__file__), 'working', 'vectors')
 
-        if connectStage == uidef.CONNECT_STAGE_ROM:
+        if connectStage == uidef.kConnectStage_Rom:
             if self.isUartPortSelected:
                 sdpPeripheral = 'sdp_uart'
                 uartComPort = self.uartComPort
@@ -68,9 +68,9 @@ class secBootRun(uicore.secBootUi):
                                                    vectorsDir,
                                                    sdpPeripheral,
                                                    uartBaudrate, uartComPort,
-                                                   rundef.SDPHOST_USBHID_VID[0],
-                                                   rundef.SDPHOST_USBHID_PID[0])
-        elif connectStage == uidef.CONNECT_STAGE_FLASHLOADER:
+                                                   rundef.kUsbVid_Sdphost[0],
+                                                   rundef.kUsbPid_Sdphost[0])
+        elif connectStage == uidef.kConnectStage_Flashloader:
             if self.isUartPortSelected:
                 blPeripheral = 'uart'
                 uartComPort = self.uartComPort
@@ -85,10 +85,10 @@ class secBootRun(uicore.secBootUi):
                                                   vectorsDir,
                                                   blPeripheral,
                                                   uartBaudrate, uartComPort,
-                                                  rundef.BLHOST_USBHID_VID[0],
-                                                  rundef.BLHOST_USBHID_PID[0],
+                                                  rundef.kUsbVid_Blhost[0],
+                                                  rundef.kUsbPid_Blhost[0],
                                                   True)
-        elif connectStage == uidef.CONNECT_STAGE_EXTERNAL_MEMORY:
+        elif connectStage == uidef.kConnectStage_ExternalMemory:
             pass
 
 

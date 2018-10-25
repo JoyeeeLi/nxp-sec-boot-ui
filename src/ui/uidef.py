@@ -1,24 +1,25 @@
 import wx
 import sys, os
 
-CONNECT_STAGE_ROM = 1
-CONNECT_STAGE_FLASHLOADER = 2
-CONNECT_STAGE_EXTERNAL_MEMORY = 3
+kConnectStage_Rom            = 1
+kConnectStage_Flashloader    = 2
+kConnectStage_ExternalMemory = 3
 
-BOOT_SEQ_COLOR_INVALID   = wx.Colour( 160, 160, 160 )
-BOOT_SEQ_COLOR_INACTIVE  = wx.Colour( 166, 255, 255 )
-BOOT_SEQ_COLOR_ACTIVE    = wx.Colour( 147, 255, 174 )
+kBootSeqColor_Invalid  = wx.Colour( 160, 160, 160 )
+kBootSeqColor_Inactive = wx.Colour( 166, 255, 255 )
+kBootSeqColor_Active   = wx.Colour( 147, 255, 174 )
 
-MCU_DEVICE_iMXRT102x = 'i.MXRT102x'
-MCU_DEVICE_iMXRT105x = 'i.MXRT105x'
-MCU_DEVICE_iMXRT106x = 'i.MXRT106x'
+kMcuDevice_iMXRT102x = 'i.MXRT102x'
+kMcuDevice_iMXRT105x = 'i.MXRT105x'
+kMcuDevice_iMXRT106x = 'i.MXRT106x'
 
-SECURE_BOOT_TYPE_DEVELOPMENT = 'Unsigned (XIP) image Boot'
-SECURE_BOOT_TYPE_HAB_AUTH    = 'Signed (XIP) Image Boot'
-SECURE_BOOT_TYPE_HAB_CRYPTO  = 'HAB Signed Encrypted Image Boot'
-SECURE_BOOT_TYPE_BEE_CRYPTO  = 'BEE (Signed) Encrypted XIP Image Boot'
+kSecureBootType_Development = 'Unsigned (XIP) image Boot'
+kSecureBootType_HabAuth     = 'Signed (XIP) Image Boot'
+kSecureBootType_HabCrypto   = 'HAB Signed Encrypted Image Boot'
+kSecureBootType_BeeCrypto   = 'BEE (Signed) Encrypted XIP Image Boot'
 
-KEY_STORAGE_REGION_OPTMK      = 'Fuse OTPMK'
-KEY_STORAGE_REGION_GP4        = 'Fuse GP4'
-KEY_STORAGE_REGION_SW_GP2     = 'Fuse SW_GP2 '
-KEY_STORAGE_REGION_GP4_SW_GP2 = 'Fuse GP4&SW_GP2'
+kKeyStorageRegion_Optmk    = 'Fuse OTPMK'
+kKeyStorageRegion_Gp4      = 'Fuse GP4'
+kKeyStorageRegion_SwGp2    = 'Fuse SW_GP2 '
+kKeyStorageRegion_Gp4SwGp2 = 'Fuse GP4&SW_GP2'
+

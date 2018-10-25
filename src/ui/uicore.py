@@ -43,7 +43,7 @@ class secBootUi(nxpSecBoot.secBootWin):
         self.m_radioBtn_usbhid.SetValue(False)
         self.setPortSetupValue()
 
-    def adjustPortSetupValue( self, connectStage=uidef.CONNECT_STAGE_ROM ):
+    def adjustPortSetupValue( self, connectStage=uidef.kConnectStage_Rom ):
         self.isUartPortSelected = self.m_radioBtn_uart.GetValue()
         self.isUsbhidPortSelected = self.m_radioBtn_usbhid.GetValue()
         self.m_choice_portVid.Clear()
@@ -58,21 +58,21 @@ class secBootUi(nxpSecBoot.secBootWin):
                 comport = list(comports[i])
                 ports[i] = comport[0]
             self.m_choice_portVid.SetItems(ports)
-            if connectStage == uidef.CONNECT_STAGE_ROM:
-                self.m_choice_baudPid.SetItems(rundef.SDPHOST_UART_SPEED)
-            elif connectStage == uidef.CONNECT_STAGE_FLASHLOADER:
-                self.m_choice_baudPid.SetItems(rundef.BLHOST_UART_SPEED)
+            if connectStage == uidef.kConnectStage_Rom:
+                self.m_choice_baudPid.SetItems(rundef.kUartSpeed_Sdphost)
+            elif connectStage == uidef.kConnectStage_Flashloader:
+                self.m_choice_baudPid.SetItems(rundef.kUartSpeed_Blhost)
             else:
                 pass
         elif self.isUsbhidPortSelected:
             self.m_staticText_portVid.SetLabel('VID:')
             self.m_staticText_baudPid.SetLabel('PID:')
-            if connectStage == uidef.CONNECT_STAGE_ROM:
-                self.m_choice_portVid.SetItems(rundef.SDPHOST_USBHID_VID)
-                self.m_choice_baudPid.SetItems(rundef.SDPHOST_USBHID_PID)
-            elif connectStage == uidef.CONNECT_STAGE_FLASHLOADER:
-                self.m_choice_portVid.SetItems(rundef.BLHOST_USBHID_VID)
-                self.m_choice_baudPid.SetItems(rundef.BLHOST_USBHID_PID)
+            if connectStage == uidef.kConnectStage_Rom:
+                self.m_choice_portVid.SetItems(rundef.kUsbVid_Sdphost)
+                self.m_choice_baudPid.SetItems(rundef.kUsbPid_Sdphost)
+            elif connectStage == uidef.kConnectStage_Flashloader:
+                self.m_choice_portVid.SetItems(rundef.kUsbVid_Blhost)
+                self.m_choice_baudPid.SetItems(rundef.kUsbPid_Blhost)
             else:
                 pass
         else:
@@ -80,7 +80,7 @@ class secBootUi(nxpSecBoot.secBootWin):
         self.m_choice_portVid.SetSelection(0)
         self.m_choice_baudPid.SetSelection(0)
 
-    def setPortSetupValue( self, connectStage=uidef.CONNECT_STAGE_ROM ):
+    def setPortSetupValue( self, connectStage=uidef.kConnectStage_Rom ):
         self.adjustPortSetupValue(connectStage)
         self.updatePortSetupValue()
 
@@ -102,71 +102,71 @@ class secBootUi(nxpSecBoot.secBootWin):
         self.setSecureBootSeqColor()
 
     def _resetSecureBootSeqColor( self ):
-        self.m_panel_doAuth1_certInput.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_INVALID )
-        self.m_panel_doAuth2_certFmt.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_INVALID )
-        self.m_panel_progSrk1_showSrk.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_INVALID )
-        self.m_panel_genImage1_browseApp.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_INVALID )
-        self.m_panel_genImage2_habCryptoAlgo.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_INVALID )
-        self.m_panel_progDek1_showDek.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_INVALID )
+        self.m_panel_doAuth1_certInput.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
+        self.m_panel_doAuth2_certFmt.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
+        self.m_panel_progSrk1_showSrk.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
+        self.m_panel_genImage1_browseApp.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
+        self.m_panel_genImage2_habCryptoAlgo.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
+        self.m_panel_progDek1_showDek.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
         self._resetKeyStorageRegionColor()
-        self.m_panel_flashImage1_showImage.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_INVALID )
+        self.m_panel_flashImage1_showImage.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
         self.Refresh()
 
     def _resetKeyStorageRegionColor( self ):
-        self.m_panel_prepBee1_beeKeyRegion.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_INVALID )
-        self.m_panel_prepBee2_beeKeyInput.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_INVALID )
-        self.m_panel_prepBee3_advKeySettings.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_INVALID )
-        self.m_panel_prepBee4_beeCryptoAlgo.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_INVALID )
-        self.m_panel_operBeeKey1_readOtpmk.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_INVALID )
-        self.m_panel_operBeeKey2_progBeeKey.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_INVALID )
+        self.m_panel_prepBee1_beeKeyRegion.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
+        self.m_panel_prepBee2_beeKeyInput.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
+        self.m_panel_prepBee3_advKeySettings.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
+        self.m_panel_prepBee4_beeCryptoAlgo.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
+        self.m_panel_operBeeKey1_readOtpmk.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
+        self.m_panel_operBeeKey2_progBeeKey.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
         self.Refresh()
 
     def setSecureBootSeqColor( self ):
         self.secureBootType = self.m_choice_secureBootType.GetString(self.m_choice_secureBootType.GetSelection())
         self._resetSecureBootSeqColor()
-        if self.secureBootType == uidef.SECURE_BOOT_TYPE_DEVELOPMENT:
-            self.m_panel_genImage1_browseApp.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_ACTIVE )
-            self.m_panel_flashImage1_showImage.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_ACTIVE )
-        elif self.secureBootType == uidef.SECURE_BOOT_TYPE_HAB_AUTH:
-            self.m_panel_doAuth1_certInput.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_ACTIVE )
-            self.m_panel_doAuth2_certFmt.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_ACTIVE )
-            self.m_panel_progSrk1_showSrk.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_ACTIVE )
-            self.m_panel_genImage1_browseApp.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_ACTIVE )
-            self.m_panel_flashImage1_showImage.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_ACTIVE )
-        elif self.secureBootType == uidef.SECURE_BOOT_TYPE_HAB_CRYPTO:
-            self.m_panel_doAuth1_certInput.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_ACTIVE )
-            self.m_panel_doAuth2_certFmt.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_ACTIVE )
-            self.m_panel_progSrk1_showSrk.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_ACTIVE )
-            self.m_panel_genImage1_browseApp.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_ACTIVE )
-            self.m_panel_genImage2_habCryptoAlgo.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_ACTIVE )
-            self.m_panel_progDek1_showDek.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_ACTIVE )
-            self.m_panel_flashImage1_showImage.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_ACTIVE )
-        elif self.secureBootType == uidef.SECURE_BOOT_TYPE_BEE_CRYPTO:
-            self.m_panel_doAuth1_certInput.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_INACTIVE )
-            self.m_panel_doAuth2_certFmt.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_INACTIVE )
-            self.m_panel_progSrk1_showSrk.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_INACTIVE )
-            self.m_panel_genImage1_browseApp.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_ACTIVE )
+        if self.secureBootType == uidef.kSecureBootType_Development:
+            self.m_panel_genImage1_browseApp.SetBackgroundColour( uidef.kBootSeqColor_Active )
+            self.m_panel_flashImage1_showImage.SetBackgroundColour( uidef.kBootSeqColor_Active )
+        elif self.secureBootType == uidef.kSecureBootType_HabAuth:
+            self.m_panel_doAuth1_certInput.SetBackgroundColour( uidef.kBootSeqColor_Active )
+            self.m_panel_doAuth2_certFmt.SetBackgroundColour( uidef.kBootSeqColor_Active )
+            self.m_panel_progSrk1_showSrk.SetBackgroundColour( uidef.kBootSeqColor_Active )
+            self.m_panel_genImage1_browseApp.SetBackgroundColour( uidef.kBootSeqColor_Active )
+            self.m_panel_flashImage1_showImage.SetBackgroundColour( uidef.kBootSeqColor_Active )
+        elif self.secureBootType == uidef.kSecureBootType_HabCrypto:
+            self.m_panel_doAuth1_certInput.SetBackgroundColour( uidef.kBootSeqColor_Active )
+            self.m_panel_doAuth2_certFmt.SetBackgroundColour( uidef.kBootSeqColor_Active )
+            self.m_panel_progSrk1_showSrk.SetBackgroundColour( uidef.kBootSeqColor_Active )
+            self.m_panel_genImage1_browseApp.SetBackgroundColour( uidef.kBootSeqColor_Active )
+            self.m_panel_genImage2_habCryptoAlgo.SetBackgroundColour( uidef.kBootSeqColor_Active )
+            self.m_panel_progDek1_showDek.SetBackgroundColour( uidef.kBootSeqColor_Active )
+            self.m_panel_flashImage1_showImage.SetBackgroundColour( uidef.kBootSeqColor_Active )
+        elif self.secureBootType == uidef.kSecureBootType_BeeCrypto:
+            self.m_panel_doAuth1_certInput.SetBackgroundColour( uidef.kBootSeqColor_Inactive )
+            self.m_panel_doAuth2_certFmt.SetBackgroundColour( uidef.kBootSeqColor_Inactive )
+            self.m_panel_progSrk1_showSrk.SetBackgroundColour( uidef.kBootSeqColor_Inactive )
+            self.m_panel_genImage1_browseApp.SetBackgroundColour( uidef.kBootSeqColor_Active )
             self.setKeyStorageRegionColor()
-            self.m_panel_flashImage1_showImage.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_ACTIVE )
+            self.m_panel_flashImage1_showImage.SetBackgroundColour( uidef.kBootSeqColor_Active )
         else:
             pass
         self.Refresh()
 
     def setKeyStorageRegionColor( self ):
         self.secureBootType = self.m_choice_secureBootType.GetString(self.m_choice_secureBootType.GetSelection())
-        if self.secureBootType == uidef.SECURE_BOOT_TYPE_BEE_CRYPTO:
+        if self.secureBootType == uidef.kSecureBootType_BeeCrypto:
             self._resetKeyStorageRegionColor()
             self.keyStorageRegion = self.m_choice_keyStorageRegion.GetString(self.m_choice_keyStorageRegion.GetSelection())
-            self.m_panel_prepBee1_beeKeyRegion.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_ACTIVE )
-            self.m_panel_prepBee4_beeCryptoAlgo.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_ACTIVE )
-            if self.keyStorageRegion == uidef.KEY_STORAGE_REGION_OPTMK:
-                self.m_panel_operBeeKey1_readOtpmk.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_ACTIVE )
-            elif self.keyStorageRegion == uidef.KEY_STORAGE_REGION_GP4 or keyStorageRegion == uidef.KEY_STORAGE_REGION_SW_GP2:
-                self.m_panel_prepBee2_beeKeyInput.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_ACTIVE )
-                self.m_panel_operBeeKey2_progBeeKey.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_ACTIVE )
-            elif self.keyStorageRegion == uidef.KEY_STORAGE_REGION_GP4_SW_GP2:
-                self.m_panel_prepBee3_advKeySettings.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_ACTIVE )
-                self.m_panel_operBeeKey2_progBeeKey.SetBackgroundColour( uidef.BOOT_SEQ_COLOR_ACTIVE )
+            self.m_panel_prepBee1_beeKeyRegion.SetBackgroundColour( uidef.kBootSeqColor_Active )
+            self.m_panel_prepBee4_beeCryptoAlgo.SetBackgroundColour( uidef.kBootSeqColor_Active )
+            if self.keyStorageRegion == uidef.kKeyStorageRegion_Optmk:
+                self.m_panel_operBeeKey1_readOtpmk.SetBackgroundColour( uidef.kBootSeqColor_Active )
+            elif self.keyStorageRegion == uidef.kKeyStorageRegion_Gp4 or keyStorageRegion == uidef.kKeyStorageRegion_SwGp2:
+                self.m_panel_prepBee2_beeKeyInput.SetBackgroundColour( uidef.kBootSeqColor_Active )
+                self.m_panel_operBeeKey2_progBeeKey.SetBackgroundColour( uidef.kBootSeqColor_Active )
+            elif self.keyStorageRegion == uidef.kKeyStorageRegion_Gp4SwGp2:
+                self.m_panel_prepBee3_advKeySettings.SetBackgroundColour( uidef.kBootSeqColor_Active )
+                self.m_panel_operBeeKey2_progBeeKey.SetBackgroundColour( uidef.kBootSeqColor_Active )
             else:
                 pass
         self.Refresh()
