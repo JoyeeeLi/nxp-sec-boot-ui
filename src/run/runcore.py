@@ -4,7 +4,8 @@ import os
 import rundef
 import boot
 sys.path.append(os.path.abspath(".."))
-from ui import uicore
+from info import infomgr
+from info import infodef
 from ui import uidef
 from boot import bltest
 from boot import target
@@ -45,12 +46,15 @@ def createTarget(device):
 
 ##
 # @brief
-class secBootRun(uicore.secBootUi):
+class secBootRun(infomgr.secBootInfo):
 
     def __init__(self, parent):
-        uicore.secBootUi.__init__(self, parent)
+        infomgr.secBootInfo.__init__(self, parent)
         self.blhost = None
         self.sdphost = None
+        self.tgt = None
+        self.sdphostVectorsDir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'sdphost', 'win', 'vectors')
+        self.blhostVectorsDir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'blhost', 'win', 'vectors')
 
     def getUsbid( self ):
         # Create the target object.
@@ -59,10 +63,8 @@ class secBootRun(uicore.secBootUi):
 
     def connectToDevice( self , connectStage):
         # Create the target object.
-        tgt = createTarget(self.mcuDevice)
-
-        blhostVectorsDir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'blhost', 'win', 'vectors')
-        sdphostVectorsDir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'sdphost', 'win', 'vectors')
+        if self.tgt == None:
+            self.tgt = createTarget(self.mcuDevice)
 
         if connectStage == uidef.kConnectStage_Rom:
             if self.isUartPortSelected:
@@ -75,12 +77,12 @@ class secBootRun(uicore.secBootUi):
                 sdpPeripheral = 'sdp_usb'
                 uartComPort = ''
                 uartBaudrate = ''
-                usbVid = tgt.romUsbVid
-                usbPid = tgt.romUsbPid
+                usbVid = self.tgt.romUsbVid
+                usbPid = self.tgt.romUsbPid
             else:
                 pass
-            self.sdphost = bltest.createBootloader(tgt,
-                                                   sdphostVectorsDir,
+            self.sdphost = bltest.createBootloader(self.tgt,
+                                                   self.sdphostVectorsDir,
                                                    sdpPeripheral,
                                                    uartBaudrate, uartComPort,
                                                    usbVid, usbPid)
@@ -95,23 +97,29 @@ class secBootRun(uicore.secBootUi):
                 blPeripheral = 'usb'
                 uartComPort = ''
                 uartBaudrate = ''
-                usbVid = tgt.flashloaderUsbVid
-                usbPid = tgt.flashloaderUsbPid
+                usbVid = self.tgt.flashloaderUsbVid
+                usbPid = self.tgt.flashloaderUsbPid
             else:
                 pass
-            self.blhost = bltest.createBootloader(tgt,
-                                                  blhostVectorsDir,
+            self.blhost = bltest.createBootloader(self.tgt,
+                                                  self.blhostVectorsDir,
                                                   blPeripheral,
                                                   uartBaudrate, uartComPort,
                                                   usbVid, usbPid,
                                                   True)
-        elif connectStage == uidef.kConnectStage_ExternalMemory:
+        elif connectStage == uidef.kConnectStage_Reset:
+            self.tgt = None
+        else:
             pass
 
     def pingRom( self ):
         status, results, cmdStr = self.sdphost.errorStatus()
-        self.m_textCtrl_log.write(cmdStr + "\n")
+        self.printLog(cmdStr)
         return (status == boot.status.kSDP_Status_HabEnabled or status == boot.status.kSDP_Status_HabDisabled)
+
+    def getDeviceStatusViaRom( self ):
+        status, results, cmdStr = self.sdphost.readRegister(infodef.kRegisterAddr_SRC_SBMR1, 32, 4)
+        self.printLog(cmdStr)
 
     def jumpToFlashloader( self ):
         if self.mcuDevice == uidef.kMcuDevice_iMXRT102x:
@@ -130,21 +138,21 @@ class secBootRun(uicore.secBootUi):
             pass
         flashloaderBinFile = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'targets', cpu, 'ivt_flashloader.bin')
         status, results, cmdStr = self.sdphost.writeFile(loadAddr, flashloaderBinFile)
-        self.m_textCtrl_log.write(cmdStr + "\n")
+        self.printLog(cmdStr)
         if status != boot.status.kSDP_Status_HabEnabled and status != boot.status.kSDP_Status_HabDisabled:
             return False
         status, results, cmdStr = self.sdphost.jumpAddress(jumpAddr)
-        self.m_textCtrl_log.write(cmdStr + "\n")
+        self.printLog(cmdStr)
         if status != boot.status.kSDP_Status_HabEnabled and status != boot.status.kSDP_Status_HabDisabled:
             return False
         return True
 
     def pingFlashloader( self ):
         status, results, cmdStr = self.blhost.getProperty(boot.properties.kPropertyTag_CurrentVersion)
-        self.m_textCtrl_log.write(cmdStr + "\n")
+        self.printLog(cmdStr)
         return (status == boot.status.kStatus_Success)
 
     def resetMcuDevice( self ):
         status, results, cmdStr = self.blhost.reset()
-        self.m_textCtrl_log.write(cmdStr + "\n")
+        self.printLog(cmdStr)
         return (status == boot.status.kStatus_Success)

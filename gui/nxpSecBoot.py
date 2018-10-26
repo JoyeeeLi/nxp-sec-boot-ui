@@ -167,8 +167,17 @@ class secBootWin ( wx.Frame ):
 		bSizer_setup.Add( self.m_notebook_portSetup, 1, wx.EXPAND |wx.ALL, 5 )
 
 		self.m_notebook_deviceStatus = wx.Notebook( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_panel26 = wx.Panel( self.m_notebook_deviceStatus, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		self.m_notebook_deviceStatus.AddPage( self.m_panel26, u"Device Status", False )
+		self.m_panel_deviceStatus = wx.Panel( self.m_notebook_deviceStatus, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		bSizer_deviceStatus = wx.BoxSizer( wx.VERTICAL )
+
+		self.m_textCtrl_deviceStatus = wx.TextCtrl( self.m_panel_deviceStatus, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 220,190 ), wx.TE_MULTILINE )
+		bSizer_deviceStatus.Add( self.m_textCtrl_deviceStatus, 0, wx.ALL, 5 )
+
+
+		self.m_panel_deviceStatus.SetSizer( bSizer_deviceStatus )
+		self.m_panel_deviceStatus.Layout()
+		bSizer_deviceStatus.Fit( self.m_panel_deviceStatus )
+		self.m_notebook_deviceStatus.AddPage( self.m_panel_deviceStatus, u"Device Status", False )
 
 		bSizer_setup.Add( self.m_notebook_deviceStatus, 1, wx.EXPAND |wx.ALL, 5 )
 
@@ -624,6 +633,7 @@ class secBootWin ( wx.Frame ):
 		self.m_button_connect.Bind( wx.EVT_BUTTON, self.callbackConnectToDevice )
 		self.m_choice_secureBootType.Bind( wx.EVT_CHOICE, self.callbackSetSecureBootType )
 		self.m_choice_keyStorageRegion.Bind( wx.EVT_CHOICE, self.callbackSetKeyStorageRegion )
+		self.m_button_clearLog.Bind( wx.EVT_BUTTON, self.callbackClearLog )
 
 	def __del__( self ):
 		pass
@@ -643,6 +653,9 @@ class secBootWin ( wx.Frame ):
 		event.Skip()
 
 	def callbackSetKeyStorageRegion( self, event ):
+		event.Skip()
+
+	def callbackClearLog( self, event ):
 		event.Skip()
 
 
