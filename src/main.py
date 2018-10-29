@@ -46,6 +46,7 @@ class secBootMain(runcore.secBootRun):
         elif self.connectStage == uidef.kConnectStage_Flashloader:
             self.connectToDevice(self.connectStage)
             if self.pingFlashloader():
+                self.getDeviceStatusViaFlashloader()
                 self.updateConnectStatus('green')
                 self.connectStage = uidef.kConnectStage_ExternalMemory
             else:

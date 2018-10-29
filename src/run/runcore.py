@@ -117,9 +117,24 @@ class secBootRun(infomgr.secBootInfo):
         self.printLog(cmdStr)
         return (status == boot.status.kSDP_Status_HabEnabled or status == boot.status.kSDP_Status_HabDisabled)
 
-    def getDeviceStatusViaRom( self ):
-        status, results, cmdStr = self.sdphost.readRegister(infodef.kRegisterAddr_SRC_SBMR1, 32, 4)
+    def _getDeviceRegisterBySdphost( self, regAddr, regName):
+        filename = 'readReg.dat'
+        filepath = os.path.join(self.sdphostVectorsDir, filename)
+        status, results, cmdStr = self.sdphost.readRegister(regAddr, 32, 4, filename)
         self.printLog(cmdStr)
+        if (status == boot.status.kSDP_Status_HabEnabled or status == boot.status.kSDP_Status_HabDisabled):
+            regVal = self.getReg32FromFile(filepath)
+            self.printDeviceStatus(regName + " = " + str(regVal))
+        else:
+            self.printDeviceStatus(regName + " = --------")
+        try:
+            os.remove(filepath)
+        except:
+            pass
+
+    def getDeviceStatusViaRom( self ):
+        self._getDeviceRegisterBySdphost( infodef.kRegisterAddr_SRC_SBMR1, 'SRC->SMBR1')
+        self._getDeviceRegisterBySdphost( infodef.kRegisterAddr_SRC_SBMR2, 'SRC->SMBR2')
 
     def jumpToFlashloader( self ):
         if self.mcuDevice == uidef.kMcuDevice_iMXRT102x:
@@ -151,6 +166,20 @@ class secBootRun(infomgr.secBootInfo):
         status, results, cmdStr = self.blhost.getProperty(boot.properties.kPropertyTag_CurrentVersion)
         self.printLog(cmdStr)
         return (status == boot.status.kStatus_Success)
+
+    def _getDeviceFuseByBlhost( self, fuseIndex, fuseName):
+        status, results, cmdStr = self.blhost.efuseReadOnce(fuseIndex)
+        self.printLog(cmdStr)
+        if (status == boot.status.kStatus_Success):
+            self.printDeviceStatus(fuseName + " = " + str(hex(results[1])))
+        else:
+            self.printDeviceStatus(fuseName + " = --------")
+
+    def getDeviceStatusViaFlashloader( self ):
+        self._getDeviceFuseByBlhost(infodef.kEfuseAddr_BOOT_CFG0, 'Fuse->BOOT_CFG (0x450)')
+        self._getDeviceFuseByBlhost(infodef.kEfuseAddr_BOOT_CFG1, 'Fuse->BOOT_CFG (0x460)')
+        self._getDeviceFuseByBlhost(infodef.kEfuseAddr_BOOT_CFG2, 'Fuse->BOOT_CFG (0x470)')
+
 
     def resetMcuDevice( self ):
         status, results, cmdStr = self.blhost.reset()
