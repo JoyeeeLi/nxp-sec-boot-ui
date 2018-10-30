@@ -123,7 +123,7 @@ class secBootRun(gencore.secBootGen):
         status, results, cmdStr = self.sdphost.readRegister(regAddr, 32, 4, filename)
         self.printLog(cmdStr)
         if (status == boot.status.kSDP_Status_HabEnabled or status == boot.status.kSDP_Status_HabDisabled):
-            regVal = self.getReg32FromFile(filepath)
+            regVal = self.getReg32FromBinFile(filepath)
             self.printDeviceStatus(regName + " = " + str(regVal))
         else:
             self.printDeviceStatus(regName + " = --------")
