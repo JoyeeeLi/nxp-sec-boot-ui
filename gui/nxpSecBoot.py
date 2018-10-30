@@ -632,6 +632,7 @@ class secBootWin ( wx.Frame ):
 		self.m_radioBtn_usbhid.Bind( wx.EVT_RADIOBUTTON, self.callbackSetUsbhidPort )
 		self.m_button_connect.Bind( wx.EVT_BUTTON, self.callbackConnectToDevice )
 		self.m_choice_secureBootType.Bind( wx.EVT_CHOICE, self.callbackSetSecureBootType )
+		self.m_button_genImage.Bind( wx.EVT_BUTTON, self.callbackGenImage )
 		self.m_choice_keyStorageRegion.Bind( wx.EVT_CHOICE, self.callbackSetKeyStorageRegion )
 		self.m_button_clearLog.Bind( wx.EVT_BUTTON, self.callbackClearLog )
 
@@ -650,6 +651,9 @@ class secBootWin ( wx.Frame ):
 		event.Skip()
 
 	def callbackSetSecureBootType( self, event ):
+		event.Skip()
+
+	def callbackGenImage( self, event ):
 		event.Skip()
 
 	def callbackSetKeyStorageRegion( self, event ):

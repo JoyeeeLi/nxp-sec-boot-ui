@@ -12,12 +12,6 @@ class secBootMain(runcore.secBootRun):
 
         self.connectStage = uidef.kConnectStage_Rom
 
-    def callbackSetSecureBootType( self, event ):
-        self.setSecureBootSeqColor()
-
-    def callbackSetKeyStorageRegion( self, event ):
-        self.setKeyStorageRegionColor()
-
     def callbackSetUartPort( self, event ):
         self.setPortSetupValue(self.connectStage)
 
@@ -66,6 +60,16 @@ class secBootMain(runcore.secBootRun):
             self.connectToDevice(self.connectStage)
         else:
             pass
+
+    def callbackSetSecureBootType( self, event ):
+        self.setSecureBootSeqColor()
+
+    def callbackSetKeyStorageRegion( self, event ):
+        self.setKeyStorageRegionColor()
+
+    def callbackGenImage( self, event ):
+        if self.createMatchedBdfile():
+            self.genBootableImage()
 
     def callbackClearLog( self, event ):
         self.clearLog()

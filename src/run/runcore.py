@@ -4,7 +4,7 @@ import os
 import rundef
 import boot
 sys.path.append(os.path.abspath(".."))
-from info import infomgr
+from gen import gencore
 from info import infodef
 from ui import uidef
 from boot import bltest
@@ -46,10 +46,10 @@ def createTarget(device):
 
 ##
 # @brief
-class secBootRun(infomgr.secBootInfo):
+class secBootRun(gencore.secBootGen):
 
     def __init__(self, parent):
-        infomgr.secBootInfo.__init__(self, parent)
+        gencore.secBootGen.__init__(self, parent)
         self.blhost = None
         self.sdphost = None
         self.tgt = None
