@@ -14,6 +14,13 @@ kMcuDevice_iMXRT102x = 'i.MXRT102x'
 kMcuDevice_iMXRT105x = 'i.MXRT105x'
 kMcuDevice_iMXRT106x = 'i.MXRT106x'
 
+kBootDevice_FlexspiNor  = 'FLEXSPI NOR'
+kBootDevice_FlexspiNand = 'FLEXSPI NAND'
+kBootDevice_SemcNor     = 'SEMC NOR'
+kBootDevice_SemcNand    = 'SEMC NAND'
+kBootDevice_UsdhcSdEmmc = 'uSDHC SD,eMMC'
+kBootDevice_LpspiNor    = 'LPSPI NOR,EEPROM'
+
 kSecureBootType_Development = 'Unsigned (XIP) image Boot'
 kSecureBootType_HabAuth     = 'Signed (XIP) Image Boot'
 kSecureBootType_HabCrypto   = 'HAB Signed Encrypted Image Boot'

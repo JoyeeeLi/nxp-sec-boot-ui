@@ -68,6 +68,7 @@ class secBootMain(runcore.secBootRun):
         self.setKeyStorageRegionColor()
 
     def callbackGenImage( self, event ):
+        self.updateTargetSetupValue()
         if self.createMatchedBdfile():
             self.genBootableImage()
 
