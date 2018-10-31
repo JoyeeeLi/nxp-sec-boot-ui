@@ -348,7 +348,7 @@ class Bootloader(object):
     # @returns Status of the
     def writeMemory(self, address, filename, memoryid=0):
         createdTempFile = False
-        fullFileName = os.path.join(self.vectorsDir, filename)
+        fullFileName = filename
 
         if not os.path.isfile(fullFileName):
             fullFileName = os.path.join(self.vectorsDir, 'tmp_writeMemoryData')
@@ -393,7 +393,7 @@ class Bootloader(object):
     ##
     # @brief receive-sb-file command
     def receiveSbFile(self, filename):
-        fullFileName = os.path.join(self.vectorsDir, filename)
+        fullFileName = filename
         self.fileLength = os.path.getsize(fullFileName)
 
         return self._executeCommand('receive-sb-file', fullFileName)
