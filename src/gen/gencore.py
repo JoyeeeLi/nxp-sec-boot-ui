@@ -3,11 +3,11 @@ import wx
 import sys
 import os
 import bincopy
+import gendef
 sys.path.append(os.path.abspath(".."))
 from info import infomgr
 from utils import elf
 from ui import uidef
-from gen import gendef
 
 class secBootGen(infomgr.secBootInfo):
 
@@ -26,7 +26,7 @@ class secBootGen(infomgr.secBootInfo):
         if os.path.isfile(self.srcAppFilename):
             appPath, appFilename = os.path.split(self.srcAppFilename)
             appName, appType = os.path.splitext(appFilename)
-            if appType == '.elf':
+            if appType == '.elf' or appType == '.out':
                 elfObj = None
                 with open(self.srcAppFilename, 'rb') as f:
                     e = elf.ELFObject()
@@ -37,21 +37,27 @@ class secBootGen(infomgr.secBootInfo):
                         startAddress = elfObj.getSymbol(symbol).st_value
                         break
                     except:
-                        pass
+                        startAddress = None
+                if startAddress == None:
+                    self.printLog('Cannot get vectorAddr symbol from image file: ' + self.srcAppFilename)
                 #entryPointAddress = elfObj.e_entry
                 for symbol in gendef.kToolchainSymbolList_EntryAddr:
                     try:
                         entryPointAddress = elfObj.getSymbol(symbol).st_value
                         break
                     except:
-                        pass
+                        entryPointAddress = None
+                if entryPointAddress == None:
+                    self.printLog('Cannot get entryAddr symbol from image file: ' + self.srcAppFilename)
             elif appType == '.s19' or appType == '.srec':
                 srecObj = bincopy.BinFile(str(self.srcAppFilename))
                 startAddress = srecObj.minimum_address
                 #entryPointAddress = srecObj.execution_start_address
                 entryPointAddress = self.getVal32FromByteArray(srecObj.as_binary(startAddress + 0x4, startAddress  + 0x8))
             else:
-                pass
+                self.printLog('Cannot recognise the format of image file: ' + self.srcAppFilename)
+        else:
+            self.printLog('Cannnot find image file: ' + self.srcAppFilename)
         return startAddress, entryPointAddress
 
     def _updateBdfileContent( self, vectorAddress, entryPointAddress):
@@ -69,6 +75,7 @@ class secBootGen(infomgr.secBootInfo):
         else:
             pass
         if vectorAddress < initialLoadSize:
+            self.printLog('Invalid vector address found in image file: ' + self.srcAppFilename)
             return False
         else:
             startAddress = vectorAddress - initialLoadSize
@@ -110,4 +117,5 @@ class secBootGen(infomgr.secBootInfo):
     def genBootableImage( self ):
         self._updateBatfileContent()
         os.system(self.batFilename)
+        self.printLog('Bootable image is generated: ' + self.destAppFilename)
 

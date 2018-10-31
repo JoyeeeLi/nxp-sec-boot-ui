@@ -56,6 +56,9 @@ class secBootRun(gencore.secBootGen):
         self.sdphostVectorsDir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'sdphost', 'win', 'vectors')
         self.blhostVectorsDir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'blhost', 'win', 'vectors')
 
+        self.bootDeviceMemId = None
+        self.bootDeviceMemBase = None
+
     def getUsbid( self ):
         # Create the target object.
         tgt = createTarget(self.mcuDevice)
@@ -133,6 +136,8 @@ class secBootRun(gencore.secBootGen):
             pass
 
     def getDeviceStatusViaRom( self ):
+        self._getDeviceRegisterBySdphost( infodef.kRegisterAddr_UUID1, 'UUID[31:00]')
+        self._getDeviceRegisterBySdphost( infodef.kRegisterAddr_UUID2, 'UUID[63:32]')
         self._getDeviceRegisterBySdphost( infodef.kRegisterAddr_SRC_SBMR1, 'SRC->SMBR1')
         self._getDeviceRegisterBySdphost( infodef.kRegisterAddr_SRC_SBMR2, 'SRC->SMBR2')
 
@@ -180,6 +185,38 @@ class secBootRun(gencore.secBootGen):
         self._getDeviceFuseByBlhost(infodef.kEfuseAddr_BOOT_CFG1, 'Fuse->BOOT_CFG (0x460)')
         self._getDeviceFuseByBlhost(infodef.kEfuseAddr_BOOT_CFG2, 'Fuse->BOOT_CFG (0x470)')
 
+    def _getBootDeviceMemoryInfo ( self ):
+        if self.bootDevice == uidef.kBootDevice_FlexspiNor:
+            self.bootDeviceMemId = rundef.kBootDeviceMemId_FlexspiNor
+            self.bootDeviceMemBase = rundef.kBootDeviceMemBase_FlexspiNor
+        elif self.bootDevice == uidef.kBootDevice_FlexspiNand:
+            self.bootDeviceMemId = rundef.kBootDeviceMemId_FlexspiNand
+            self.bootDeviceMemBase = rundef.kBootDeviceMemBase_FlexspiNand
+        elif self.bootDevice == uidef.kBootDevice_SemcNor:
+            self.bootDeviceMemId = rundef.kBootDeviceMemId_SemcNor
+            self.bootDeviceMemBase = rundef.kBootDeviceMemBase_SemcNor
+        elif self.bootDevice == uidef.kBootDevice_SemcNand:
+            self.bootDeviceMemId = rundef.kBootDeviceMemId_SemcNand
+            self.bootDeviceMemBase = rundef.kBootDeviceMemBase_SemcNand
+        elif self.bootDevice == uidef.kBootDevice_UsdhcSd:
+            self.bootDeviceMemId = rundef.kBootDeviceMemId_UsdhcSd
+            self.bootDeviceMemBase = rundef.kBootDeviceMemBase_UsdhcSd
+        elif self.bootDevice == uidef.kBootDevice_UsdhcMmc:
+            self.bootDeviceMemId = rundef.kBootDevice_UsdhcMmc
+            self.bootDeviceMemBase = rundef.kBootDeviceMemBase_UsdhcMmc
+        elif self.bootDevice == uidef.kBootDevice_LpspiNor:
+            self.bootDeviceMemId = rundef.kBootDevice_LpspiNor
+            self.bootDeviceMemBase = rundef.kBootDeviceMemBase_LpspiNor
+        else:
+            pass
+
+    def flashBootableImage ( self ):
+        self._getBootDeviceMemoryInfo()
+        memEraseLen = os.path.getsize(self.destAppFilename)
+        status, results, cmdStr = self.blhost.flashEraseRegion(self.bootDeviceMemBase, memEraseLen, self.bootDeviceMemId)
+        self.printLog(cmdStr)
+        status, results, cmdStr = self.blhost.writeMemory(self.bootDeviceMemBase, self.destAppFilename, self.bootDeviceMemId)
+        self.printLog(cmdStr)
 
     def resetMcuDevice( self ):
         status, results, cmdStr = self.blhost.reset()

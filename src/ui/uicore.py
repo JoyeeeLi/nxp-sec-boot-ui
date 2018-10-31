@@ -110,7 +110,7 @@ class secBootUi(nxpSecBoot.secBootWin):
             self.m_button_connect.SetLabel('Connect to Flashloader')
             self.m_bitmap_connectLed.SetBitmap(wx.Bitmap( u"../img/led_yellow.png", wx.BITMAP_TYPE_ANY ))
         elif color == 'green':
-            self.m_button_connect.SetLabel('Access external memory')
+            self.m_button_connect.SetLabel('Configure boot device')
             self.m_bitmap_connectLed.SetBitmap(wx.Bitmap( u"../img/led_green.png", wx.BITMAP_TYPE_ANY ))
         elif color == 'blue':
             self.m_button_connect.SetLabel('Reset device')

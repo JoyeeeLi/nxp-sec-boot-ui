@@ -81,7 +81,7 @@ class secBootWin ( wx.Frame ):
 
 		wSizer_targetSetup.Add( self.m_staticText_bootDevice, 0, wx.ALL, 5 )
 
-		m_choice_bootDeviceChoices = [ u"FLEXSPI NOR", u"FLEXSPI NAND", u"SEMC NOR", u"SEMC NAND", u"uSDHC SD,eMMC", u"LPSPI NOR,EEPROM" ]
+		m_choice_bootDeviceChoices = [ u"FLEXSPI NOR", u"FLEXSPI NAND", u"SEMC NOR", u"SEMC NAND", u"uSDHC SD", u"uSDHC MMC/eMMC", u"LPSPI NOR,EEPROM" ]
 		self.m_choice_bootDevice = wx.Choice( self.m_panel_targetSetup, wx.ID_ANY, wx.DefaultPosition, wx.Size( 135,-1 ), m_choice_bootDeviceChoices, 0 )
 		self.m_choice_bootDevice.SetSelection( 0 )
 		wSizer_targetSetup.Add( self.m_choice_bootDevice, 0, wx.ALL, 5 )
@@ -327,7 +327,7 @@ class secBootWin ( wx.Frame ):
 		sbSizer_habCryptoAlgo.Fit( self.m_panel_genImage2_habCryptoAlgo )
 		bSizer_genImage.Add( self.m_panel_genImage2_habCryptoAlgo, 1, wx.EXPAND |wx.ALL, 5 )
 
-		self.m_button_genImage = wx.Button( self.m_panel_genImage, wx.ID_ANY, u"Run elftosb Tool", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_button_genImage = wx.Button( self.m_panel_genImage, wx.ID_ANY, u"Generate Bootable Image", wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer_genImage.Add( self.m_button_genImage, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
 
@@ -546,7 +546,7 @@ class secBootWin ( wx.Frame ):
 		sbSizer_showImage.Fit( self.m_panel_flashImage1_showImage )
 		bSizer_flashImage.Add( self.m_panel_flashImage1_showImage, 1, wx.EXPAND |wx.ALL, 5 )
 
-		self.m_button_flashImage = wx.Button( self.m_panel_flashImage, wx.ID_ANY, u"Run blhost Tool", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_button_flashImage = wx.Button( self.m_panel_flashImage, wx.ID_ANY, u"Load Bootable Image", wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer_flashImage.Add( self.m_button_flashImage, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
 
@@ -634,6 +634,7 @@ class secBootWin ( wx.Frame ):
 		self.m_choice_secureBootType.Bind( wx.EVT_CHOICE, self.callbackSetSecureBootType )
 		self.m_button_genImage.Bind( wx.EVT_BUTTON, self.callbackGenImage )
 		self.m_choice_keyStorageRegion.Bind( wx.EVT_CHOICE, self.callbackSetKeyStorageRegion )
+		self.m_button_flashImage.Bind( wx.EVT_BUTTON, self.callbackFlashImage )
 		self.m_button_clearLog.Bind( wx.EVT_BUTTON, self.callbackClearLog )
 
 	def __del__( self ):
@@ -657,6 +658,9 @@ class secBootWin ( wx.Frame ):
 		event.Skip()
 
 	def callbackSetKeyStorageRegion( self, event ):
+		event.Skip()
+
+	def callbackFlashImage( self, event ):
 		event.Skip()
 
 	def callbackClearLog( self, event ):

@@ -1,5 +1,8 @@
 import sys, os
 
+kRegisterAddr_UUID1  = 0x401F4410
+kRegisterAddr_UUID2  = 0x401F4420
+
 kRegisterAddr_SRC_SBMR1  = 0x400F8004
 kRegisterAddr_SRC_SBMR2  = 0x400F801C
 

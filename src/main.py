@@ -21,7 +21,7 @@ class secBootMain(runcore.secBootRun):
         self.setPortSetupValue(self.connectStage, usbIdList)
 
     def callbackConnectToDevice( self, event ):
-        self.printLog("'Connect' button is clicked")
+        self.printLog("'Connect to xxx' button is clicked")
         self.updateTargetSetupValue()
         self.updatePortSetupValue()
         if self.connectStage == uidef.kConnectStage_Rom:
@@ -68,9 +68,14 @@ class secBootMain(runcore.secBootRun):
         self.setKeyStorageRegionColor()
 
     def callbackGenImage( self, event ):
+        self.printLog("'Generate Bootable Image' button is clicked")
         self.updateTargetSetupValue()
         if self.createMatchedBdfile():
             self.genBootableImage()
+
+    def callbackFlashImage( self, event ):
+        self.printLog("'Load Bootable Image' button is clicked")
+        self.flashBootableImage()
 
     def callbackClearLog( self, event ):
         self.clearLog()

@@ -357,12 +357,12 @@ class Bootloader(object):
 
             createdTempFile = True
         self.fileLength = os.path.getsize(fullFileName)
-        status, results = self._executeCommand('write-memory', address, fullFileName, memoryid)
+        status, results, cmdStr = self._executeCommand('write-memory', address, fullFileName, memoryid)
 
         if createdTempFile:
             os.remove(fullFileName)
 
-        return status, results
+        return status, results, cmdStr
 
     ##
     # @brief fill-memory command
