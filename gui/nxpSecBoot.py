@@ -628,6 +628,7 @@ class secBootWin ( wx.Frame ):
 		self.Centre( wx.BOTH )
 
 		# Connect Events
+		self.m_button_BootDeviceConfiguration.Bind( wx.EVT_BUTTON, self.callbackBootDeviceConfiguration )
 		self.m_radioBtn_uart.Bind( wx.EVT_RADIOBUTTON, self.callbackSetUartPort )
 		self.m_radioBtn_usbhid.Bind( wx.EVT_RADIOBUTTON, self.callbackSetUsbhidPort )
 		self.m_button_connect.Bind( wx.EVT_BUTTON, self.callbackConnectToDevice )
@@ -642,6 +643,9 @@ class secBootWin ( wx.Frame ):
 
 
 	# Virtual event handlers, overide them in your derived class
+	def callbackBootDeviceConfiguration( self, event ):
+		event.Skip()
+
 	def callbackSetUartPort( self, event ):
 		event.Skip()
 

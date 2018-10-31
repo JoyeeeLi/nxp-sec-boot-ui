@@ -6,6 +6,7 @@ import serial.tools.list_ports
 import uidef
 sys.path.append(os.path.abspath("../.."))
 from gui import nxpSecBoot
+from gui import semcNand
 sys.path.append(os.path.abspath(".."))
 from run import rundef
 
@@ -32,6 +33,14 @@ class secBootUi(nxpSecBoot.secBootWin):
         self.secureBootType = None
         self.keyStorageRegion = None
         self._initSecureBootSeqColor()
+
+    def runBootDeviceConfiguration( self ):
+        if self.bootDevice == uidef.kBootDevice_SemcNand:
+            semcNandFrame = semcNand.bootDeviceWin_SemcNand(None)
+            semcNandFrame.SetTitle(u"SEMC NAND Device Configuration")
+            semcNandFrame.Show(True)
+        else:
+            pass
 
     def updateTargetSetupValue( self ):
         self.mcuSeries = self.m_choice_mcuSeries.GetString(self.m_choice_mcuSeries.GetSelection())

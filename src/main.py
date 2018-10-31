@@ -12,6 +12,10 @@ class secBootMain(runcore.secBootRun):
 
         self.connectStage = uidef.kConnectStage_Rom
 
+    def callbackBootDeviceConfiguration( self, event ):
+        self.updateTargetSetupValue()
+        self.runBootDeviceConfiguration()
+
     def callbackSetUartPort( self, event ):
         self.setPortSetupValue(self.connectStage)
 
