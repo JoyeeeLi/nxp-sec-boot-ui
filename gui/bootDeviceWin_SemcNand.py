@@ -277,6 +277,7 @@ class bootDeviceWin_SemcNand ( wx.Frame ):
 		self.Centre( wx.BOTH )
 
 		# Connect Events
+		self.m_choice_imageCopies.Bind( wx.EVT_CHOICE, self.callbackChangeImageCopies )
 		self.m_button_ok.Bind( wx.EVT_BUTTON, self.callbackOk )
 		self.m_button_cancel.Bind( wx.EVT_BUTTON, self.callbackCancel )
 
@@ -285,6 +286,9 @@ class bootDeviceWin_SemcNand ( wx.Frame ):
 
 
 	# Virtual event handlers, overide them in your derived class
+	def callbackChangeImageCopies( self, event ):
+		event.Skip()
+
 	def callbackOk( self, event ):
 		event.Skip()
 

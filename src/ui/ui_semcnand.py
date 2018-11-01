@@ -12,9 +12,165 @@ class secBootUiSemcNand(bootDeviceWin_SemcNand.bootDeviceWin_SemcNand):
 
     def __init__(self, parent):
         bootDeviceWin_SemcNand.bootDeviceWin_SemcNand.__init__(self, parent)
-        self.semcNandOpt = 0xD0000000
-        self.semcNandFcbOpt = 0x00000000
-        self.semcNandImageInfo = [None] * 8
+        semcNandOpt, semcNandFcbOpt, semcNandImageInfo = uivar.getVar(uidef.kBootDevice_SemcNand)
+        self.semcNandOpt = semcNandOpt
+        self.semcNandFcbOpt = semcNandFcbOpt
+        self.semcNandImageInfo = semcNandImageInfo
+        self._recoverLastSettings()
+
+    def _updateImageInfoField ( self, imageCopies ):
+        if imageCopies < 2:
+            self.m_textCtrl_image1Idx.Clear()
+            self.m_textCtrl_image1Cnt.Clear()
+            self.m_textCtrl_image1Idx.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
+            self.m_textCtrl_image1Cnt.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
+        else:
+            self.m_textCtrl_image1Idx.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+            self.m_textCtrl_image1Cnt.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+        if imageCopies < 3:
+            self.m_textCtrl_image2Idx.Clear()
+            self.m_textCtrl_image2Cnt.Clear()
+            self.m_textCtrl_image2Idx.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
+            self.m_textCtrl_image2Cnt.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
+        else:
+            self.m_textCtrl_image2Idx.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+            self.m_textCtrl_image2Cnt.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+        if imageCopies < 4:
+            self.m_textCtrl_image3Idx.Clear()
+            self.m_textCtrl_image3Cnt.Clear()
+            self.m_textCtrl_image3Idx.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
+            self.m_textCtrl_image3Cnt.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
+        else:
+            self.m_textCtrl_image3Idx.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+            self.m_textCtrl_image3Cnt.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+        if imageCopies < 5:
+            self.m_textCtrl_image4Idx.Clear()
+            self.m_textCtrl_image4Cnt.Clear()
+            self.m_textCtrl_image4Idx.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
+            self.m_textCtrl_image4Cnt.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
+        else:
+            self.m_textCtrl_image4Idx.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+            self.m_textCtrl_image4Cnt.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+        if imageCopies < 6:
+            self.m_textCtrl_image5Idx.Clear()
+            self.m_textCtrl_image5Cnt.Clear()
+            self.m_textCtrl_image5Idx.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
+            self.m_textCtrl_image5Cnt.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
+        else:
+            self.m_textCtrl_image5Idx.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+            self.m_textCtrl_image5Cnt.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+        if imageCopies < 7:
+            self.m_textCtrl_image6Idx.Clear()
+            self.m_textCtrl_image6Cnt.Clear()
+            self.m_textCtrl_image6Idx.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
+            self.m_textCtrl_image6Cnt.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
+        else:
+            self.m_textCtrl_image6Idx.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+            self.m_textCtrl_image6Cnt.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+        if imageCopies < 8:
+            self.m_textCtrl_image7Idx.Clear()
+            self.m_textCtrl_image7Cnt.Clear()
+            self.m_textCtrl_image7Idx.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
+            self.m_textCtrl_image7Cnt.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
+        else:
+            self.m_textCtrl_image7Idx.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+            self.m_textCtrl_image7Cnt.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+        self.Refresh()
+
+    def _recoverLastSettings ( self ):
+        onfiVersion = (self.semcNandOpt & 0x00000007) >> 0
+        self.m_choice_onfiVersion.SetSelection(onfiVersion - 1)
+
+        edoMode = (self.semcNandOpt & 0x00000008) >> 3
+        self.m_choice_edoMode.SetSelection(edoMode)
+
+        onfiTimingMode = (self.semcNandOpt & 0x00000070) >> 4
+        self.m_choice_onfiTimingMode.SetSelection(onfiTimingMode)
+
+        ioPortSize = (self.semcNandOpt & 0x00000300) >> 8
+        self.m_choice_ioPortSize.SetSelection(ioPortSize - 1)
+
+        pcsPort = (self.semcNandOpt & 0x00007000) >> 12
+        self.m_choice_pcsPort.SetSelection(pcsPort)
+
+        eccType = (self.semcNandOpt & 0x00010000) >> 16
+        self.m_choice_eccType.SetSelection(eccType)
+
+        eccStatus = (self.semcNandOpt & 0x00020000) >> 17
+        self.m_choice_eccStatus.SetSelection(eccStatus)
+
+        searchCount = (self.semcNandFcbOpt & 0x0000000F) >> 0
+        self.m_choice_searchCount.SetSelection(searchCount - 1)
+
+        searchStride = (self.semcNandFcbOpt & 0x00000F00) >> 8
+        if searchStride < 6:
+            self.m_choice_searchStride.SetSelection(searchStride)
+        elif searchStride == 6:
+            self.m_choice_searchStride.SetSelection(0)
+        else:
+            self.m_choice_searchStride.SetSelection(searchStride - 1)
+
+        imageCopies = (self.semcNandFcbOpt & 0x000F0000) >> 16
+        self.m_choice_imageCopies.SetSelection(imageCopies - 1)
+
+        self._updateImageInfoField(imageCopies)
+
+        if imageCopies > 0:
+            imageIdx = self.semcNandImageInfo[0] >> 16
+            imageCnt = self.semcNandImageInfo[0] & 0x0000FFFF
+            self.m_textCtrl_image0Idx.Clear()
+            self.m_textCtrl_image0Cnt.Clear()
+            self.m_textCtrl_image0Idx.write(str(imageIdx))
+            self.m_textCtrl_image0Cnt.write(str(imageCnt))
+        if imageCopies > 1:
+            imageIdx = self.semcNandImageInfo[1] >> 16
+            imageCnt = self.semcNandImageInfo[1] & 0x0000FFFF
+            self.m_textCtrl_image1Idx.Clear()
+            self.m_textCtrl_image1Cnt.Clear()
+            self.m_textCtrl_image1Idx.write(str(imageIdx))
+            self.m_textCtrl_image1Cnt.write(str(imageCnt))
+        if imageCopies > 2:
+            imageIdx = self.semcNandImageInfo[2] >> 16
+            imageCnt = self.semcNandImageInfo[2] & 0x0000FFFF
+            self.m_textCtrl_image2Idx.Clear()
+            self.m_textCtrl_image2Cnt.Clear()
+            self.m_textCtrl_image2Idx.write(str(imageIdx))
+            self.m_textCtrl_image2Cnt.write(str(imageCnt))
+        if imageCopies > 3:
+            imageIdx = self.semcNandImageInfo[3] >> 16
+            imageCnt = self.semcNandImageInfo[3] & 0x0000FFFF
+            self.m_textCtrl_image3Idx.Clear()
+            self.m_textCtrl_image3Cnt.Clear()
+            self.m_textCtrl_image3Idx.write(str(imageIdx))
+            self.m_textCtrl_image3Cnt.write(str(imageCnt))
+        if imageCopies > 4:
+            imageIdx = self.semcNandImageInfo[4] >> 16
+            imageCnt = self.semcNandImageInfo[4] & 0x0000FFFF
+            self.m_textCtrl_image4Idx.Clear()
+            self.m_textCtrl_image4Cnt.Clear()
+            self.m_textCtrl_image4Idx.write(str(imageIdx))
+            self.m_textCtrl_image4Cnt.write(str(imageCnt))
+        if imageCopies > 5:
+            imageIdx = self.semcNandImageInfo[5] >> 16
+            imageCnt = self.semcNandImageInfo[5] & 0x0000FFFF
+            self.m_textCtrl_image5Idx.Clear()
+            self.m_textCtrl_image5Cnt.Clear()
+            self.m_textCtrl_image5Idx.write(str(imageIdx))
+            self.m_textCtrl_image5Cnt.write(str(imageCnt))
+        if imageCopies > 6:
+            imageIdx = self.semcNandImageInfo[6] >> 16
+            imageCnt = self.semcNandImageInfo[6] & 0x0000FFFF
+            self.m_textCtrl_image6Idx.Clear()
+            self.m_textCtrl_image6Cnt.Clear()
+            self.m_textCtrl_image6Idx.write(str(imageIdx))
+            self.m_textCtrl_image6Cnt.write(str(imageCnt))
+        if imageCopies > 7:
+            imageIdx = self.semcNandImageInfo[7] >> 16
+            imageCnt = self.semcNandImageInfo[7] & 0x0000FFFF
+            self.m_textCtrl_image7Idx.Clear()
+            self.m_textCtrl_image7Cnt.Clear()
+            self.m_textCtrl_image7Idx.write(str(imageIdx))
+            self.m_textCtrl_image7Cnt.write(str(imageCnt))
 
     def _getOnfiVersion( self ):
         txt = self.m_choice_onfiVersion.GetString(self.m_choice_onfiVersion.GetSelection())
@@ -121,6 +277,10 @@ class secBootUiSemcNand(bootDeviceWin_SemcNand.bootDeviceWin_SemcNand):
             self.semcNandImageInfo[6] = (int(self.m_textCtrl_image6Idx.GetLineText(0)) << 16) + int(self.m_textCtrl_image6Cnt.GetLineText(0))
         if imageCopies > 7:
             self.semcNandImageInfo[7] = (int(self.m_textCtrl_image7Idx.GetLineText(0)) << 16) + int(self.m_textCtrl_image7Cnt.GetLineText(0))
+
+    def callbackChangeImageCopies( self, event ):
+        imageCopies = int(self.m_choice_imageCopies.GetString(self.m_choice_imageCopies.GetSelection()))
+        self._updateImageInfoField(imageCopies)
 
     def callbackOk( self, event ):
         self._getOnfiVersion()
