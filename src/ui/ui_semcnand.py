@@ -2,7 +2,6 @@
 import wx
 import sys
 import os
-import math
 import uidef
 import uivar
 sys.path.append(os.path.abspath("../.."))
@@ -102,13 +101,9 @@ class secBootUiSemcNand(bootDeviceWin_SemcNand.bootDeviceWin_SemcNand):
         searchCount = (self.semcNandFcbOpt & 0x0000000F) >> 0
         self.m_choice_searchCount.SetSelection(searchCount - 1)
 
-        searchStride = (self.semcNandFcbOpt & 0x00000F00) >> 8
-        if searchStride < 6:
-            self.m_choice_searchStride.SetSelection(searchStride)
-        elif searchStride == 6:
-            self.m_choice_searchStride.SetSelection(0)
-        else:
-            self.m_choice_searchStride.SetSelection(searchStride - 1)
+        searchStride = (self.semcNandFcbOpt & 0x0000FF00) >> 8
+        self.m_textCtrl_searchStride.Clear()
+        self.m_textCtrl_searchStride.write(str(searchStride))
 
         imageCopies = (self.semcNandFcbOpt & 0x000F0000) >> 16
         self.m_choice_imageCopies.SetSelection(imageCopies - 1)
@@ -251,9 +246,8 @@ class secBootUiSemcNand(bootDeviceWin_SemcNand.bootDeviceWin_SemcNand):
         self.semcNandFcbOpt = (self.semcNandFcbOpt & 0xFFFFFFF0) | (val << 0)
 
     def _getSearchStride( self ):
-        val = int(self.m_choice_searchStride.GetString(self.m_choice_searchStride.GetSelection()))
-        val = int(math.log(val, 2))
-        self.semcNandFcbOpt = (self.semcNandFcbOpt & 0xFFFFF0FF) | (val << 8)
+        val = int(self.m_textCtrl_searchStride.GetLineText(0))
+        self.semcNandFcbOpt = (self.semcNandFcbOpt & 0xFFFF00FF) | (val << 8)
 
     def _getImageCopies( self ):
         val = int(self.m_choice_imageCopies.GetString(self.m_choice_imageCopies.GetSelection()))

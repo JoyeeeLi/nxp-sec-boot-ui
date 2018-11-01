@@ -126,10 +126,8 @@ class bootDeviceWin_SemcNand ( wx.Frame ):
 
 		gSizer_fcbOpt.Add( self.m_staticText_searchStride, 0, wx.ALL, 5 )
 
-		m_choice_searchStrideChoices = [ u"64", u"2", u"4", u"8", u"16", u"32", u"128", u"256", u"512", u"1024", u"2048", u"4096", u"8192", u"16384", u"32768" ]
-		self.m_choice_searchStride = wx.Choice( self.m_panel_fcbOpt, wx.ID_ANY, wx.DefaultPosition, wx.Size( 108,-1 ), m_choice_searchStrideChoices, 0 )
-		self.m_choice_searchStride.SetSelection( 0 )
-		gSizer_fcbOpt.Add( self.m_choice_searchStride, 0, wx.ALL, 5 )
+		self.m_textCtrl_searchStride = wx.TextCtrl( self.m_panel_fcbOpt, wx.ID_ANY, u"1", wx.DefaultPosition, wx.Size( 108,-1 ), 0 )
+		gSizer_fcbOpt.Add( self.m_textCtrl_searchStride, 0, wx.ALL, 5 )
 
 		self.m_staticText_imageCopies = wx.StaticText( self.m_panel_fcbOpt, wx.ID_ANY, u"Image Copies", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText_imageCopies.Wrap( -1 )

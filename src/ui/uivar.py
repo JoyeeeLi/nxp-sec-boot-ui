@@ -12,7 +12,7 @@ def initVar():
     global g_semcNandFcbOpt
     global g_semcNandImageInfo
     g_semcNandOpt = 0xD0010101
-    g_semcNandFcbOpt = 0x00010601
+    g_semcNandFcbOpt = 0x00010101
     g_semcNandImageInfo = [None] * 8
     g_semcNandImageInfo[0] = 0x00020001
 
