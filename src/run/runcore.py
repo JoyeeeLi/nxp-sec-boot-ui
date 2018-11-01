@@ -210,6 +210,20 @@ class secBootRun(gencore.secBootGen):
         else:
             pass
 
+    def configureBootDevice ( self ):
+        self._getBootDeviceMemoryInfo()
+        if self.bootDevice == uidef.kBootDevice_SemcNand:
+            status, results, cmdStr = self.blhost.fillMemory(0x2000, 0x4, self.semcNandOpt)
+            self.printLog(cmdStr)
+            status, results, cmdStr = self.blhost.fillMemory(0x2004, 0x4, self.semcNandFcbOpt)
+            self.printLog(cmdStr)
+            status, results, cmdStr = self.blhost.fillMemory(0x2008, 0x4, self.semcNandImageInfo[0])
+            self.printLog(cmdStr)
+            status, results, cmdStr = self.blhost.configureMemory(self.bootDeviceMemId, 0x2000)
+            self.printLog(cmdStr)
+        else:
+            pass
+
     def flashBootableImage ( self ):
         self._getBootDeviceMemoryInfo()
         memEraseLen = os.path.getsize(self.destAppFilename)

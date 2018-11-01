@@ -17,255 +17,278 @@ import wx.xrc
 class bootDeviceWin_SemcNand ( wx.Frame ):
 
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 785,370 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 785,414 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 
 		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 		self.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
 		self.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
 
-		wSizer9 = wx.WrapSizer( wx.HORIZONTAL, wx.WRAPSIZER_DEFAULT_FLAGS )
+		wSizer_win = wx.WrapSizer( wx.HORIZONTAL, wx.WRAPSIZER_DEFAULT_FLAGS )
 
-		self.m_notebook6 = wx.Notebook( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_panel27 = wx.Panel( self.m_notebook6, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		gSizer1 = wx.GridSizer( 0, 2, 0, 0 )
+		self.m_notebook_nandOpt = wx.Notebook( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_panel_nandOpt = wx.Panel( self.m_notebook_nandOpt, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		gSizer_nandOpt = wx.GridSizer( 0, 2, 0, 0 )
 
-		self.m_staticText27 = wx.StaticText( self.m_panel27, wx.ID_ANY, u"ONFI Version:", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText27.Wrap( -1 )
+		self.m_staticText_onfiVersion = wx.StaticText( self.m_panel_nandOpt, wx.ID_ANY, u"ONFI Version:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_onfiVersion.Wrap( -1 )
 
-		gSizer1.Add( self.m_staticText27, 0, wx.ALL, 5 )
+		gSizer_nandOpt.Add( self.m_staticText_onfiVersion, 0, wx.ALL, 5 )
 
-		m_choice12Choices = [ u"ONFI 1.x" ]
-		self.m_choice12 = wx.Choice( self.m_panel27, wx.ID_ANY, wx.DefaultPosition, wx.Size( 108,-1 ), m_choice12Choices, 0 )
-		self.m_choice12.SetSelection( 0 )
-		gSizer1.Add( self.m_choice12, 0, wx.ALL, 5 )
+		m_choice_onfiVersionChoices = [ u"ONFI 1.x" ]
+		self.m_choice_onfiVersion = wx.Choice( self.m_panel_nandOpt, wx.ID_ANY, wx.DefaultPosition, wx.Size( 108,-1 ), m_choice_onfiVersionChoices, 0 )
+		self.m_choice_onfiVersion.SetSelection( 0 )
+		gSizer_nandOpt.Add( self.m_choice_onfiVersion, 0, wx.ALL, 5 )
 
-		self.m_staticText30 = wx.StaticText( self.m_panel27, wx.ID_ANY, u"ONFI Timing Mode:", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText30.Wrap( -1 )
+		self.m_staticText_onfiTimingMode = wx.StaticText( self.m_panel_nandOpt, wx.ID_ANY, u"ONFI Timing Mode:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_onfiTimingMode.Wrap( -1 )
 
-		gSizer1.Add( self.m_staticText30, 0, wx.ALL, 5 )
+		gSizer_nandOpt.Add( self.m_staticText_onfiTimingMode, 0, wx.ALL, 5 )
 
-		m_choice15Choices = [ u"Mode0 - 10MHz" ]
-		self.m_choice15 = wx.Choice( self.m_panel27, wx.ID_ANY, wx.DefaultPosition, wx.Size( 108,-1 ), m_choice15Choices, 0 )
-		self.m_choice15.SetSelection( 0 )
-		gSizer1.Add( self.m_choice15, 0, wx.ALL, 5 )
+		m_choice_onfiTimingModeChoices = [ u"Mode0 - 10MHz", u"Mode1 - 20MHz", u"Mode2 - 28MHz", u"Mode3 - 33MHz", u"Mode4 - 40MHz", u"Mode5 - 50MHz" ]
+		self.m_choice_onfiTimingMode = wx.Choice( self.m_panel_nandOpt, wx.ID_ANY, wx.DefaultPosition, wx.Size( 108,-1 ), m_choice_onfiTimingModeChoices, 0 )
+		self.m_choice_onfiTimingMode.SetSelection( 0 )
+		gSizer_nandOpt.Add( self.m_choice_onfiTimingMode, 0, wx.ALL, 5 )
 
-		self.m_staticText31 = wx.StaticText( self.m_panel27, wx.ID_ANY, u"EDO Mode:", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText31.Wrap( -1 )
+		self.m_staticText_edoMode = wx.StaticText( self.m_panel_nandOpt, wx.ID_ANY, u"EDO Mode:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_edoMode.Wrap( -1 )
 
-		gSizer1.Add( self.m_staticText31, 0, wx.ALL, 5 )
+		gSizer_nandOpt.Add( self.m_staticText_edoMode, 0, wx.ALL, 5 )
 
-		m_choice16Choices = [ u"Enabled", u"Disabled" ]
-		self.m_choice16 = wx.Choice( self.m_panel27, wx.ID_ANY, wx.DefaultPosition, wx.Size( 108,-1 ), m_choice16Choices, 0 )
-		self.m_choice16.SetSelection( 0 )
-		gSizer1.Add( self.m_choice16, 0, wx.ALL, 5 )
+		m_choice_edoModeChoices = [ u"Disabled", u"Enabled" ]
+		self.m_choice_edoMode = wx.Choice( self.m_panel_nandOpt, wx.ID_ANY, wx.DefaultPosition, wx.Size( 108,-1 ), m_choice_edoModeChoices, 0 )
+		self.m_choice_edoMode.SetSelection( 0 )
+		gSizer_nandOpt.Add( self.m_choice_edoMode, 0, wx.ALL, 5 )
 
-		self.m_staticText32 = wx.StaticText( self.m_panel27, wx.ID_ANY, u"I/O Port Size:", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText32.Wrap( -1 )
+		self.m_staticText_ioPortSize = wx.StaticText( self.m_panel_nandOpt, wx.ID_ANY, u"I/O Port Size:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_ioPortSize.Wrap( -1 )
 
-		gSizer1.Add( self.m_staticText32, 0, wx.ALL, 5 )
+		gSizer_nandOpt.Add( self.m_staticText_ioPortSize, 0, wx.ALL, 5 )
 
-		m_choice17Choices = [ u"x8 bits", u"x16 bits" ]
-		self.m_choice17 = wx.Choice( self.m_panel27, wx.ID_ANY, wx.DefaultPosition, wx.Size( 108,-1 ), m_choice17Choices, 0 )
-		self.m_choice17.SetSelection( 0 )
-		gSizer1.Add( self.m_choice17, 0, wx.ALL, 5 )
+		m_choice_ioPortSizeChoices = [ u"x8 bits", u"x16 bits" ]
+		self.m_choice_ioPortSize = wx.Choice( self.m_panel_nandOpt, wx.ID_ANY, wx.DefaultPosition, wx.Size( 108,-1 ), m_choice_ioPortSizeChoices, 0 )
+		self.m_choice_ioPortSize.SetSelection( 0 )
+		gSizer_nandOpt.Add( self.m_choice_ioPortSize, 0, wx.ALL, 5 )
 
-		self.m_staticText33 = wx.StaticText( self.m_panel27, wx.ID_ANY, u"PCS Port:", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText33.Wrap( -1 )
+		self.m_staticText_pcsPort = wx.StaticText( self.m_panel_nandOpt, wx.ID_ANY, u"PCS Port:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_pcsPort.Wrap( -1 )
 
-		gSizer1.Add( self.m_staticText33, 0, wx.ALL, 5 )
+		gSizer_nandOpt.Add( self.m_staticText_pcsPort, 0, wx.ALL, 5 )
 
-		m_choice18Choices = [ u"CSX0" ]
-		self.m_choice18 = wx.Choice( self.m_panel27, wx.ID_ANY, wx.DefaultPosition, wx.Size( 108,-1 ), m_choice18Choices, 0 )
-		self.m_choice18.SetSelection( 0 )
-		gSizer1.Add( self.m_choice18, 0, wx.ALL, 5 )
+		m_choice_pcsPortChoices = [ u"CSX0" ]
+		self.m_choice_pcsPort = wx.Choice( self.m_panel_nandOpt, wx.ID_ANY, wx.DefaultPosition, wx.Size( 108,-1 ), m_choice_pcsPortChoices, 0 )
+		self.m_choice_pcsPort.SetSelection( 0 )
+		gSizer_nandOpt.Add( self.m_choice_pcsPort, 0, wx.ALL, 5 )
 
-		self.m_staticText34 = wx.StaticText( self.m_panel27, wx.ID_ANY, u"ECC Type:", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText34.Wrap( -1 )
+		self.m_staticText_eccType = wx.StaticText( self.m_panel_nandOpt, wx.ID_ANY, u"ECC Type:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_eccType.Wrap( -1 )
 
-		gSizer1.Add( self.m_staticText34, 0, wx.ALL, 5 )
+		gSizer_nandOpt.Add( self.m_staticText_eccType, 0, wx.ALL, 5 )
 
-		m_choice19Choices = [ u"SW - 1bit ECC", u"HW" ]
-		self.m_choice19 = wx.Choice( self.m_panel27, wx.ID_ANY, wx.DefaultPosition, wx.Size( 108,-1 ), m_choice19Choices, 0 )
-		self.m_choice19.SetSelection( 0 )
-		gSizer1.Add( self.m_choice19, 0, wx.ALL, 5 )
+		m_choice_eccTypeChoices = [ u"SW - 1bit ECC", u"HW" ]
+		self.m_choice_eccType = wx.Choice( self.m_panel_nandOpt, wx.ID_ANY, wx.DefaultPosition, wx.Size( 108,-1 ), m_choice_eccTypeChoices, 0 )
+		self.m_choice_eccType.SetSelection( 1 )
+		gSizer_nandOpt.Add( self.m_choice_eccType, 0, wx.ALL, 5 )
 
-		self.m_staticText35 = wx.StaticText( self.m_panel27, wx.ID_ANY, u"Initial ECC status:", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText35.Wrap( -1 )
+		self.m_staticText_eccStatus = wx.StaticText( self.m_panel_nandOpt, wx.ID_ANY, u"Initial ECC status:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_eccStatus.Wrap( -1 )
 
-		gSizer1.Add( self.m_staticText35, 0, wx.ALL, 5 )
+		gSizer_nandOpt.Add( self.m_staticText_eccStatus, 0, wx.ALL, 5 )
 
-		m_choice20Choices = [ u"Enabled", u"Disabled" ]
-		self.m_choice20 = wx.Choice( self.m_panel27, wx.ID_ANY, wx.DefaultPosition, wx.Size( 108,-1 ), m_choice20Choices, 0 )
-		self.m_choice20.SetSelection( 0 )
-		gSizer1.Add( self.m_choice20, 0, wx.ALL, 5 )
+		m_choice_eccStatusChoices = [ u"Enabled", u"Disabled" ]
+		self.m_choice_eccStatus = wx.Choice( self.m_panel_nandOpt, wx.ID_ANY, wx.DefaultPosition, wx.Size( 108,-1 ), m_choice_eccStatusChoices, 0 )
+		self.m_choice_eccStatus.SetSelection( 0 )
+		gSizer_nandOpt.Add( self.m_choice_eccStatus, 0, wx.ALL, 5 )
 
 
-		self.m_panel27.SetSizer( gSizer1 )
-		self.m_panel27.Layout()
-		gSizer1.Fit( self.m_panel27 )
-		self.m_notebook6.AddPage( self.m_panel27, u"Nand Option", False )
+		self.m_panel_nandOpt.SetSizer( gSizer_nandOpt )
+		self.m_panel_nandOpt.Layout()
+		gSizer_nandOpt.Fit( self.m_panel_nandOpt )
+		self.m_notebook_nandOpt.AddPage( self.m_panel_nandOpt, u"Nand Option", False )
 
-		wSizer9.Add( self.m_notebook6, 1, wx.EXPAND |wx.ALL, 5 )
+		wSizer_win.Add( self.m_notebook_nandOpt, 1, wx.EXPAND |wx.ALL, 5 )
 
-		self.m_notebook7 = wx.Notebook( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_panel28 = wx.Panel( self.m_notebook7, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		gSizer2 = wx.GridSizer( 0, 2, 0, 0 )
+		self.m_notebook_fcbOpt = wx.Notebook( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_panel_fcbOpt = wx.Panel( self.m_notebook_fcbOpt, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		gSizer_fcbOpt = wx.GridSizer( 0, 2, 0, 0 )
 
-		self.m_staticText28 = wx.StaticText( self.m_panel28, wx.ID_ANY, u"Search Count:", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText28.Wrap( -1 )
+		self.m_staticText_searchCount = wx.StaticText( self.m_panel_fcbOpt, wx.ID_ANY, u"Search Count:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_searchCount.Wrap( -1 )
 
-		gSizer2.Add( self.m_staticText28, 0, wx.ALL, 5 )
+		gSizer_fcbOpt.Add( self.m_staticText_searchCount, 0, wx.ALL, 5 )
 
-		m_choice13Choices = [ u"1", u"2" ]
-		self.m_choice13 = wx.Choice( self.m_panel28, wx.ID_ANY, wx.DefaultPosition, wx.Size( 108,-1 ), m_choice13Choices, 0 )
-		self.m_choice13.SetSelection( 0 )
-		gSizer2.Add( self.m_choice13, 0, wx.ALL, 5 )
+		m_choice_searchCountChoices = [ u"1", u"2" ]
+		self.m_choice_searchCount = wx.Choice( self.m_panel_fcbOpt, wx.ID_ANY, wx.DefaultPosition, wx.Size( 108,-1 ), m_choice_searchCountChoices, 0 )
+		self.m_choice_searchCount.SetSelection( 0 )
+		gSizer_fcbOpt.Add( self.m_choice_searchCount, 0, wx.ALL, 5 )
 
-		self.m_staticText36 = wx.StaticText( self.m_panel28, wx.ID_ANY, u"Search Stride:", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText36.Wrap( -1 )
+		self.m_staticText_searchStride = wx.StaticText( self.m_panel_fcbOpt, wx.ID_ANY, u"Search Stride:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_searchStride.Wrap( -1 )
 
-		gSizer2.Add( self.m_staticText36, 0, wx.ALL, 5 )
+		gSizer_fcbOpt.Add( self.m_staticText_searchStride, 0, wx.ALL, 5 )
 
-		m_choice21Choices = [ u"64", u"2", u"4", u"8", u"16", u"32", u"128", u"256", u"512", u"1024", u"2048", u"4096", u"8192", u"16384", u"32768" ]
-		self.m_choice21 = wx.Choice( self.m_panel28, wx.ID_ANY, wx.DefaultPosition, wx.Size( 108,-1 ), m_choice21Choices, 0 )
-		self.m_choice21.SetSelection( 0 )
-		gSizer2.Add( self.m_choice21, 0, wx.ALL, 5 )
+		m_choice_searchStrideChoices = [ u"64", u"2", u"4", u"8", u"16", u"32", u"128", u"256", u"512", u"1024", u"2048", u"4096", u"8192", u"16384", u"32768" ]
+		self.m_choice_searchStride = wx.Choice( self.m_panel_fcbOpt, wx.ID_ANY, wx.DefaultPosition, wx.Size( 108,-1 ), m_choice_searchStrideChoices, 0 )
+		self.m_choice_searchStride.SetSelection( 0 )
+		gSizer_fcbOpt.Add( self.m_choice_searchStride, 0, wx.ALL, 5 )
 
-		self.m_staticText37 = wx.StaticText( self.m_panel28, wx.ID_ANY, u"Image Copies", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText37.Wrap( -1 )
+		self.m_staticText_imageCopies = wx.StaticText( self.m_panel_fcbOpt, wx.ID_ANY, u"Image Copies", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_imageCopies.Wrap( -1 )
 
-		gSizer2.Add( self.m_staticText37, 0, wx.ALL, 5 )
+		gSizer_fcbOpt.Add( self.m_staticText_imageCopies, 0, wx.ALL, 5 )
 
-		m_choice22Choices = [ u"1", u"2", u"3", u"4", u"5", u"6", u"7", u"8" ]
-		self.m_choice22 = wx.Choice( self.m_panel28, wx.ID_ANY, wx.DefaultPosition, wx.Size( 108,-1 ), m_choice22Choices, 0 )
-		self.m_choice22.SetSelection( 0 )
-		gSizer2.Add( self.m_choice22, 0, wx.ALL, 5 )
+		m_choice_imageCopiesChoices = [ u"1", u"2", u"3", u"4", u"5", u"6", u"7", u"8" ]
+		self.m_choice_imageCopies = wx.Choice( self.m_panel_fcbOpt, wx.ID_ANY, wx.DefaultPosition, wx.Size( 108,-1 ), m_choice_imageCopiesChoices, 0 )
+		self.m_choice_imageCopies.SetSelection( 0 )
+		gSizer_fcbOpt.Add( self.m_choice_imageCopies, 0, wx.ALL, 5 )
 
-		self.m_staticText38 = wx.StaticText( self.m_panel28, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText38.Wrap( -1 )
+		self.m_staticText_fcbOptNull0 = wx.StaticText( self.m_panel_fcbOpt, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_fcbOptNull0.Wrap( -1 )
 
-		gSizer2.Add( self.m_staticText38, 0, wx.ALL, 5 )
+		gSizer_fcbOpt.Add( self.m_staticText_fcbOptNull0, 0, wx.ALL, 5 )
 
-		self.m_staticText39 = wx.StaticText( self.m_panel28, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText39.Wrap( -1 )
+		self.m_staticText_fcbOptNull1 = wx.StaticText( self.m_panel_fcbOpt, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_fcbOptNull1.Wrap( -1 )
 
-		gSizer2.Add( self.m_staticText39, 0, wx.ALL, 5 )
+		gSizer_fcbOpt.Add( self.m_staticText_fcbOptNull1, 0, wx.ALL, 5 )
 
-		self.m_staticText40 = wx.StaticText( self.m_panel28, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText40.Wrap( -1 )
+		self.m_staticText_fcbOptNull2 = wx.StaticText( self.m_panel_fcbOpt, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_fcbOptNull2.Wrap( -1 )
 
-		gSizer2.Add( self.m_staticText40, 0, wx.ALL, 5 )
+		gSizer_fcbOpt.Add( self.m_staticText_fcbOptNull2, 0, wx.ALL, 5 )
 
-		self.m_staticText41 = wx.StaticText( self.m_panel28, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText41.Wrap( -1 )
+		self.m_staticText_fcbOptNull3 = wx.StaticText( self.m_panel_fcbOpt, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_fcbOptNull3.Wrap( -1 )
 
-		gSizer2.Add( self.m_staticText41, 0, wx.ALL, 5 )
+		gSizer_fcbOpt.Add( self.m_staticText_fcbOptNull3, 0, wx.ALL, 5 )
 
-		self.m_staticText42 = wx.StaticText( self.m_panel28, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText42.Wrap( -1 )
+		self.m_staticText_fcbOptNull4 = wx.StaticText( self.m_panel_fcbOpt, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_fcbOptNull4.Wrap( -1 )
 
-		gSizer2.Add( self.m_staticText42, 0, wx.ALL, 5 )
+		gSizer_fcbOpt.Add( self.m_staticText_fcbOptNull4, 0, wx.ALL, 5 )
 
-		self.m_staticText43 = wx.StaticText( self.m_panel28, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText43.Wrap( -1 )
+		self.m_staticText_fcbOptNull5 = wx.StaticText( self.m_panel_fcbOpt, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_fcbOptNull5.Wrap( -1 )
 
-		gSizer2.Add( self.m_staticText43, 0, wx.ALL, 5 )
+		gSizer_fcbOpt.Add( self.m_staticText_fcbOptNull5, 0, wx.ALL, 5 )
 
-		self.m_staticText44 = wx.StaticText( self.m_panel28, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText44.Wrap( -1 )
+		self.m_staticText_fcbOptNull6 = wx.StaticText( self.m_panel_fcbOpt, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_fcbOptNull6.Wrap( -1 )
 
-		gSizer2.Add( self.m_staticText44, 0, wx.ALL, 5 )
+		gSizer_fcbOpt.Add( self.m_staticText_fcbOptNull6, 0, wx.ALL, 5 )
 
-		self.m_staticText45 = wx.StaticText( self.m_panel28, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText45.Wrap( -1 )
+		self.m_staticText_fcbOptNull7 = wx.StaticText( self.m_panel_fcbOpt, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_fcbOptNull7.Wrap( -1 )
 
-		gSizer2.Add( self.m_staticText45, 0, wx.ALL, 5 )
+		gSizer_fcbOpt.Add( self.m_staticText_fcbOptNull7, 0, wx.ALL, 5 )
 
 
-		self.m_panel28.SetSizer( gSizer2 )
-		self.m_panel28.Layout()
-		gSizer2.Fit( self.m_panel28 )
-		self.m_notebook7.AddPage( self.m_panel28, u"FCB Option", False )
+		self.m_panel_fcbOpt.SetSizer( gSizer_fcbOpt )
+		self.m_panel_fcbOpt.Layout()
+		gSizer_fcbOpt.Fit( self.m_panel_fcbOpt )
+		self.m_notebook_fcbOpt.AddPage( self.m_panel_fcbOpt, u"FCB Option", False )
 
-		wSizer9.Add( self.m_notebook7, 1, wx.EXPAND |wx.ALL, 5 )
+		wSizer_win.Add( self.m_notebook_fcbOpt, 1, wx.EXPAND |wx.ALL, 5 )
 
-		self.m_notebook8 = wx.Notebook( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_panel29 = wx.Panel( self.m_notebook8, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		gSizer3 = wx.GridSizer( 0, 2, 0, 0 )
+		self.m_notebook_imageInfo = wx.Notebook( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_panel_imageInfo = wx.Panel( self.m_notebook_imageInfo, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		gSizer_imageInfo = wx.GridSizer( 0, 2, 0, 0 )
 
-		self.m_staticText29 = wx.StaticText( self.m_panel29, wx.ID_ANY, u"Block Index", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText29.Wrap( -1 )
+		self.m_staticText_blockIndex = wx.StaticText( self.m_panel_imageInfo, wx.ID_ANY, u"Block Index", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_blockIndex.Wrap( -1 )
 
-		gSizer3.Add( self.m_staticText29, 0, wx.ALL, 5 )
+		gSizer_imageInfo.Add( self.m_staticText_blockIndex, 0, wx.ALL, 5 )
 
-		self.m_staticText46 = wx.StaticText( self.m_panel29, wx.ID_ANY, u"Block Count", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText46.Wrap( -1 )
+		self.m_staticText_blockCount = wx.StaticText( self.m_panel_imageInfo, wx.ID_ANY, u"Block Count", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_blockCount.Wrap( -1 )
 
-		gSizer3.Add( self.m_staticText46, 0, wx.ALL, 5 )
+		gSizer_imageInfo.Add( self.m_staticText_blockCount, 0, wx.ALL, 5 )
 
-		self.m_textCtrl11 = wx.TextCtrl( self.m_panel29, wx.ID_ANY, u"2", wx.DefaultPosition, wx.DefaultSize, 0 )
-		gSizer3.Add( self.m_textCtrl11, 0, wx.ALL, 5 )
+		self.m_textCtrl_image0Idx = wx.TextCtrl( self.m_panel_imageInfo, wx.ID_ANY, u"2", wx.DefaultPosition, wx.DefaultSize, 0 )
+		gSizer_imageInfo.Add( self.m_textCtrl_image0Idx, 0, wx.ALL, 5 )
 
-		self.m_textCtrl12 = wx.TextCtrl( self.m_panel29, wx.ID_ANY, u"1", wx.DefaultPosition, wx.DefaultSize, 0 )
-		gSizer3.Add( self.m_textCtrl12, 0, wx.ALL, 5 )
+		self.m_textCtrl_image0Cnt = wx.TextCtrl( self.m_panel_imageInfo, wx.ID_ANY, u"1", wx.DefaultPosition, wx.DefaultSize, 0 )
+		gSizer_imageInfo.Add( self.m_textCtrl_image0Cnt, 0, wx.ALL, 5 )
 
-		self.m_textCtrl13 = wx.TextCtrl( self.m_panel29, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		gSizer3.Add( self.m_textCtrl13, 0, wx.ALL, 5 )
+		self.m_textCtrl_image1Idx = wx.TextCtrl( self.m_panel_imageInfo, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		gSizer_imageInfo.Add( self.m_textCtrl_image1Idx, 0, wx.ALL, 5 )
 
-		self.m_textCtrl14 = wx.TextCtrl( self.m_panel29, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		gSizer3.Add( self.m_textCtrl14, 0, wx.ALL, 5 )
+		self.m_textCtrl_image1Cnt = wx.TextCtrl( self.m_panel_imageInfo, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		gSizer_imageInfo.Add( self.m_textCtrl_image1Cnt, 0, wx.ALL, 5 )
 
-		self.m_textCtrl15 = wx.TextCtrl( self.m_panel29, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		gSizer3.Add( self.m_textCtrl15, 0, wx.ALL, 5 )
+		self.m_textCtrl_image2Idx = wx.TextCtrl( self.m_panel_imageInfo, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		gSizer_imageInfo.Add( self.m_textCtrl_image2Idx, 0, wx.ALL, 5 )
 
-		self.m_textCtrl16 = wx.TextCtrl( self.m_panel29, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		gSizer3.Add( self.m_textCtrl16, 0, wx.ALL, 5 )
+		self.m_textCtrl_image2Cnt = wx.TextCtrl( self.m_panel_imageInfo, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		gSizer_imageInfo.Add( self.m_textCtrl_image2Cnt, 0, wx.ALL, 5 )
 
-		self.m_textCtrl17 = wx.TextCtrl( self.m_panel29, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		gSizer3.Add( self.m_textCtrl17, 0, wx.ALL, 5 )
+		self.m_textCtrl_image3Idx = wx.TextCtrl( self.m_panel_imageInfo, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		gSizer_imageInfo.Add( self.m_textCtrl_image3Idx, 0, wx.ALL, 5 )
 
-		self.m_textCtrl18 = wx.TextCtrl( self.m_panel29, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		gSizer3.Add( self.m_textCtrl18, 0, wx.ALL, 5 )
+		self.m_textCtrl_image3Cnt = wx.TextCtrl( self.m_panel_imageInfo, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		gSizer_imageInfo.Add( self.m_textCtrl_image3Cnt, 0, wx.ALL, 5 )
 
-		self.m_textCtrl19 = wx.TextCtrl( self.m_panel29, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		gSizer3.Add( self.m_textCtrl19, 0, wx.ALL, 5 )
+		self.m_textCtrl_image4Idx = wx.TextCtrl( self.m_panel_imageInfo, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		gSizer_imageInfo.Add( self.m_textCtrl_image4Idx, 0, wx.ALL, 5 )
 
-		self.m_textCtrl20 = wx.TextCtrl( self.m_panel29, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		gSizer3.Add( self.m_textCtrl20, 0, wx.ALL, 5 )
+		self.m_textCtrl_image4Cnt = wx.TextCtrl( self.m_panel_imageInfo, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		gSizer_imageInfo.Add( self.m_textCtrl_image4Cnt, 0, wx.ALL, 5 )
 
-		self.m_textCtrl21 = wx.TextCtrl( self.m_panel29, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		gSizer3.Add( self.m_textCtrl21, 0, wx.ALL, 5 )
+		self.m_textCtrl_image5Idx = wx.TextCtrl( self.m_panel_imageInfo, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		gSizer_imageInfo.Add( self.m_textCtrl_image5Idx, 0, wx.ALL, 5 )
 
-		self.m_textCtrl22 = wx.TextCtrl( self.m_panel29, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		gSizer3.Add( self.m_textCtrl22, 0, wx.ALL, 5 )
+		self.m_textCtrl_image5Cnt = wx.TextCtrl( self.m_panel_imageInfo, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		gSizer_imageInfo.Add( self.m_textCtrl_image5Cnt, 0, wx.ALL, 5 )
 
-		self.m_textCtrl23 = wx.TextCtrl( self.m_panel29, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		gSizer3.Add( self.m_textCtrl23, 0, wx.ALL, 5 )
+		self.m_textCtrl_image6Idx = wx.TextCtrl( self.m_panel_imageInfo, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		gSizer_imageInfo.Add( self.m_textCtrl_image6Idx, 0, wx.ALL, 5 )
 
-		self.m_textCtrl24 = wx.TextCtrl( self.m_panel29, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		gSizer3.Add( self.m_textCtrl24, 0, wx.ALL, 5 )
+		self.m_textCtrl_image6Cnt = wx.TextCtrl( self.m_panel_imageInfo, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		gSizer_imageInfo.Add( self.m_textCtrl_image6Cnt, 0, wx.ALL, 5 )
 
-		self.m_textCtrl25 = wx.TextCtrl( self.m_panel29, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		gSizer3.Add( self.m_textCtrl25, 0, wx.ALL, 5 )
+		self.m_textCtrl_image7Idx = wx.TextCtrl( self.m_panel_imageInfo, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		gSizer_imageInfo.Add( self.m_textCtrl_image7Idx, 0, wx.ALL, 5 )
 
-		self.m_textCtrl26 = wx.TextCtrl( self.m_panel29, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		gSizer3.Add( self.m_textCtrl26, 0, wx.ALL, 5 )
+		self.m_textCtrl_image7Cnt = wx.TextCtrl( self.m_panel_imageInfo, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		gSizer_imageInfo.Add( self.m_textCtrl_image7Cnt, 0, wx.ALL, 5 )
 
 
-		self.m_panel29.SetSizer( gSizer3 )
-		self.m_panel29.Layout()
-		gSizer3.Fit( self.m_panel29 )
-		self.m_notebook8.AddPage( self.m_panel29, u"Image Info", False )
+		self.m_panel_imageInfo.SetSizer( gSizer_imageInfo )
+		self.m_panel_imageInfo.Layout()
+		gSizer_imageInfo.Fit( self.m_panel_imageInfo )
+		self.m_notebook_imageInfo.AddPage( self.m_panel_imageInfo, u"Image Info", False )
 
-		wSizer9.Add( self.m_notebook8, 1, wx.EXPAND |wx.ALL, 5 )
+		wSizer_win.Add( self.m_notebook_imageInfo, 1, wx.EXPAND |wx.ALL, 5 )
 
+		self.m_staticText_winNull0 = wx.StaticText( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 518,-1 ), 0 )
+		self.m_staticText_winNull0.Wrap( -1 )
 
-		self.SetSizer( wSizer9 )
+		wSizer_win.Add( self.m_staticText_winNull0, 0, wx.ALL, 5 )
+
+		self.m_button_ok = wx.Button( self, wx.ID_ANY, u"Ok", wx.DefaultPosition, wx.Size( 100,-1 ), 0 )
+		wSizer_win.Add( self.m_button_ok, 0, wx.ALL, 5 )
+
+		self.m_button_cancel = wx.Button( self, wx.ID_ANY, u"Cancel", wx.DefaultPosition, wx.Size( 100,-1 ), 0 )
+		wSizer_win.Add( self.m_button_cancel, 0, wx.ALL, 5 )
+
+
+		self.SetSizer( wSizer_win )
 		self.Layout()
 
 		self.Centre( wx.BOTH )
 
+		# Connect Events
+		self.m_button_ok.Bind( wx.EVT_BUTTON, self.callbackOk )
+		self.m_button_cancel.Bind( wx.EVT_BUTTON, self.callbackCancel )
+
 	def __del__( self ):
 		pass
+
+
+	# Virtual event handlers, overide them in your derived class
+	def callbackOk( self, event ):
+		event.Skip()
+
+	def callbackCancel( self, event ):
+		event.Skip()
 
 

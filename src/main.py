@@ -51,7 +51,8 @@ class secBootMain(runcore.secBootRun):
                 self.connectStage = uidef.kConnectStage_Rom
                 self.updateConnectStatus('red')
         elif self.connectStage == uidef.kConnectStage_ExternalMemory:
-            # To-Do
+            self.getBootDeviceConfiguration()
+            self.configureBootDevice()
             self.connectStage = uidef.kConnectStage_Reset
             self.updateConnectStatus('blue')
             pass
