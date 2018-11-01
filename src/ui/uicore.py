@@ -6,8 +6,8 @@ import math
 import serial.tools.list_ports
 import uidef
 sys.path.append(os.path.abspath("../.."))
-from gui import nxpSecBoot
-from gui import semcNand
+from gui import secBootWin
+from gui import bootDeviceWin_SemcNand
 sys.path.append(os.path.abspath(".."))
 from run import rundef
 
@@ -15,10 +15,10 @@ g_semcNandOpt = 0xD0000000
 g_semcNandFcbOpt = 0x00000000
 g_semcNandImageInfo = [None] * 8
 
-class secBootUiSemcNand(semcNand.bootDeviceWin_SemcNand):
+class secBootUiSemcNand(bootDeviceWin_SemcNand.bootDeviceWin_SemcNand):
 
     def __init__(self, parent):
-        semcNand.bootDeviceWin_SemcNand.__init__(self, parent)
+        bootDeviceWin_SemcNand.bootDeviceWin_SemcNand.__init__(self, parent)
 
     def _getOnfiVersion( self ):
         global g_semcNandOpt
@@ -154,10 +154,10 @@ class secBootUiSemcNand(semcNand.bootDeviceWin_SemcNand):
     def callbackCancel( self, event ):
         self.Show(False)
 
-class secBootUi(nxpSecBoot.secBootWin):
+class secBootUi(secBootWin.secBootWin):
 
     def __init__(self, parent):
-        nxpSecBoot.secBootWin.__init__(self, parent)
+        secBootWin.secBootWin.__init__(self, parent)
         self.m_bitmap_nxp.SetBitmap(wx.Bitmap( u"../img/logo_nxp.png", wx.BITMAP_TYPE_ANY ))
         self.updateConnectStatus()
 

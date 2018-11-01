@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
-import nxpSecBoot
+import secBootWin
+import bootDeviceWin_SemcNand
 
-__all__ = ["nxpSecBoot"]
+__all__ = ["secBootWin", "bootDeviceWin_SemcNand"]
