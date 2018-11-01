@@ -257,20 +257,36 @@ class secBootUiSemcNand(bootDeviceWin_SemcNand.bootDeviceWin_SemcNand):
         imageCopies = int(self.m_choice_imageCopies.GetString(self.m_choice_imageCopies.GetSelection()))
         if imageCopies > 0:
             self.semcNandImageInfo[0] = (int(self.m_textCtrl_image0Idx.GetLineText(0)) << 16) + int(self.m_textCtrl_image0Cnt.GetLineText(0))
+        else:
+            self.semcNandImageInfo[0] = None
         if imageCopies > 1:
             self.semcNandImageInfo[1] = (int(self.m_textCtrl_image1Idx.GetLineText(0)) << 16) + int(self.m_textCtrl_image1Cnt.GetLineText(0))
+        else:
+            self.semcNandImageInfo[1] = None
         if imageCopies > 2:
             self.semcNandImageInfo[2] = (int(self.m_textCtrl_image2Idx.GetLineText(0)) << 16) + int(self.m_textCtrl_image2Cnt.GetLineText(0))
+        else:
+            self.semcNandImageInfo[2] = None
         if imageCopies > 3:
             self.semcNandImageInfo[3] = (int(self.m_textCtrl_image3Idx.GetLineText(0)) << 16) + int(self.m_textCtrl_image3Cnt.GetLineText(0))
+        else:
+            self.semcNandImageInfo[3] = None
         if imageCopies > 4:
             self.semcNandImageInfo[4] = (int(self.m_textCtrl_image4Idx.GetLineText(0)) << 16) + int(self.m_textCtrl_image4Cnt.GetLineText(0))
+        else:
+            self.semcNandImageInfo[4] = None
         if imageCopies > 5:
             self.semcNandImageInfo[5] = (int(self.m_textCtrl_image5Idx.GetLineText(0)) << 16) + int(self.m_textCtrl_image5Cnt.GetLineText(0))
+        else:
+            self.semcNandImageInfo[5] = None
         if imageCopies > 6:
             self.semcNandImageInfo[6] = (int(self.m_textCtrl_image6Idx.GetLineText(0)) << 16) + int(self.m_textCtrl_image6Cnt.GetLineText(0))
+        else:
+            self.semcNandImageInfo[6] = None
         if imageCopies > 7:
             self.semcNandImageInfo[7] = (int(self.m_textCtrl_image7Idx.GetLineText(0)) << 16) + int(self.m_textCtrl_image7Cnt.GetLineText(0))
+        else:
+            self.semcNandImageInfo[7] = None
 
     def callbackChangeImageCopies( self, event ):
         imageCopies = int(self.m_choice_imageCopies.GetString(self.m_choice_imageCopies.GetSelection()))

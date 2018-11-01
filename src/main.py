@@ -31,7 +31,7 @@ class secBootMain(runcore.secBootRun):
         if self.connectStage == uidef.kConnectStage_Rom:
             self.connectToDevice(self.connectStage)
             if self.pingRom():
-                self.getDeviceStatusViaRom()
+                self.getMcuDeviceInfoViaRom()
                 if self.jumpToFlashloader():
                     self.updateConnectStatus('yellow')
                     self.connectStage = uidef.kConnectStage_Flashloader
@@ -44,17 +44,18 @@ class secBootMain(runcore.secBootRun):
         elif self.connectStage == uidef.kConnectStage_Flashloader:
             self.connectToDevice(self.connectStage)
             if self.pingFlashloader():
-                self.getDeviceStatusViaFlashloader()
+                self.getMcuDeviceInfoViaFlashloader()
                 self.updateConnectStatus('green')
                 self.connectStage = uidef.kConnectStage_ExternalMemory
             else:
-                self.connectStage = uidef.kConnectStage_Rom
                 self.updateConnectStatus('red')
         elif self.connectStage == uidef.kConnectStage_ExternalMemory:
-            self.configureBootDevice()
-            self.connectStage = uidef.kConnectStage_Reset
-            self.updateConnectStatus('blue')
-            pass
+            if self.configureBootDevice():
+                self.geBootDeviceInfoViaFlashloader()
+                self.connectStage = uidef.kConnectStage_Reset
+                self.updateConnectStatus('blue')
+            else:
+                self.updateConnectStatus('red')
         elif self.connectStage == uidef.kConnectStage_Reset:
             self.resetMcuDevice()
             self.connectStage = uidef.kConnectStage_Rom

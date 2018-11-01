@@ -11,9 +11,11 @@
 #
 *.fbp.bak
 
+/.idea
 /doc
 /ext
-/.idea
+/gen
+/app
 
 # Python bytecode
 *.pyc

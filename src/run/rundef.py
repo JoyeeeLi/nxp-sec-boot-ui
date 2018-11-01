@@ -19,4 +19,6 @@ kBootDeviceMemBase_LpspiNor     = 0x0
 kBootDeviceMemBase_UsdhcSd      = 0x0
 kBootDeviceMemBase_UsdhcMmc     = 0x0
 
+kRamFreeSpaceStart_Flashloader = 0x00002000
+kRamFreeSpaceStart_Rom         = 0x20208000
 

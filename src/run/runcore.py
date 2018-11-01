@@ -10,6 +10,7 @@ from ui import uidef
 from ui import uivar
 from boot import bltest
 from boot import target
+from utils import misc
 
 def createTarget(device):
     # Build path to target directory and config file.
@@ -59,6 +60,8 @@ class secBootRun(gencore.secBootGen):
 
         self.bootDeviceMemId = None
         self.bootDeviceMemBase = None
+        self.semcNandImageCopies = None
+        self.semcNandBlockSize = None
 
     def getUsbid( self ):
         # Create the target object.
@@ -136,7 +139,7 @@ class secBootRun(gencore.secBootGen):
         except:
             pass
 
-    def getDeviceStatusViaRom( self ):
+    def getMcuDeviceInfoViaRom( self ):
         self._getDeviceRegisterBySdphost( infodef.kRegisterAddr_UUID1, 'UUID[31:00]')
         self._getDeviceRegisterBySdphost( infodef.kRegisterAddr_UUID2, 'UUID[63:32]')
         self._getDeviceRegisterBySdphost( infodef.kRegisterAddr_SRC_SBMR1, 'SRC->SMBR1')
@@ -181,7 +184,7 @@ class secBootRun(gencore.secBootGen):
         else:
             self.printDeviceStatus(fuseName + " = --------")
 
-    def getDeviceStatusViaFlashloader( self ):
+    def getMcuDeviceInfoViaFlashloader( self ):
         self._getDeviceFuseByBlhost(infodef.kEfuseAddr_BOOT_CFG0, 'Fuse->BOOT_CFG (0x450)')
         self._getDeviceFuseByBlhost(infodef.kEfuseAddr_BOOT_CFG1, 'Fuse->BOOT_CFG (0x460)')
         self._getDeviceFuseByBlhost(infodef.kEfuseAddr_BOOT_CFG2, 'Fuse->BOOT_CFG (0x470)')
@@ -211,28 +214,91 @@ class secBootRun(gencore.secBootGen):
         else:
             pass
 
+    def _getSemcNandDeviceInfo ( self ):
+        filename = 'semcNandFcb.dat'
+        filepath = os.path.join(self.blhostVectorsDir, filename)
+        status, results, cmdStr = self.blhost.readMemory(self.bootDeviceMemBase + infodef.kSemcNandFcbInfo_StartAddr, infodef.kSemcNandFcbInfo_Length, filename, self.bootDeviceMemId)
+        self.printLog(cmdStr)
+        if status != boot.status.kStatus_Success:
+            return False
+        fingerprint = self.getVal32FromBinFile(filepath, infodef.kSemcNandFcbOffset_Fingerprint)
+        semcTag = self.getVal32FromBinFile(filepath, infodef.kSemcNandFcbOffset_SemcTag)
+        if fingerprint == infodef.kSemcNandFcbTag_Fingerprint and semcTag == infodef.kSemcNandFcbTag_Semc:
+            firmwareCopies = self.getVal32FromBinFile(filepath, infodef.kSemcNandFcbOffset_FirmwareCopies)
+            pageByteSize = self.getVal32FromBinFile(filepath, infodef.kSemcNandFcbOffset_PageByteSize)
+            pagesInBlock = self.getVal32FromBinFile(filepath, infodef.kSemcNandFcbOffset_PagesInBlock)
+            blocksInPlane = self.getVal32FromBinFile(filepath, infodef.kSemcNandFcbOffset_BlocksInPlane)
+            planesInDevice = self.getVal32FromBinFile(filepath, infodef.kSemcNandFcbOffset_PlanesInDevice)
+            self.printDeviceStatus("pageByteSize = " + str(hex(pageByteSize)))
+            self.printDeviceStatus("pagesInBlock = " + str(hex(pagesInBlock)))
+            self.printDeviceStatus("blocksInPlane = " + str(hex(blocksInPlane)))
+            self.printDeviceStatus("planesInDevice = " + str(hex(planesInDevice)))
+            self.semcNandImageCopies = firmwareCopies
+            self.semcNandBlockSize = pageByteSize * pagesInBlock
+        else:
+            self.printDeviceStatus("pageByteSize = --------")
+            self.printDeviceStatus("pagesInBlock = --------")
+            self.printDeviceStatus("blocksInPlane = --------")
+            self.printDeviceStatus("planesInDevice = --------")
+            return False
+        try:
+            os.remove(filepath)
+        except:
+            pass
+        return True
+
+    def geBootDeviceInfoViaFlashloader ( self ):
+        if self.bootDevice == uidef.kBootDevice_SemcNand:
+            self._getSemcNandDeviceInfo()
+        else:
+            pass
+
     def configureBootDevice ( self ):
         self._getBootDeviceMemoryInfo()
         if self.bootDevice == uidef.kBootDevice_SemcNand:
             semcNandOpt, semcNandFcbOpt, semcNandImageInfo = uivar.getVar(self.bootDevice)
-            status, results, cmdStr = self.blhost.fillMemory(0x2000, 0x4, semcNandOpt)
+            status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_Flashloader, 0x4, semcNandOpt)
             self.printLog(cmdStr)
-            status, results, cmdStr = self.blhost.fillMemory(0x2004, 0x4, semcNandFcbOpt)
+            if status != boot.status.kStatus_Success:
+                return False
+            status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_Flashloader + 4, 0x4, semcNandFcbOpt)
             self.printLog(cmdStr)
-            status, results, cmdStr = self.blhost.fillMemory(0x2008, 0x4, semcNandImageInfo[0])
+            if status != boot.status.kStatus_Success:
+                return False
+            for i in range(len(semcNandImageInfo)):
+                if semcNandImageInfo[i] != None:
+                    status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_Flashloader + 8 + i * 4, 0x4, semcNandImageInfo[i])
+                    self.printLog(cmdStr)
+                    if status != boot.status.kStatus_Success:
+                        return False
+                else:
+                    break
+            status, results, cmdStr = self.blhost.configureMemory(self.bootDeviceMemId, rundef.kRamFreeSpaceStart_Flashloader)
             self.printLog(cmdStr)
-            status, results, cmdStr = self.blhost.configureMemory(self.bootDeviceMemId, 0x2000)
-            self.printLog(cmdStr)
+            if status != boot.status.kStatus_Success:
+                return False
         else:
             pass
+        return True
 
     def flashBootableImage ( self ):
         self._getBootDeviceMemoryInfo()
-        memEraseLen = os.path.getsize(self.destAppFilename)
-        status, results, cmdStr = self.blhost.flashEraseRegion(self.bootDeviceMemBase, memEraseLen, self.bootDeviceMemId)
-        self.printLog(cmdStr)
-        status, results, cmdStr = self.blhost.writeMemory(self.bootDeviceMemBase, self.destAppFilename, self.bootDeviceMemId)
-        self.printLog(cmdStr)
+        imageLen = os.path.getsize(self.destAppFilename)
+        if self.bootDevice == uidef.kBootDevice_SemcNand:
+            semcNandOpt, semcNandFcbOpt, imageInfo = uivar.getVar(self.bootDevice)
+            memEraseLen = misc.align_up(imageLen, self.semcNandBlockSize)
+            for i in range(self.semcNandImageCopies):
+                imageLoadAddr = self.bootDeviceMemBase + (imageInfo[i] >> 16) * self.semcNandBlockSize
+                status, results, cmdStr = self.blhost.flashEraseRegion(imageLoadAddr, memEraseLen, self.bootDeviceMemId)
+                self.printLog(cmdStr)
+                if status != boot.status.kStatus_Success:
+                    return False
+                status, results, cmdStr = self.blhost.writeMemory(imageLoadAddr, self.destAppFilename, self.bootDeviceMemId)
+                self.printLog(cmdStr)
+                if status != boot.status.kStatus_Success:
+                    return False
+        else:
+            pass
 
     def resetMcuDevice( self ):
         status, results, cmdStr = self.blhost.reset()
