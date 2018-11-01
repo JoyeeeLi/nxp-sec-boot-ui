@@ -7,6 +7,7 @@ sys.path.append(os.path.abspath(".."))
 from gen import gencore
 from info import infodef
 from ui import uidef
+from ui import uivar
 from boot import bltest
 from boot import target
 
@@ -213,11 +214,12 @@ class secBootRun(gencore.secBootGen):
     def configureBootDevice ( self ):
         self._getBootDeviceMemoryInfo()
         if self.bootDevice == uidef.kBootDevice_SemcNand:
-            status, results, cmdStr = self.blhost.fillMemory(0x2000, 0x4, self.semcNandOpt)
+            semcNandOpt, semcNandFcbOpt, semcNandImageInfo = uivar.getVar(self.bootDevice)
+            status, results, cmdStr = self.blhost.fillMemory(0x2000, 0x4, semcNandOpt)
             self.printLog(cmdStr)
-            status, results, cmdStr = self.blhost.fillMemory(0x2004, 0x4, self.semcNandFcbOpt)
+            status, results, cmdStr = self.blhost.fillMemory(0x2004, 0x4, semcNandFcbOpt)
             self.printLog(cmdStr)
-            status, results, cmdStr = self.blhost.fillMemory(0x2008, 0x4, self.semcNandImageInfo[0])
+            status, results, cmdStr = self.blhost.fillMemory(0x2008, 0x4, semcNandImageInfo[0])
             self.printLog(cmdStr)
             status, results, cmdStr = self.blhost.configureMemory(self.bootDeviceMemId, 0x2000)
             self.printLog(cmdStr)
