@@ -6,6 +6,7 @@ import serial.tools.list_ports
 import uidef
 import uivar
 import ui_semcnand
+import ui_flexspinor
 sys.path.append(os.path.abspath("../.."))
 from gui import secBootWin
 sys.path.append(os.path.abspath(".."))
@@ -45,6 +46,10 @@ class secBootUi(secBootWin.secBootWin):
             semcNandFrame = ui_semcnand.secBootUiSemcNand(None)
             semcNandFrame.SetTitle(u"SEMC NAND Device Configuration")
             semcNandFrame.Show(True)
+        elif self.bootDevice == uidef.kBootDevice_FlexspiNor:
+            flexspiNorFrame = ui_flexspinor.secBootUiFlexspiNor(None)
+            flexspiNorFrame.SetTitle(u"FlexSPI NOR Device Configuration")
+            flexspiNorFrame.Show(True)
         else:
             pass
 
