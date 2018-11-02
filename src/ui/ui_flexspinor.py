@@ -8,6 +8,12 @@ import uivar
 sys.path.append(os.path.abspath("../.."))
 from gui import bootDeviceWin_FlexspiNor
 
+g_flexspiNorOpt0_ISSI_IS25LP064A   = 0xc0000006
+g_flexspiNorOpt0_MXIC_MX25UM51245G = 0xc0403037
+g_flexspiNorOpt0_MXIC_MX25UM51345G = 0xc0403007
+g_flexspiNorOpt0_Micron_MT35X      = 0xc0600006
+g_flexspiNorOpt0_Adesto_ATXP032    = 0xc0803007
+
 class secBootUiFlexspiNor(bootDeviceWin_FlexspiNor.bootDeviceWin_FlexspiNor):
 
     def __init__(self, parent):
@@ -15,6 +21,7 @@ class secBootUiFlexspiNor(bootDeviceWin_FlexspiNor.bootDeviceWin_FlexspiNor):
         flexspiNorOpt0, flexspiNorOpt1 = uivar.getVar(uidef.kBootDevice_FlexspiNor)
         self.flexspiNorOpt0 = flexspiNorOpt0
         self.flexspiNorOpt1 = flexspiNorOpt1
+        self._recoverLastSettings()
 
     def _updateOpt1Field ( self, isEnabled ):
         if isEnabled:
@@ -32,6 +39,38 @@ class secBootUiFlexspiNor(bootDeviceWin_FlexspiNor.bootDeviceWin_FlexspiNor):
             self.m_choice_statusOverride.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
             self.m_choice_dummyCycles.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
         self.Refresh()
+
+    def _recoverLastSettings ( self ):
+        deviceType = (self.flexspiNorOpt0 & 0x00F00000) >> 20
+        self.m_choice_deviceType.SetSelection(deviceType)
+
+        queryPads = (self.flexspiNorOpt0 & 0x000F0000) >> 16
+        if queryPads == 0:
+            self.m_choice_queryPads.SetSelection(queryPads)
+        else:
+            self.m_choice_queryPads.SetSelection(queryPads - 1)
+
+        cmdPads = (self.flexspiNorOpt0 & 0x0000F000) >> 12
+        if queryPads == 0:
+            self.m_choice_cmdPads.SetSelection(cmdPads)
+        else:
+            self.m_choice_cmdPads.SetSelection(cmdPads - 1)
+
+        quadModeSetting = (self.flexspiNorOpt0 & 0x00000F00) >> 8
+        self.m_choice_quadModeSetting.SetSelection(quadModeSetting)
+
+        miscMode = (self.flexspiNorOpt0 & 0x000000F0) >> 4
+        self.m_choice_miscMode.SetSelection(miscMode)
+
+        maxFrequency = (self.flexspiNorOpt0 & 0x0000000F) >> 0
+        self.m_choice_maxFrequency.SetSelection(maxFrequency - 1)
+
+        hasOption1 = (self.flexspiNorOpt0 & 0x0F000000) >> 24
+        self.m_choice_hasOption1.SetSelection(hasOption1)
+        if hasOption1 == 0:
+            self._updateOpt1Field(False)
+        else:
+            self._updateOpt1Field(True)
 
     def _getDeviceType( self ):
         txt = self.m_choice_deviceType.GetString(self.m_choice_deviceType.GetSelection())
@@ -132,7 +171,21 @@ class secBootUiFlexspiNor(bootDeviceWin_FlexspiNor.bootDeviceWin_FlexspiNor):
         self.flexspiNorOpt0 = (self.flexspiNorOpt0 & 0xF0FFFFFF) | (val << 24)
 
     def callbackUseTypicalDeviceModel( self, event ):
-        event.Skip()
+        txt = self.m_choice_deviceMode.GetString(self.m_choice_deviceMode.GetSelection())
+        if txt == 'ISSI - IS25LP064A':
+            self.flexspiNorOpt0 = g_flexspiNorOpt0_ISSI_IS25LP064A
+        elif txt == 'MXIC - MX25UM51245G/MX66UM51245G/MX25LM51245G':
+            self.flexspiNorOpt0 = g_flexspiNorOpt0_MXIC_MX25UM51245G
+        elif txt == 'MXIC - MX25UM51345G':
+            self.flexspiNorOpt0 = g_flexspiNorOpt0_MXIC_MX25UM51345G
+        elif txt == 'Micron - MT35X':
+            self.flexspiNorOpt0 = g_flexspiNorOpt0_Micron_MT35X
+        elif txt == 'Adesto - ATXP032':
+            self.flexspiNorOpt0 = g_flexspiNorOpt0_Adesto_ATXP032
+        else:
+            pass
+        if txt != 'No':
+            self._recoverLastSettings()
 
     def callbackHasOption1( self, event ):
         txt = self.m_choice_hasOption1.GetString(self.m_choice_hasOption1.GetSelection())

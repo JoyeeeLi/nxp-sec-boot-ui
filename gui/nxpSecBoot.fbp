@@ -14904,7 +14904,7 @@
                         <property name="caption"></property>
                         <property name="caption_visible">1</property>
                         <property name="center_pane">0</property>
-                        <property name="choices">&quot;No&quot;</property>
+                        <property name="choices">&quot;No&quot; &quot;ISSI - IS25LP064A&quot; &quot;MXIC - MX25UM51245G/MX66UM51245G/MX25LM51245G&quot; &quot;MXIC - MX25UM51345G&quot; &quot;Micron - MT35X&quot; &quot;Adesto - ATXP032&quot;</property>
                         <property name="close_button">1</property>
                         <property name="context_help"></property>
                         <property name="context_menu">1</property>
@@ -14936,7 +14936,7 @@
                         <property name="resize">Resizable</property>
                         <property name="selection">0</property>
                         <property name="show">1</property>
-                        <property name="size">140,-1</property>
+                        <property name="size">340,-1</property>
                         <property name="style"></property>
                         <property name="subclass">; ; forward_declare</property>
                         <property name="toolbar_pane">0</property>
@@ -15031,7 +15031,7 @@
                         <property name="pos"></property>
                         <property name="resize">Resizable</property>
                         <property name="show">1</property>
-                        <property name="size">300,-1</property>
+                        <property name="size">100,-1</property>
                         <property name="style"></property>
                         <property name="subclass">; ; forward_declare</property>
                         <property name="toolbar_pane">0</property>

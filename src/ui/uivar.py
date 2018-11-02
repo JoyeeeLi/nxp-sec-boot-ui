@@ -21,7 +21,7 @@ def initVar():
 
     global g_flexspiNorOpt0
     global g_flexspiNorOpt1
-    g_flexspiNorOpt0 = 0xC0000000
+    g_flexspiNorOpt0 = 0xc0000006
     g_flexspiNorOpt1 = 0x00000000
 
 def getVar( group ):
