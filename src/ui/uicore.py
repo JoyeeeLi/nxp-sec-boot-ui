@@ -221,3 +221,8 @@ class secBootUi(secBootWin.secBootWin):
         certSettingsFrame = ui_certsettings.secBootUiCertSettings(None)
         certSettingsFrame.SetTitle(u"Advanced Certificate Settings")
         certSettingsFrame.Show(True)
+
+    def getSerialAndKeypassContent( self ):
+        serialContent = self.m_textCtrl_serial.GetLineText(0)
+        keypassContent = self.m_textCtrl_keyPass.GetLineText(0)
+        return serialContent, keypassContent

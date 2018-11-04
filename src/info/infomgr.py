@@ -11,13 +11,17 @@ class secBootInfo(uicore.secBootUi):
     def __init__(self, parent):
         uicore.secBootUi.__init__(self, parent)
 
-    def printLog( self ,logoStr ):
-        self.m_textCtrl_log.write(logoStr + "\n")
+    def popupMsgBox( self, msgStr ):
+        messageText = (msgStr)
+        wx.MessageBox(messageText, "Error", wx.OK | wx.ICON_INFORMATION)
+
+    def printLog( self, logStr ):
+        self.m_textCtrl_log.write(logStr + "\n")
 
     def clearLog( self ):
         self.m_textCtrl_log.Clear()
 
-    def printDeviceStatus( self ,statusStr ):
+    def printDeviceStatus( self, statusStr ):
         self.m_textCtrl_deviceStatus.write(statusStr + "\n")
 
     def clearDeviceStatus( self ):

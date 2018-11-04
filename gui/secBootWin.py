@@ -236,7 +236,7 @@ class secBootWin ( wx.Frame ):
 
 		sbSizer_certInput.Add( self.m_staticText_keyPass, 0, wx.ALL, 5 )
 
-		self.m_textCtrl_keyPass = wx.TextCtrl( sbSizer_certInput.GetStaticBox(), wx.ID_ANY, u"abcdefg", wx.DefaultPosition, wx.Size( 100,-1 ), 0 )
+		self.m_textCtrl_keyPass = wx.TextCtrl( sbSizer_certInput.GetStaticBox(), wx.ID_ANY, u"test", wx.DefaultPosition, wx.Size( 100,-1 ), 0 )
 		sbSizer_certInput.Add( self.m_textCtrl_keyPass, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
 		self.m_button_advCertSettings = wx.Button( sbSizer_certInput.GetStaticBox(), wx.ID_ANY, u"Advanced Cert Settings", wx.DefaultPosition, wx.DefaultSize, 0 )

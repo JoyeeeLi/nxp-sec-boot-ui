@@ -2,6 +2,7 @@
 import wx
 import sys
 import os
+import shutil
 import bincopy
 import gendef
 sys.path.append(os.path.abspath(".."))
@@ -14,12 +15,44 @@ class secBootGen(infomgr.secBootInfo):
     def __init__(self, parent):
         infomgr.secBootInfo.__init__(self, parent)
 
+        self.serialFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'cert', 'serial')
+        self.keypassFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'cert', 'key_pass.txt')
+        self.cstKeysFolder = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', 'release', 'keys')
         self.srcAppFilename = None
         self.destAppFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bootable_image', 'ivt_application.bin')
         self.destAppNoPaddingFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bootable_image', 'ivt_application_nopadding.bin')
         self.bdFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bd_file', 'imx_secure_boot.bd')
         self.elftosbPath = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'elftosb', 'win', 'elftosb.exe')
         self.batFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bd_file', 'imx_secure_boot.bat')
+
+    def _copySerialAndKeypassfileToCstFolder( self ):
+        shutil.copy(self.serialFilename, self.cstKeysFolder)
+        shutil.copy(self.keypassFilename, self.cstKeysFolder)
+        self.printLog('serial and key_pass.txt are copied to: ' + self.cstKeysFolder)
+
+    def createSerialAndKeypassfile( self ):
+        serialContent, keypassContent = self.getSerialAndKeypassContent()
+        # The 8 digits in serial are the source that Openssl use to generate certificate serial number.
+        if (not serialContent.isdigit()) or len(serialContent) != 8:
+            self.popupMsgBox('Serial must be 8 digits!')
+            return False
+        if len(keypassContent) == 0:
+            self.popupMsgBox('You forget to set key_pass!')
+            return False
+        with open(self.serialFilename, 'wb') as fileObj:
+            fileObj.write(serialContent)
+            fileObj.close()
+        with open(self.keypassFilename, 'wb') as fileObj:
+            # The 2 lines string need to be the same in key_pass.txt, which is the pass phase that used for protecting private key during code signing.
+            fileObj.write(keypassContent + '\n' + keypassContent)
+            fileObj.close()
+        self.printLog('serial is generated: ' + self.serialFilename)
+        self.printLog('key_pass.txt is generated: ' + self.keypassFilename)
+        self._copySerialAndKeypassfileToCstFolder()
+        return True
+
+    def genCertificate( self ):
+        pass
 
     def _getImageInfo( self ):
         startAddress = None
