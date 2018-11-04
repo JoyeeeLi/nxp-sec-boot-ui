@@ -38,12 +38,12 @@ class advSettingsWin_Cert ( wx.Frame ):
 		self.m_choice_useExistingCaKey.SetSelection( 0 )
 		gSizer_certOpt.Add( self.m_choice_useExistingCaKey, 0, wx.ALL, 5 )
 
-		self.m_staticText_pkiTreeKeyLen = wx.StaticText( self.m_panel_certOpt, wx.ID_ANY, u"Key Length for PKI Tree:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_pkiTreeKeyLen = wx.StaticText( self.m_panel_certOpt, wx.ID_ANY, u"Key Length for PKI Tree (bits):", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText_pkiTreeKeyLen.Wrap( -1 )
 
 		gSizer_certOpt.Add( self.m_staticText_pkiTreeKeyLen, 0, wx.ALL, 5 )
 
-		m_choice_pkiTreeKeyLenChoices = [ u"2048 bits", u"4096 bits" ]
+		m_choice_pkiTreeKeyLenChoices = [ u"2048", u"4096" ]
 		self.m_choice_pkiTreeKeyLen = wx.Choice( self.m_panel_certOpt, wx.ID_ANY, wx.DefaultPosition, wx.Size( 150,-1 ), m_choice_pkiTreeKeyLenChoices, 0 )
 		self.m_choice_pkiTreeKeyLen.SetSelection( 0 )
 		gSizer_certOpt.Add( self.m_choice_pkiTreeKeyLen, 0, wx.ALL, 5 )
@@ -61,9 +61,9 @@ class advSettingsWin_Cert ( wx.Frame ):
 
 		gSizer_certOpt.Add( self.m_staticText_SRKs, 0, wx.ALL, 5 )
 
-		m_choice_SRKsChoices = [ u"4", u"3", u"2", u"1" ]
+		m_choice_SRKsChoices = [ u"1", u"2", u"3", u"4" ]
 		self.m_choice_SRKs = wx.Choice( self.m_panel_certOpt, wx.ID_ANY, wx.DefaultPosition, wx.Size( 150,-1 ), m_choice_SRKsChoices, 0 )
-		self.m_choice_SRKs.SetSelection( 0 )
+		self.m_choice_SRKs.SetSelection( 3 )
 		gSizer_certOpt.Add( self.m_choice_SRKs, 0, wx.ALL, 5 )
 
 		self.m_staticText_caFlagSet = wx.StaticText( self.m_panel_certOpt, wx.ID_ANY, u"SRK Cert to have CA flag Set:", wx.DefaultPosition, wx.DefaultSize, 0 )

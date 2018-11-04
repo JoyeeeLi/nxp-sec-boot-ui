@@ -286,7 +286,7 @@ class secBootRun(gencore.secBootGen):
     def configureBootDevice ( self ):
         self._prepareForBootDeviceOperation()
         if self.bootDevice == uidef.kBootDevice_SemcNand:
-            semcNandOpt, semcNandFcbOpt, semcNandImageInfo = uivar.getVar(self.bootDevice)
+            semcNandOpt, semcNandFcbOpt, semcNandImageInfo = uivar.getBootDeviceConfiguration(self.bootDevice)
             status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_Flashloader, 0x4, semcNandOpt)
             self.printLog(cmdStr)
             if status != boot.status.kStatus_Success:
@@ -308,7 +308,7 @@ class secBootRun(gencore.secBootGen):
             if status != boot.status.kStatus_Success:
                 return False
         elif self.bootDevice == uidef.kBootDevice_FlexspiNor:
-            flexspiNorOpt0, flexspiNorOpt1 = uivar.getVar(self.bootDevice)
+            flexspiNorOpt0, flexspiNorOpt1 = uivar.getBootDeviceConfiguration(self.bootDevice)
             status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_Flashloader, 0x4, flexspiNorOpt0)
             self.printLog(cmdStr)
             if status != boot.status.kStatus_Success:
@@ -342,7 +342,7 @@ class secBootRun(gencore.secBootGen):
         self._prepareForBootDeviceOperation()
         imageLen = os.path.getsize(self.destAppFilename)
         if self.bootDevice == uidef.kBootDevice_SemcNand:
-            semcNandOpt, semcNandFcbOpt, imageInfo = uivar.getVar(self.bootDevice)
+            semcNandOpt, semcNandFcbOpt, imageInfo = uivar.getBootDeviceConfiguration(self.bootDevice)
             memEraseLen = misc.align_up(imageLen, self.semcNandBlockSize)
             for i in range(self.semcNandImageCopies):
                 imageLoadAddr = self.bootDeviceMemBase + (imageInfo[i] >> 16) * self.semcNandBlockSize

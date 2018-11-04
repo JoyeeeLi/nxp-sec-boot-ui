@@ -18,7 +18,7 @@ class secBootUiFlexspiNor(bootDeviceWin_FlexspiNor.bootDeviceWin_FlexspiNor):
 
     def __init__(self, parent):
         bootDeviceWin_FlexspiNor.bootDeviceWin_FlexspiNor.__init__(self, parent)
-        flexspiNorOpt0, flexspiNorOpt1 = uivar.getVar(uidef.kBootDevice_FlexspiNor)
+        flexspiNorOpt0, flexspiNorOpt1 = uivar.getBootDeviceConfiguration(uidef.kBootDevice_FlexspiNor)
         self.flexspiNorOpt0 = flexspiNorOpt0
         self.flexspiNorOpt1 = flexspiNorOpt1
         self._recoverLastSettings()
@@ -204,7 +204,7 @@ class secBootUiFlexspiNor(bootDeviceWin_FlexspiNor.bootDeviceWin_FlexspiNor):
         self._getMiscMode()
         self._getMaxFrequency()
         self._getHasOpt1()
-        uivar.setVar(uidef.kBootDevice_FlexspiNor, self.flexspiNorOpt0, self.flexspiNorOpt1)
+        uivar.setBootDeviceConfiguration(uidef.kBootDevice_FlexspiNor, self.flexspiNorOpt0, self.flexspiNorOpt1)
         self.Show(False)
 
     def callbackCancel( self, event ):

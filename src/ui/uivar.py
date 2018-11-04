@@ -10,6 +10,12 @@ g_semcNandImageInfo = None
 g_flexspiNorOpt0 = None
 g_flexspiNorOpt1 = None
 
+g_certSettingsDict = {'useExistingCaKey':None,
+                      'pkiTreeKeyLen':None,
+                      'pkiTreeDuration':None,
+                      'SRKs':None,
+                      'caFlagSet':None}
+
 def initVar():
     global g_semcNandOpt
     global g_semcNandFcbOpt
@@ -24,7 +30,14 @@ def initVar():
     g_flexspiNorOpt0 = 0xc0000006
     g_flexspiNorOpt1 = 0x00000000
 
-def getVar( group ):
+    global g_certSettingsDict
+    g_certSettingsDict['useExistingCaKey'] = False
+    g_certSettingsDict['pkiTreeKeyLen'] = 2048
+    g_certSettingsDict['pkiTreeDuration'] = 10
+    g_certSettingsDict['SRKs'] = 4
+    g_certSettingsDict['caFlagSet'] = True
+
+def getBootDeviceConfiguration( group ):
     if group == uidef.kBootDevice_SemcNand:
         global g_semcNandOpt
         global g_semcNandFcbOpt
@@ -37,7 +50,7 @@ def getVar( group ):
     else:
         pass
 
-def setVar( group, *args ):
+def setBootDeviceConfiguration( group, *args ):
     if group == uidef.kBootDevice_SemcNand:
         global g_semcNandOpt
         global g_semcNandFcbOpt
@@ -50,6 +63,20 @@ def setVar( group, *args ):
         global g_flexspiNorOpt1
         g_flexspiNorOpt0 = args[0]
         g_flexspiNorOpt1 = args[1]
+    else:
+        pass
+
+def getAdvancedSettings( group ):
+    if group == uidef.kAdvancedSettings_Cert:
+        global g_certSettingsDict
+        return g_certSettingsDict
+    else:
+        pass
+
+def setAdvancedSettings( group, *args ):
+    if group == uidef.kAdvancedSettings_Cert:
+        global g_certSettingsDict
+        g_certSettingsDict = args[0]
     else:
         pass
 

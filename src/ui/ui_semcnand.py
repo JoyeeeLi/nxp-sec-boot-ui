@@ -11,7 +11,7 @@ class secBootUiSemcNand(bootDeviceWin_SemcNand.bootDeviceWin_SemcNand):
 
     def __init__(self, parent):
         bootDeviceWin_SemcNand.bootDeviceWin_SemcNand.__init__(self, parent)
-        semcNandOpt, semcNandFcbOpt, semcNandImageInfo = uivar.getVar(uidef.kBootDevice_SemcNand)
+        semcNandOpt, semcNandFcbOpt, semcNandImageInfo = uivar.getBootDeviceConfiguration(uidef.kBootDevice_SemcNand)
         self.semcNandOpt = semcNandOpt
         self.semcNandFcbOpt = semcNandFcbOpt
         self.semcNandImageInfo = semcNandImageInfo
@@ -304,7 +304,7 @@ class secBootUiSemcNand(bootDeviceWin_SemcNand.bootDeviceWin_SemcNand):
         self._getSearchStride()
         self._getImageCopies()
         self._getImageInfo()
-        uivar.setVar(uidef.kBootDevice_SemcNand, self.semcNandOpt, self.semcNandFcbOpt, self.semcNandImageInfo)
+        uivar.setBootDeviceConfiguration(uidef.kBootDevice_SemcNand, self.semcNandOpt, self.semcNandFcbOpt, self.semcNandImageInfo)
         self.Show(False)
 
     def callbackCancel( self, event ):
