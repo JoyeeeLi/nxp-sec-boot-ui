@@ -239,6 +239,9 @@ class secBootWin ( wx.Frame ):
 		self.m_textCtrl_keyPass = wx.TextCtrl( sbSizer_certInput.GetStaticBox(), wx.ID_ANY, u"abcdefg", wx.DefaultPosition, wx.Size( 100,-1 ), 0 )
 		sbSizer_certInput.Add( self.m_textCtrl_keyPass, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
+		self.m_button_advCertSettings = wx.Button( sbSizer_certInput.GetStaticBox(), wx.ID_ANY, u"Advanced Cert Settings", wx.DefaultPosition, wx.DefaultSize, 0 )
+		sbSizer_certInput.Add( self.m_button_advCertSettings, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
+
 
 		self.m_panel_doAuth1_certInput.SetSizer( sbSizer_certInput )
 		self.m_panel_doAuth1_certInput.Layout()
@@ -269,8 +272,8 @@ class secBootWin ( wx.Frame ):
 		sbSizer_certFmt.Fit( self.m_panel_doAuth2_certFmt )
 		bSizer_doAuth.Add( self.m_panel_doAuth2_certFmt, 1, wx.EXPAND |wx.ALL, 5 )
 
-		self.m_button_doAuth = wx.Button( self.m_panel_doAuth, wx.ID_ANY, u"Run CST Tool", wx.DefaultPosition, wx.DefaultSize, 0 )
-		bSizer_doAuth.Add( self.m_button_doAuth, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
+		self.m_button_genCert = wx.Button( self.m_panel_doAuth, wx.ID_ANY, u"Generate Certificate", wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer_doAuth.Add( self.m_button_genCert, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
 
 		self.m_panel_doAuth.SetSizer( bSizer_doAuth )
@@ -291,7 +294,7 @@ class secBootWin ( wx.Frame ):
 
 		sbSizer_browseApp.Add( self.m_staticText_appPath, 0, wx.ALL, 5 )
 
-		self.m_filePicker_appPath = wx.FilePickerCtrl( sbSizer_browseApp.GetStaticBox(), wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.*", wx.DefaultPosition, wx.Size( 260,-1 ), wx.FLP_DEFAULT_STYLE )
+		self.m_filePicker_appPath = wx.FilePickerCtrl( sbSizer_browseApp.GetStaticBox(), wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.*", wx.DefaultPosition, wx.Size( 230,-1 ), wx.FLP_DEFAULT_STYLE )
 		sbSizer_browseApp.Add( self.m_filePicker_appPath, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
 		self.m_staticText_bdPath = wx.StaticText( sbSizer_browseApp.GetStaticBox(), wx.ID_ANY, u"Matched BD File:", wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -299,7 +302,7 @@ class secBootWin ( wx.Frame ):
 
 		sbSizer_browseApp.Add( self.m_staticText_bdPath, 0, wx.ALL, 5 )
 
-		self.m_textCtrl_bdPath = wx.TextCtrl( sbSizer_browseApp.GetStaticBox(), wx.ID_ANY, u"example.bd", wx.DefaultPosition, wx.Size( 260,-1 ), 0 )
+		self.m_textCtrl_bdPath = wx.TextCtrl( sbSizer_browseApp.GetStaticBox(), wx.ID_ANY, u"example.bd", wx.DefaultPosition, wx.Size( 230,-1 ), 0 )
 		self.m_textCtrl_bdPath.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
 
 		sbSizer_browseApp.Add( self.m_textCtrl_bdPath, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
@@ -373,7 +376,7 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_prepBee3_advKeySettings = wx.Panel( self.m_panel_prepBee, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		sbSizer_advKeySettings = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_prepBee3_advKeySettings, wx.ID_ANY, wx.EmptyString ), wx.VERTICAL )
 
-		self.m_button_advKeySettings = wx.Button( sbSizer_advKeySettings.GetStaticBox(), wx.ID_ANY, u"Anvanced Key Settings", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_button_advKeySettings = wx.Button( sbSizer_advKeySettings.GetStaticBox(), wx.ID_ANY, u"Advanced Key Settings", wx.DefaultPosition, wx.DefaultSize, 0 )
 		sbSizer_advKeySettings.Add( self.m_button_advKeySettings, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
 
@@ -410,12 +413,12 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_genSeq.Layout()
 		wSizer_genSeq.Fit( self.m_panel_genSeq )
 		self.m_notebook_imageSeq.AddPage( self.m_panel_genSeq, u"Image Generation Sequence", True )
-		self.m_panel_bootSeq = wx.Panel( self.m_notebook_imageSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		self.m_panel_bootSeq.SetBackgroundColour( wx.Colour( 160, 160, 160 ) )
+		self.m_panel_loadSeq = wx.Panel( self.m_notebook_imageSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.m_panel_loadSeq.SetBackgroundColour( wx.Colour( 160, 160, 160 ) )
 
-		wSizer_bootSeq = wx.WrapSizer( wx.HORIZONTAL, wx.WRAPSIZER_DEFAULT_FLAGS )
+		wSizer_loadSeq = wx.WrapSizer( wx.HORIZONTAL, wx.WRAPSIZER_DEFAULT_FLAGS )
 
-		self.m_panel_progSrk = wx.Panel( self.m_panel_bootSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.m_panel_progSrk = wx.Panel( self.m_panel_loadSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer_progSrk = wx.BoxSizer( wx.VERTICAL )
 
 		self.m_panel_progSrk1_showSrk = wx.Panel( self.m_panel_progSrk, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
@@ -444,9 +447,9 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_progSrk.SetSizer( bSizer_progSrk )
 		self.m_panel_progSrk.Layout()
 		bSizer_progSrk.Fit( self.m_panel_progSrk )
-		wSizer_bootSeq.Add( self.m_panel_progSrk, 1, wx.EXPAND |wx.ALL, 5 )
+		wSizer_loadSeq.Add( self.m_panel_progSrk, 1, wx.EXPAND |wx.ALL, 5 )
 
-		self.m_panel_progDek = wx.Panel( self.m_panel_bootSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.m_panel_progDek = wx.Panel( self.m_panel_loadSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer_progDek = wx.BoxSizer( wx.VERTICAL )
 
 		self.m_panel_progDek1_showDek = wx.Panel( self.m_panel_progDek, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
@@ -475,9 +478,9 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_progDek.SetSizer( bSizer_progDek )
 		self.m_panel_progDek.Layout()
 		bSizer_progDek.Fit( self.m_panel_progDek )
-		wSizer_bootSeq.Add( self.m_panel_progDek, 1, wx.EXPAND |wx.ALL, 5 )
+		wSizer_loadSeq.Add( self.m_panel_progDek, 1, wx.EXPAND |wx.ALL, 5 )
 
-		self.m_panel_operBeeKey = wx.Panel( self.m_panel_bootSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.m_panel_operBeeKey = wx.Panel( self.m_panel_loadSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer_operBeeKey = wx.BoxSizer( wx.VERTICAL )
 
 		self.m_panel_operBeeKey1_readOtpmk = wx.Panel( self.m_panel_operBeeKey, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
@@ -520,9 +523,9 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_operBeeKey.SetSizer( bSizer_operBeeKey )
 		self.m_panel_operBeeKey.Layout()
 		bSizer_operBeeKey.Fit( self.m_panel_operBeeKey )
-		wSizer_bootSeq.Add( self.m_panel_operBeeKey, 1, wx.EXPAND |wx.ALL, 5 )
+		wSizer_loadSeq.Add( self.m_panel_operBeeKey, 1, wx.EXPAND |wx.ALL, 5 )
 
-		self.m_panel_flashImage = wx.Panel( self.m_panel_bootSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.m_panel_flashImage = wx.Panel( self.m_panel_loadSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		self.m_panel_flashImage.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNSHADOW ) )
 
 		bSizer_flashImage = wx.BoxSizer( wx.VERTICAL )
@@ -553,13 +556,13 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_flashImage.SetSizer( bSizer_flashImage )
 		self.m_panel_flashImage.Layout()
 		bSizer_flashImage.Fit( self.m_panel_flashImage )
-		wSizer_bootSeq.Add( self.m_panel_flashImage, 1, wx.EXPAND |wx.ALL, 5 )
+		wSizer_loadSeq.Add( self.m_panel_flashImage, 1, wx.EXPAND |wx.ALL, 5 )
 
 
-		self.m_panel_bootSeq.SetSizer( wSizer_bootSeq )
-		self.m_panel_bootSeq.Layout()
-		wSizer_bootSeq.Fit( self.m_panel_bootSeq )
-		self.m_notebook_imageSeq.AddPage( self.m_panel_bootSeq, u"Image Boot Sequence", False )
+		self.m_panel_loadSeq.SetSizer( wSizer_loadSeq )
+		self.m_panel_loadSeq.Layout()
+		wSizer_loadSeq.Fit( self.m_panel_loadSeq )
+		self.m_notebook_imageSeq.AddPage( self.m_panel_loadSeq, u"Image Loading Sequence", False )
 
 		bSizer_boot.Add( self.m_notebook_imageSeq, 1, wx.EXPAND |wx.ALL, 5 )
 
@@ -633,6 +636,8 @@ class secBootWin ( wx.Frame ):
 		self.m_radioBtn_usbhid.Bind( wx.EVT_RADIOBUTTON, self.callbackSetUsbhidPort )
 		self.m_button_connect.Bind( wx.EVT_BUTTON, self.callbackConnectToDevice )
 		self.m_choice_secureBootType.Bind( wx.EVT_CHOICE, self.callbackSetSecureBootType )
+		self.m_button_advCertSettings.Bind( wx.EVT_BUTTON, self.callbackAdvCertSettings )
+		self.m_button_genCert.Bind( wx.EVT_BUTTON, self.callbackGenCert )
 		self.m_button_genImage.Bind( wx.EVT_BUTTON, self.callbackGenImage )
 		self.m_choice_keyStorageRegion.Bind( wx.EVT_CHOICE, self.callbackSetKeyStorageRegion )
 		self.m_button_flashImage.Bind( wx.EVT_BUTTON, self.callbackFlashImage )
@@ -656,6 +661,12 @@ class secBootWin ( wx.Frame ):
 		event.Skip()
 
 	def callbackSetSecureBootType( self, event ):
+		event.Skip()
+
+	def callbackAdvCertSettings( self, event ):
+		event.Skip()
+
+	def callbackGenCert( self, event ):
 		event.Skip()
 
 	def callbackGenImage( self, event ):

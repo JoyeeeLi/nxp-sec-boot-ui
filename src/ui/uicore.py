@@ -7,6 +7,7 @@ import uidef
 import uivar
 import ui_semcnand
 import ui_flexspinor
+import ui_certsettings
 sys.path.append(os.path.abspath("../.."))
 from gui import secBootWin
 sys.path.append(os.path.abspath(".."))
@@ -216,3 +217,7 @@ class secBootUi(secBootWin.secBootWin):
                 pass
         self.Refresh()
 
+    def runAdvancedCertSettings( self ):
+        certSettingsFrame = ui_certsettings.secBootUiCertSettings(None)
+        certSettingsFrame.SetTitle(u"Advanced Certificate Settings")
+        certSettingsFrame.Show(True)

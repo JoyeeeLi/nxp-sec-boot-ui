@@ -69,6 +69,12 @@ class secBootMain(runcore.secBootRun):
     def callbackSetSecureBootType( self, event ):
         self.setSecureBootSeqColor()
 
+    def callbackAdvCertSettings( self, event ):
+        self.runAdvancedCertSettings()
+
+    def callbackGenCert( self, event ):
+        event.Skip()
+
     def callbackSetKeyStorageRegion( self, event ):
         self.setKeyStorageRegionColor()
 

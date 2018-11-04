@@ -16,6 +16,7 @@
 /ext
 /gen
 /app
+/tools
 
 # Python bytecode
 *.pyc
