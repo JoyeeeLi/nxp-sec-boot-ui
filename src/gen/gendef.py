@@ -1,5 +1,12 @@
 import sys, os
 
+kBootImageTypeFlag_Unsigned  = '0x00'
+kBootImageTypeFlag_Signed    = '0x08'
+kBootImageTypeFlag_Encrypted = '0x0c'
+
+kBootImageCsfHeaderVersion_Signed    = '4.2'
+kBootImageCsfHeaderVersion_Encrypted = '4.3'
+
 kToolchainSymbolList_EntryAddr = ['Reset_Handler', '__iar_program_start']
 kToolchainSymbolList_VectorAddr = ['__VECTOR_TABLE', '__vector_table', '__Vectors']
 

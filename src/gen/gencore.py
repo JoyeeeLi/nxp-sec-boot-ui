@@ -18,6 +18,7 @@ class secBootGen(infomgr.secBootInfo):
 
         self.serialFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'cert', 'serial')
         self.keypassFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'cert', 'key_pass.txt')
+        self.cstBinFolder = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', 'release', 'mingw32', 'bin')
         self.cstKeysFolder = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', 'release', 'keys')
         self.cstCrtsFolder = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', 'release', 'crts')
         self.hab4PkiTreePath = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', 'release', 'keys')
@@ -26,7 +27,9 @@ class secBootGen(infomgr.secBootInfo):
         self.srkFolder = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'cert')
         self.srkTableFilename = None
         self.srkFuseFilename = None
-        self.crtPemFileList = [None] *4
+        self.crtSrkCaPemFileList = [None] * 4
+        self.crtCsfUsrPemFileList = [None] * 4
+        self.crtImgUsrPemFileList = [None] * 4
         self.srkBatFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'cert', 'imx_srk_gen.bat')
         self.srcAppFilename = None
         self.destAppFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bootable_image', 'ivt_application.bin')
@@ -86,17 +89,30 @@ class secBootGen(infomgr.secBootInfo):
         self.srkTableFilename = os.path.join(self.srkFolder, srkTableName)
         self.srkFuseFilename = os.path.join(self.srkFolder, srkFuseName)
 
-    def _getCrtPemFilenames( self ):
+    def _getCrtSrkCaPemFilenames( self ):
         certSettingsDict = uivar.getAdvancedSettings(uidef.kAdvancedSettings_Cert)
         for i in range(certSettingsDict['SRKs']):
-            self.crtPemFileList[i] = self.cstCrtsFolder + '/'
-            self.crtPemFileList[i] += 'SRK' + str(i + 1) + '_sha256'
-            self.crtPemFileList[i] += '_' + str(certSettingsDict['pkiTreeKeyLen'])
-            self.crtPemFileList[i] += '_65537_v3_ca_crt.pem'
+            self.crtSrkCaPemFileList[i] = self.cstCrtsFolder + '\\'
+            self.crtSrkCaPemFileList[i] += 'SRK' + str(i + 1) + '_sha256'
+            self.crtSrkCaPemFileList[i] += '_' + str(certSettingsDict['pkiTreeKeyLen'])
+            self.crtSrkCaPemFileList[i] += '_65537_v3_ca_crt.pem'
+
+    def _getCrtCsfImgUsrPemFilenames( self ):
+        certSettingsDict = uivar.getAdvancedSettings(uidef.kAdvancedSettings_Cert)
+        for i in range(certSettingsDict['SRKs']):
+            self.crtCsfUsrPemFileList[i] = self.cstCrtsFolder + '\\'
+            self.crtCsfUsrPemFileList[i] += 'CSF' + str(i + 1) + '_1_sha256'
+            self.crtCsfUsrPemFileList[i] += '_' + str(certSettingsDict['pkiTreeKeyLen'])
+            self.crtCsfUsrPemFileList[i] += '_65537_v3_usr_crt.pem'
+            self.crtImgUsrPemFileList[i] = self.cstCrtsFolder + '\\'
+            self.crtImgUsrPemFileList[i] += 'IMG' + str(i + 1) + '_1_sha256'
+            self.crtImgUsrPemFileList[i] += '_' + str(certSettingsDict['pkiTreeKeyLen'])
+            self.crtImgUsrPemFileList[i] += '_65537_v3_usr_crt.pem'
 
     def _updateSrkBatfileContent( self ):
         self._setSrkFilenames()
-        self._getCrtPemFilenames()
+        self._getCrtSrkCaPemFilenames()
+        self._getCrtCsfImgUsrPemFilenames()
         certSettingsDict = uivar.getAdvancedSettings(uidef.kAdvancedSettings_Cert)
         batContent = self.srktoolPath
         batContent += " -h 4"
@@ -107,20 +123,15 @@ class secBootGen(infomgr.secBootInfo):
         for i in range(certSettingsDict['SRKs']):
             if i != 0:
                 batContent += ','
-            batContent += self.crtPemFileList[i]
+            batContent += self.crtSrkCaPemFileList[i]
         batContent += " -f 1"
         with open(self.srkBatFilename, 'wb') as fileObj:
             fileObj.write(batContent)
             fileObj.close()
 
-    def _copySrkTablefileToCstFolder( self ):
-        shutil.copy(self.srkTableFilename, self.cstKeysFolder)
-        self.printLog(self.srkTableFilename + ' is copied to: ' + self.cstKeysFolder)
-
     def genSuperRootKeys( self ):
         self._updateSrkBatfileContent()
         os.system(self.srkBatFilename)
-        self._copySrkTablefileToCstFolder()
         self.printLog('Public SuperRootKey files are generated successfully')
 
     def _getImageInfo( self ):
@@ -159,11 +170,19 @@ class secBootGen(infomgr.secBootInfo):
                 entryPointAddress = self.getVal32FromByteArray(srecObj.as_binary(startAddress + 0x4, startAddress  + 0x8))
             else:
                 self.printLog('Cannot recognise the format of image file: ' + self.srcAppFilename)
-        else:
-            self.printLog('Cannnot find image file: ' + self.srcAppFilename)
         return startAddress, entryPointAddress
 
     def _updateBdfileContent( self, vectorAddress, entryPointAddress):
+        bdContent = ""
+        ############################################################################
+        bdContent += "options {\n"
+        if self.secureBootType == uidef.kSecureBootType_Development:
+            flags = gendef.kBootImageTypeFlag_Unsigned
+        elif self.secureBootType == uidef.kSecureBootType_HabAuth:
+            flags = gendef.kBootImageTypeFlag_Signed
+        else:
+            pass
+        bdContent += "    flags = " + flags + ";\n"
         startAddress = 0x0
         if self.bootDevice == uidef.kBootDevice_FlexspiNor or \
            self.bootDevice == uidef.kBootDevice_SemcNor:
@@ -182,31 +201,136 @@ class secBootGen(infomgr.secBootInfo):
             return False
         else:
             startAddress = vectorAddress - initialLoadSize
+        bdContent += "    startAddress = " + str(hex(startAddress)) + ";\n"
+        bdContent += "    ivtOffset = " + str(hex(ivtOffset)) + ";\n"
+        bdContent += "    initialLoadSize = " + str(hex(initialLoadSize)) + ";\n"
+        if self.secureBootType == uidef.kSecureBootType_HabAuth:
+            bdContent += "    cstFolderPath = \"" + self.cstBinFolder + "\";\n"
+        else:
+            pass
+        bdContent += "    entryPointAddress = " + str(hex(entryPointAddress)) + ";\n"
+        bdContent += "}\n"
+        ############################################################################
+        bdContent += "\nsources {\n"
+        bdContent += "    elfFile = extern(0);\n"
+        bdContent += "}\n"
+        ############################################################################
         if self.secureBootType == uidef.kSecureBootType_Development:
-            bdContent = ""
-            bdContent += "options {\n"
-            bdContent += "    flags = 0x00;\n"
-            bdContent += "    startAddress = " + str(hex(startAddress)) + ";\n"
-            bdContent += "    ivtOffset = " + str(hex(ivtOffset)) + ";\n"
-            bdContent += "    initialLoadSize = " + str(hex(initialLoadSize)) + ";\n"
-            bdContent += "    entryPointAddress = " + str(hex(entryPointAddress)) + ";\n"
+            bdContent += "\nsection (0) {\n"
             bdContent += "}\n"
-            bdContent += "sources {\n"
-            bdContent += "    elfFile = extern(0);\n"
+        elif self.secureBootType == uidef.kSecureBootType_HabAuth:
+            ########################################################################
+            bdContent += "\nconstants {\n"
+            bdContent += "    SEC_CSF_HEADER              = 20;\n"
+            bdContent += "    SEC_CSF_INSTALL_SRK         = 21;\n"
+            bdContent += "    SEC_CSF_INSTALL_CSFK        = 22;\n"
+            bdContent += "    SEC_CSF_INSTALL_NOCAK       = 23;\n"
+            bdContent += "    SEC_CSF_AUTHENTICATE_CSF    = 24;\n"
+            bdContent += "    SEC_CSF_INSTALL_KEY         = 25;\n"
+            bdContent += "    SEC_CSF_AUTHENTICATE_DATA   = 26;\n"
+            bdContent += "    SEC_CSF_INSTALL_SECRET_KEY  = 27;\n"
+            bdContent += "    SEC_CSF_DECRYPT_DATA        = 28;\n"
+            bdContent += "    SEC_NOP                     = 29;\n"
+            bdContent += "    SEC_SET_MID                 = 30;\n"
+            bdContent += "    SEC_SET_ENGINE              = 31;\n"
+            bdContent += "    SEC_INIT                    = 32;\n"
+            bdContent += "    SEC_UNLOCK                  = 33;\n"
             bdContent += "}\n"
-            bdContent += "section (0) {\n"
+            ########################################################################
+            bdContent += "\nsection (SEC_CSF_HEADER;\n"
+            if self.secureBootType == uidef.kSecureBootType_HabAuth:
+                headerVersion = gendef.kBootImageCsfHeaderVersion_Signed
+            else:
+                pass
+            bdContent += "    Header_Version=\"" + headerVersion + "\",\n"
+            bdContent += "    Header_HashAlgorithm=\"sha256\",\n"
+            bdContent += "    Header_Engine=\"DCP\",\n"
+            bdContent += "    Header_EngineConfiguration=0,\n"
+            bdContent += "    Header_CertificateFormat=\"x509\",\n"
+            bdContent += "    Header_SignatureFormat=\"CMS\"\n"
+            bdContent += "    )\n"
+            bdContent += "{\n"
             bdContent += "}\n"
-            with open(self.bdFilename, 'wb') as fileObj:
-                fileObj.write(bdContent)
-                fileObj.close()
-            self.m_textCtrl_bdPath.Clear()
-            self.m_textCtrl_bdPath.write(self.bdFilename)
+            ########################################################################
+            bdContent += "\nsection (SEC_CSF_INSTALL_SRK;\n"
+            bdContent += "    InstallSRK_Table=\"" + self.srkTableFilename + "\",\n"
+            bdContent += "    InstallSRK_SourceIndex=0\n"
+            bdContent += "    )\n"
+            bdContent += "{\n"
+            bdContent += "}\n"
+            bdContent += "\nsection (SEC_CSF_INSTALL_CSFK;\n"
+            bdContent += "    InstallCSFK_File=\"" + self.crtCsfUsrPemFileList[0] + "\",\n"
+            bdContent += "    InstallCSFK_CertificateFormat=\"x509\"\n"
+            bdContent += "    )\n"
+            bdContent += "{\n"
+            bdContent += "}\n"
+            bdContent += "\nsection (SEC_CSF_AUTHENTICATE_CSF)\n"
+            bdContent += "{\n"
+            bdContent += "}\n"
+            bdContent += "\nsection (SEC_CSF_INSTALL_KEY;\n"
+            bdContent += "    InstallKey_File=\"" + self.crtImgUsrPemFileList[0] + "\",\n"
+            bdContent += "    InstallKey_VerificationIndex=0,\n"
+            bdContent += "    InstallKey_TargetIndex=2)\n"
+            bdContent += "{\n"
+            bdContent += "}\n"
+            bdContent += "\nsection (SEC_CSF_AUTHENTICATE_DATA;\n"
+            bdContent += "    AuthenticateData_VerificationIndex=2,\n"
+            bdContent += "    AuthenticateData_Engine=\"DCP\",\n"
+            bdContent += "    AuthenticateData_EngineConfiguration=0)\n"
+            bdContent += "{\n"
+            bdContent += "}\n"
+            ########################################################################
+            bdContent += "\nsection (SEC_SET_ENGINE;\n"
+            bdContent += "    SetEngine_HashAlgorithm = \"sha256\",\n"
+            bdContent += "    SetEngine_Engine = \"DCP\",\n"
+            bdContent += "    SetEngine_EngineConfiguration = \"0\")\n"
+            bdContent += "{\n"
+            bdContent += "}\n"
+            bdContent += "\nsection (SEC_UNLOCK;\n"
+            bdContent += "    Unlock_Engine = \"SNVS\",\n"
+            bdContent += "    Unlock_features = \"ZMK WRITE\"\n"
+            bdContent += "    )\n"
+            bdContent += "{\n"
+            bdContent += "}\n"
+            ########################################################################
+        else:
+            pass
+
+        with open(self.bdFilename, 'wb') as fileObj:
+            fileObj.write(bdContent)
+            fileObj.close()
+        self.m_textCtrl_bdPath.Clear()
+        self.m_textCtrl_bdPath.write(self.bdFilename)
+
+        return True
+
+    def _isCertificateGenerated( self ):
+        if self.secureBootType == uidef.kSecureBootType_HabAuth:
+            if ((self.srkTableFilename != None) and \
+                (self.srkFuseFilename != None) and \
+                (self.crtSrkCaPemFileList[0] != None) and \
+                (self.crtCsfUsrPemFileList[0] != None) and \
+                (self.crtImgUsrPemFileList[0] != None)):
+                return  (os.path.isfile(self.srkTableFilename) and \
+                         os.path.isfile(self.srkFuseFilename) and \
+                         os.path.isfile(self.crtSrkCaPemFileList[0]) and \
+                         os.path.isfile(self.crtCsfUsrPemFileList[0]) and \
+                         os.path.isfile(self.crtImgUsrPemFileList[0]))
+            else:
+                return False
+        elif self.secureBootType == uidef.kSecureBootType_Development:
             return True
+        else:
+            pass
 
     def createMatchedBdfile( self ):
         self.srcAppFilename = self.m_filePicker_appPath.GetPath()
         imageStartAddr, imageEntryAddr = self._getImageInfo()
         if imageStartAddr == None or imageEntryAddr == None:
+            self.popupMsgBox('You should first specify a source image file (.elf/.srec)!')
+            return False
+        if not self._isCertificateGenerated():
+            self.popupMsgBox('You should first generate certificates!')
             return False
         return self._updateBdfileContent(imageStartAddr, imageEntryAddr)
 
