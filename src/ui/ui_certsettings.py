@@ -15,6 +15,14 @@ class secBootUiCertSettings(advSettingsWin_Cert.advSettingsWin_Cert):
         self._recoverLastSettings()
 
     def _recoverLastSettings ( self ):
+        cstVersion = self.certSettingsDict['cstVersion']
+        if cstVersion == uidef.kCstVersion_v2_3_3:
+            self.m_choice_cstVersion.SetSelection(0)
+        elif cstVersion == uidef.kCstVersion_v3_0_1:
+            self.m_choice_cstVersion.SetSelection(1)
+        else:
+            pass
+
         useExistingCaKey = self.certSettingsDict['useExistingCaKey']
         if useExistingCaKey == 'n':
             self.m_choice_useExistingCaKey.SetSelection(0)
@@ -38,6 +46,9 @@ class secBootUiCertSettings(advSettingsWin_Cert.advSettingsWin_Cert):
             self.m_choice_caFlagSet.SetSelection(1)
         else:
             pass
+
+    def _getCstVersion( self ):
+        self.certSettingsDict['cstVersion'] = self.m_choice_cstVersion.GetString(self.m_choice_cstVersion.GetSelection())
 
     def _getUseExistingCaKey( self ):
         txt = self.m_choice_useExistingCaKey.GetString(self.m_choice_useExistingCaKey.GetSelection())
@@ -65,6 +76,7 @@ class secBootUiCertSettings(advSettingsWin_Cert.advSettingsWin_Cert):
             pass
 
     def callbackOk( self, event ):
+        self._getCstVersion()
         self._getUseExistingCaKey()
         self._getPkiTreeKeyLen()
         self._getPkiTreeDuration()

@@ -18,12 +18,12 @@ class secBootGen(infomgr.secBootInfo):
 
         self.serialFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'cert', 'serial')
         self.keypassFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'cert', 'key_pass.txt')
-        #self.cstBinFolder = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', 'release', 'mingw32', 'bin')
-        self.cstKeysFolder = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', 'release', 'keys')
-        self.cstCrtsFolder = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', 'release', 'crts')
-        self.hab4PkiTreePath = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', 'release', 'keys')
+        self.cstBinFolder = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', uidef.kCstVersion_Invalid, 'mingw32', 'bin')
+        self.cstKeysFolder = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', uidef.kCstVersion_Invalid, 'keys')
+        self.cstCrtsFolder = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', uidef.kCstVersion_Invalid, 'crts')
+        self.hab4PkiTreePath = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', uidef.kCstVersion_Invalid, 'keys')
         self.hab4PkiTreeName = 'hab4_pki_tree.bat'
-        self.srktoolPath = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', 'release', 'mingw32', 'bin', 'srktool.exe')
+        self.srktoolPath = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', uidef.kCstVersion_Invalid, 'mingw32', 'bin', 'srktool.exe')
         self.srkFolder = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'cert')
         self.srkTableFilename = None
         self.srkFuseFilename = None
@@ -31,15 +31,35 @@ class secBootGen(infomgr.secBootInfo):
         self.crtCsfUsrPemFileList = [None] * 4
         self.crtImgUsrPemFileList = [None] * 4
         self.srkBatFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'cert', 'imx_srk_gen.bat')
-        self.cstBinToElftosbPath = '../../cst/release/mingw32/bin'
-        self.cstCrtsToElftosbPath = '../../cst/release/crts/'
+        self.cstBinToElftosbPath = '../../cst/' + uidef.kCstVersion_Invalid + '/mingw32/bin'
+        self.cstCrtsToElftosbPath = '../../cst/' + uidef.kCstVersion_Invalid + '/crts/'
         self.genCertToElftosbPath = '../../../gen/cert/'
+        self.genCryptoToElftosbPath = '../../../gen/crypto/'
+        self.lastCstVersion = uidef.kCstVersion_Invalid
+        self.dekFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'crypto', 'dek.bin')
         self.srcAppFilename = None
         self.destAppFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bootable_image', 'ivt_application.bin')
         self.destAppNoPaddingFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bootable_image', 'ivt_application_nopadding.bin')
         self.bdFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bd_file', 'imx_secure_boot.bd')
         self.elftosbPath = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'elftosb', 'win', 'elftosb.exe')
         self.bdBatFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bd_file', 'imx_secure_boot.bat')
+        self.updateAllCstPathToCorrectVersion()
+
+    def _copyCstBinToElftosbFolder( self ):
+        shutil.copy(self.cstBinFolder + '\\cst.exe', os.path.split(self.elftosbPath)[0])
+
+    def updateAllCstPathToCorrectVersion( self ):
+        certSettingsDict = uivar.getAdvancedSettings(uidef.kAdvancedSettings_Cert)
+        if self.lastCstVersion != certSettingsDict['cstVersion']:
+            self.cstBinFolder = self.cstBinFolder.replace(self.lastCstVersion, certSettingsDict['cstVersion'])
+            self.cstKeysFolder = self.cstKeysFolder.replace(self.lastCstVersion, certSettingsDict['cstVersion'])
+            self.cstCrtsFolder = self.cstCrtsFolder.replace(self.lastCstVersion, certSettingsDict['cstVersion'])
+            self.hab4PkiTreePath = self.hab4PkiTreePath.replace(self.lastCstVersion, certSettingsDict['cstVersion'])
+            self.srktoolPath = self.srktoolPath.replace(self.lastCstVersion, certSettingsDict['cstVersion'])
+            self.cstBinToElftosbPath = self.cstBinToElftosbPath.replace(self.lastCstVersion, certSettingsDict['cstVersion'])
+            self.cstCrtsToElftosbPath = self.cstCrtsToElftosbPath.replace(self.lastCstVersion, certSettingsDict['cstVersion'])
+            self.lastCstVersion = certSettingsDict['cstVersion']
+            self._copyCstBinToElftosbFolder()
 
     def _copySerialAndKeypassfileToCstFolder( self ):
         shutil.copy(self.serialFilename, self.cstKeysFolder)
@@ -74,7 +94,12 @@ class secBootGen(infomgr.secBootInfo):
         batArg += ' ' + str(certSettingsDict['pkiTreeKeyLen'])
         batArg += ' ' + str(certSettingsDict['pkiTreeDuration'])
         batArg += ' ' + str(certSettingsDict['SRKs'])
-        batArg += ' ' + certSettingsDict['caFlagSet']
+        if certSettingsDict['cstVersion'] == uidef.kCstVersion_v3_0_1:
+            batArg += ' ' + certSettingsDict['caFlagSet']
+        elif certSettingsDict['cstVersion'] == uidef.kCstVersion_v2_3_3:
+            pass
+        else:
+            pass
         # We have to change system dir to the path of hab4_pki_tree.bat, or hab4_pki_tree.bat will not be ran successfully
         os.chdir(self.hab4PkiTreePath)
         os.system(self.hab4PkiTreeName + batArg)
@@ -190,6 +215,8 @@ class secBootGen(infomgr.secBootInfo):
             flags = gendef.kBootImageTypeFlag_Unsigned
         elif self.secureBootType == uidef.kSecureBootType_HabAuth:
             flags = gendef.kBootImageTypeFlag_Signed
+        elif self.secureBootType == uidef.kSecureBootType_HabCrypto:
+            flags = gendef.kBootImageTypeFlag_Encrypted
         else:
             pass
         bdContent += "    flags = " + flags + ";\n"
@@ -230,7 +257,7 @@ class secBootGen(infomgr.secBootInfo):
         if self.secureBootType == uidef.kSecureBootType_Development:
             bdContent += "\nsection (0) {\n"
             bdContent += "}\n"
-        elif self.secureBootType == uidef.kSecureBootType_HabAuth:
+        elif self.secureBootType == uidef.kSecureBootType_HabAuth or self.secureBootType == uidef.kSecureBootType_HabCrypto:
             ########################################################################
             bdContent += "\nconstants {\n"
             bdContent += "    SEC_CSF_HEADER              = 20;\n"
@@ -252,6 +279,8 @@ class secBootGen(infomgr.secBootInfo):
             bdContent += "\nsection (SEC_CSF_HEADER;\n"
             if self.secureBootType == uidef.kSecureBootType_HabAuth:
                 headerVersion = gendef.kBootImageCsfHeaderVersion_Signed
+            elif self.secureBootType == uidef.kSecureBootType_HabCrypto:
+                headerVersion = gendef.kBootImageCsfHeaderVersion_Encrypted
             else:
                 pass
             bdContent += "    Header_Version=\"" + headerVersion + "\",\n"
@@ -295,18 +324,36 @@ class secBootGen(infomgr.secBootInfo):
             bdContent += "{\n"
             bdContent += "}\n"
             ########################################################################
-            bdContent += "\nsection (SEC_SET_ENGINE;\n"
-            bdContent += "    SetEngine_HashAlgorithm = \"sha256\",\n"
-            bdContent += "    SetEngine_Engine = \"DCP\",\n"
-            bdContent += "    SetEngine_EngineConfiguration = \"0\")\n"
-            bdContent += "{\n"
-            bdContent += "}\n"
-            bdContent += "\nsection (SEC_UNLOCK;\n"
-            bdContent += "    Unlock_Engine = \"SNVS\",\n"
-            bdContent += "    Unlock_features = \"ZMK WRITE\"\n"
-            bdContent += "    )\n"
-            bdContent += "{\n"
-            bdContent += "}\n"
+            if self.secureBootType == uidef.kSecureBootType_HabAuth:
+                bdContent += "\nsection (SEC_SET_ENGINE;\n"
+                bdContent += "    SetEngine_HashAlgorithm = \"sha256\",\n"
+                bdContent += "    SetEngine_Engine = \"DCP\",\n"
+                bdContent += "    SetEngine_EngineConfiguration = \"0\")\n"
+                bdContent += "{\n"
+                bdContent += "}\n"
+                bdContent += "\nsection (SEC_UNLOCK;\n"
+                bdContent += "    Unlock_Engine = \"SNVS\",\n"
+                bdContent += "    Unlock_features = \"ZMK WRITE\"\n"
+                bdContent += "    )\n"
+                bdContent += "{\n"
+                bdContent += "}\n"
+            elif self.secureBootType == uidef.kSecureBootType_HabCrypto:
+                bdContent += "section (SEC_CSF_INSTALL_SECRET_KEY;\n"
+                bdContent += "    SecretKey_Name=\"" + self.genCryptoToElftosbPath + os.path.split(self.dekFilename)[1] + "\",\n"
+                bdContent += "    SecretKey_Length=128,\n"
+                bdContent += "    SecretKey_VerifyIndex=0,\n"
+                bdContent += "    SecretKey_TargetIndex=0)\n"
+                bdContent += "{\n"
+                bdContent += "}\n"
+                bdContent += "section (SEC_CSF_DECRYPT_DATA;\n"
+                bdContent += "    Decrypt_Engine=\"DCP\",\n"
+                bdContent += "    Decrypt_EngineConfiguration=\"0\",\n"
+                bdContent += "    Decrypt_VerifyIndex=0,\n"
+                bdContent += "    Decrypt_MacBytes=16)\n"
+                bdContent += "{\n"
+                bdContent += "}\n"
+            else:
+                pass
             ########################################################################
         else:
             pass
@@ -320,7 +367,7 @@ class secBootGen(infomgr.secBootInfo):
         return True
 
     def _isCertificateGenerated( self ):
-        if self.secureBootType == uidef.kSecureBootType_HabAuth:
+        if self.secureBootType == uidef.kSecureBootType_HabAuth or self.secureBootType == uidef.kSecureBootType_HabCrypto:
             if ((self.srkTableFilename != None) and \
                 (self.srkFuseFilename != None) and \
                 (self.crtSrkCaPemFileList[0] != None) and \

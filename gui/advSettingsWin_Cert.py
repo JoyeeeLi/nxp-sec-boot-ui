@@ -17,7 +17,7 @@ import wx.xrc
 class advSettingsWin_Cert ( wx.Frame ):
 
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 352,276 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 352,309 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 
 		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 		self.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
@@ -27,6 +27,16 @@ class advSettingsWin_Cert ( wx.Frame ):
 		self.m_notebook_certOpt = wx.Notebook( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_panel_certOpt = wx.Panel( self.m_notebook_certOpt, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		gSizer_certOpt = wx.GridSizer( 0, 2, 0, 0 )
+
+		self.m_staticText_cstVersion = wx.StaticText( self.m_panel_certOpt, wx.ID_ANY, u"CST Version:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_cstVersion.Wrap( -1 )
+
+		gSizer_certOpt.Add( self.m_staticText_cstVersion, 0, wx.ALL, 5 )
+
+		m_choice_cstVersionChoices = [ u"2.3.3", u"3.0.1" ]
+		self.m_choice_cstVersion = wx.Choice( self.m_panel_certOpt, wx.ID_ANY, wx.DefaultPosition, wx.Size( 150,-1 ), m_choice_cstVersionChoices, 0 )
+		self.m_choice_cstVersion.SetSelection( 0 )
+		gSizer_certOpt.Add( self.m_choice_cstVersion, 0, wx.ALL, 5 )
 
 		self.m_staticText_useExistingCaKey = wx.StaticText( self.m_panel_certOpt, wx.ID_ANY, u"Use Existing CA Key:", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText_useExistingCaKey.Wrap( -1 )

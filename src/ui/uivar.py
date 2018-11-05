@@ -10,7 +10,8 @@ g_semcNandImageInfo = None
 g_flexspiNorOpt0 = None
 g_flexspiNorOpt1 = None
 
-g_certSettingsDict = {'useExistingCaKey':None,
+g_certSettingsDict = {'cstVersion':None,
+                      'useExistingCaKey':None,
                       'pkiTreeKeyLen':None,
                       'pkiTreeDuration':None,
                       'SRKs':None,
@@ -31,6 +32,7 @@ def initVar():
     g_flexspiNorOpt1 = 0x00000000
 
     global g_certSettingsDict
+    g_certSettingsDict['cstVersion'] = uidef.kCstVersion_v2_3_3
     g_certSettingsDict['useExistingCaKey'] = 'n'
     g_certSettingsDict['pkiTreeKeyLen'] = 2048
     g_certSettingsDict['pkiTreeDuration'] = 10

@@ -1,4 +1,10 @@
 @echo off
+
+set existing_ca=%1
+set kl=%2
+set duration=%3
+set num_srk=%4
+
 :: -----------------------------------------------------------------------------
 ::
 :: File: hab4_pki_tree.bat
@@ -45,14 +51,14 @@ echo     password.
 echo     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"
 echo.
 
-set /P existing_ca=Do you want to use an existing CA key (y/n)?:
+::set /P existing_ca=Do you want to use an existing CA key (y/n)?:
 
 if not %existing_ca%=="y" goto KEY_LENGTH
 set /P ca_key=Enter CA key name:
 set /P ca_cert=Enter CA certificate name:
 
 :KEY_LENGTH
-set /P kl=Enter key length in bits for PKI tree:
+::set /P kl=Enter key length in bits for PKI tree:
 
 :: Confirm that a valid key length has been entered
 if %kl%==1024 goto VALID_KEY_LENGTH
@@ -63,13 +69,13 @@ echo Invalid key length. Supported key lengths: 1024, 2048, 3072, 4096
 exit /B
 :VALID_KEY_LENGTH
 
-set /P duration=Enter PKI tree duration (years):
+::set /P duration=Enter PKI tree duration (years):
 
 :: Compute validity period
 set /A val_period=%duration%*365
 
 
-set /P num_srk=How many Super Root Keys should be generated?
+::set /P num_srk=How many Super Root Keys should be generated?
 
 :: Check that 0 < num_srk < 4 (Max. number of SRKs)
 if %num_srk%==1 goto VALID_NUM_KEYS

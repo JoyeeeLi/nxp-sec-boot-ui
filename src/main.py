@@ -71,9 +71,11 @@ class secBootMain(runcore.secBootRun):
 
     def callbackAdvCertSettings( self, event ):
         self.runAdvancedCertSettings()
+        self.updateAllCstPathToCorrectVersion()
 
     def callbackGenCert( self, event ):
         self.printLog("'Generate Certificate' button is clicked")
+        self.updateAllCstPathToCorrectVersion()
         if self.createSerialAndKeypassfile():
             self.genCertificate()
             self.genSuperRootKeys()
