@@ -22,12 +22,7 @@ class secBootUiCertSettings(advSettingsWin_Cert.advSettingsWin_Cert):
             pass
 
         pkiTreeKeyLen = self.certSettingsDict['pkiTreeKeyLen']
-        if pkiTreeKeyLen == 2048:
-            self.m_choice_pkiTreeKeyLen.SetSelection(0)
-        elif pkiTreeKeyLen == 4096:
-            self.m_choice_pkiTreeKeyLen.SetSelection(1)
-        else:
-            pass
+        self.m_choice_pkiTreeKeyLen.SetSelection((pkiTreeKeyLen / 1024) - 1)
 
         pkiTreeDuration = self.certSettingsDict['pkiTreeDuration']
         self.m_textCtrl_pkiTreeDuration.Clear()

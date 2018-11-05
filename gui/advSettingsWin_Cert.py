@@ -43,9 +43,9 @@ class advSettingsWin_Cert ( wx.Frame ):
 
 		gSizer_certOpt.Add( self.m_staticText_pkiTreeKeyLen, 0, wx.ALL, 5 )
 
-		m_choice_pkiTreeKeyLenChoices = [ u"2048", u"4096" ]
+		m_choice_pkiTreeKeyLenChoices = [ u"1024", u"2048", u"3072", u"4096" ]
 		self.m_choice_pkiTreeKeyLen = wx.Choice( self.m_panel_certOpt, wx.ID_ANY, wx.DefaultPosition, wx.Size( 150,-1 ), m_choice_pkiTreeKeyLenChoices, 0 )
-		self.m_choice_pkiTreeKeyLen.SetSelection( 0 )
+		self.m_choice_pkiTreeKeyLen.SetSelection( 1 )
 		gSizer_certOpt.Add( self.m_choice_pkiTreeKeyLen, 0, wx.ALL, 5 )
 
 		self.m_staticText_pkiTreeDuration = wx.StaticText( self.m_panel_certOpt, wx.ID_ANY, u"PKI Tree Duration (years):", wx.DefaultPosition, wx.DefaultSize, 0 )

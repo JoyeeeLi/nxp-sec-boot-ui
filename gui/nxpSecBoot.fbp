@@ -18827,7 +18827,7 @@
                                             <property name="caption"></property>
                                             <property name="caption_visible">1</property>
                                             <property name="center_pane">0</property>
-                                            <property name="choices">&quot;2048&quot; &quot;4096&quot;</property>
+                                            <property name="choices">&quot;1024&quot; &quot;2048&quot; &quot;3072&quot; &quot;4096&quot;</property>
                                             <property name="close_button">1</property>
                                             <property name="context_help"></property>
                                             <property name="context_menu">1</property>
@@ -18857,7 +18857,7 @@
                                             <property name="pin_button">1</property>
                                             <property name="pos"></property>
                                             <property name="resize">Resizable</property>
-                                            <property name="selection">0</property>
+                                            <property name="selection">1</property>
                                             <property name="show">1</property>
                                             <property name="size">150,-1</property>
                                             <property name="style"></property>
