@@ -10,6 +10,15 @@ kEfuseAddr_BOOT_CFG0  = 0x5
 kEfuseAddr_BOOT_CFG1  = 0x6
 kEfuseAddr_BOOT_CFG2  = 0x7
 
+kEfuseAddr_SRK0 = 0x18
+kEfuseAddr_SRK1 = 0x19
+kEfuseAddr_SRK2 = 0x1A
+kEfuseAddr_SRK3 = 0x1B
+kEfuseAddr_SRK4 = 0x1C
+kEfuseAddr_SRK5 = 0x1D
+kEfuseAddr_SRK6 = 0x1E
+kEfuseAddr_SRK7 = 0x1F
+
 #----------------SEMC NAND----------------------
 kSemcNandFcbTag_Fingerprint = 0x4E464342  # 'NFCB'
 kSemcNandFcbTag_Semc        = 0x434D4553  # 'SEMC'

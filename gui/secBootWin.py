@@ -424,7 +424,7 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_progSrk1_showSrk = wx.Panel( self.m_panel_progSrk, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		sbSizer_showSrk = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_progSrk1_showSrk, wx.ID_ANY, u"Step 2:" ), wx.VERTICAL )
 
-		self.m_staticText_srk256bit = wx.StaticText( sbSizer_showSrk.GetStaticBox(), wx.ID_ANY, u"Program below public SRK data (256bits) to Fuse SRK Region:", wx.DefaultPosition, wx.Size( 100,60 ), 0 )
+		self.m_staticText_srk256bit = wx.StaticText( sbSizer_showSrk.GetStaticBox(), wx.ID_ANY, u"Program below public SRK data (256bits) to Fuse SRK Region (0 -7):", wx.DefaultPosition, wx.Size( 100,60 ), 0 )
 		self.m_staticText_srk256bit.Wrap( -1 )
 
 		sbSizer_showSrk.Add( self.m_staticText_srk256bit, 0, wx.ALL, 5 )
@@ -440,7 +440,7 @@ class secBootWin ( wx.Frame ):
 		sbSizer_showSrk.Fit( self.m_panel_progSrk1_showSrk )
 		bSizer_progSrk.Add( self.m_panel_progSrk1_showSrk, 1, wx.EXPAND |wx.ALL, 5 )
 
-		self.m_button_progSrk = wx.Button( self.m_panel_progSrk, wx.ID_ANY, u"Run blhost Tool", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_button_progSrk = wx.Button( self.m_panel_progSrk, wx.ID_ANY, u"Load SRK data", wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer_progSrk.Add( self.m_button_progSrk, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
 
@@ -640,6 +640,7 @@ class secBootWin ( wx.Frame ):
 		self.m_button_genCert.Bind( wx.EVT_BUTTON, self.callbackGenCert )
 		self.m_button_genImage.Bind( wx.EVT_BUTTON, self.callbackGenImage )
 		self.m_choice_keyStorageRegion.Bind( wx.EVT_CHOICE, self.callbackSetKeyStorageRegion )
+		self.m_button_progSrk.Bind( wx.EVT_BUTTON, self.callbackProgramSrk )
 		self.m_button_flashImage.Bind( wx.EVT_BUTTON, self.callbackFlashImage )
 		self.m_button_clearLog.Bind( wx.EVT_BUTTON, self.callbackClearLog )
 
@@ -673,6 +674,9 @@ class secBootWin ( wx.Frame ):
 		event.Skip()
 
 	def callbackSetKeyStorageRegion( self, event ):
+		event.Skip()
+
+	def callbackProgramSrk( self, event ):
 		event.Skip()
 
 	def callbackFlashImage( self, event ):

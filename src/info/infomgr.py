@@ -27,6 +27,12 @@ class secBootInfo(uicore.secBootUi):
     def clearDeviceStatus( self ):
         self.m_textCtrl_deviceStatus.Clear()
 
+    def printSrkData( self, srkStr ):
+        self.m_textCtrl_srk256bit.write(srkStr + "\n")
+
+    def clearSrkData( self ):
+        self.m_textCtrl_srk256bit.Clear()
+
     def getReg32FromBinFile( self, filename, offset=0):
         return hex(self.getVal32FromBinFile(filename, offset))
 
@@ -44,3 +50,12 @@ class secBootInfo(uicore.secBootUi):
     def getVal32FromByteArray( self, binarray, offset=0):
         val32Vaule = ((binarray[3+offset]<<24) + (binarray[2+offset]<<16) + (binarray[1+offset]<<8) + binarray[0+offset])
         return val32Vaule
+
+    def getFormattedFuseValue( self, fuseValue):
+        formattedVal32 = ''
+        for i in range(8):
+            loc = 32 - (i + 1) * 4
+            halfbyteStr = str(hex((fuseValue & (0xF << loc))>> loc))
+            formattedVal32 += halfbyteStr[2]
+        return formattedVal32
+

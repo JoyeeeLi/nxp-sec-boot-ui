@@ -137,6 +137,13 @@ class secBootGen(infomgr.secBootInfo):
         os.system(self.srkBatFilename)
         self.printLog('Public SuperRootKey files are generated successfully')
 
+    def showSuperRootKeys( self ):
+        self.clearSrkData()
+        keyWords = gendef.kSecKeyLengthInBits_SRK / 32
+        for i in range(keyWords):
+            val32 = self.getVal32FromBinFile(self.srkFuseFilename, (i * 4))
+            self.printSrkData(str(hex(val32)))
+
     def _getImageInfo( self ):
         startAddress = None
         entryPointAddress = None

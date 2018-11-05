@@ -77,6 +77,11 @@ class secBootMain(runcore.secBootRun):
         if self.createSerialAndKeypassfile():
             self.genCertificate()
             self.genSuperRootKeys()
+            self.showSuperRootKeys()
+
+    def callbackProgramSrk( self, event ):
+        self.printLog("'Load SRK data' button is clicked")
+        self.burnSrkData()
 
     def callbackSetKeyStorageRegion( self, event ):
         self.setKeyStorageRegionColor()

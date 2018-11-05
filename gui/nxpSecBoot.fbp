@@ -6874,7 +6874,7 @@
                                                                                     <property name="gripper">0</property>
                                                                                     <property name="hidden">0</property>
                                                                                     <property name="id">wxID_ANY</property>
-                                                                                    <property name="label">Program below public SRK data (256bits) to Fuse SRK Region:</property>
+                                                                                    <property name="label">Program below public SRK data (256bits) to Fuse SRK Region (0 -7):</property>
                                                                                     <property name="markup">0</property>
                                                                                     <property name="max_size"></property>
                                                                                     <property name="maximize_button">0</property>
@@ -7071,7 +7071,7 @@
                                                                         <property name="gripper">0</property>
                                                                         <property name="hidden">0</property>
                                                                         <property name="id">wxID_ANY</property>
-                                                                        <property name="label">Run blhost Tool</property>
+                                                                        <property name="label">Load SRK data</property>
                                                                         <property name="margins"></property>
                                                                         <property name="markup">0</property>
                                                                         <property name="max_size"></property>
@@ -7110,7 +7110,7 @@
                                                                         <event name="OnAux2DClick"></event>
                                                                         <event name="OnAux2Down"></event>
                                                                         <event name="OnAux2Up"></event>
-                                                                        <event name="OnButtonClick"></event>
+                                                                        <event name="OnButtonClick">callbackProgramSrk</event>
                                                                         <event name="OnChar"></event>
                                                                         <event name="OnCharHook"></event>
                                                                         <event name="OnEnterWindow"></event>

@@ -5,6 +5,7 @@ import rundef
 import boot
 sys.path.append(os.path.abspath(".."))
 from gen import gencore
+from gen import gendef
 from info import infodef
 from ui import uidef
 from ui import uivar
@@ -177,7 +178,7 @@ class secBootRun(gencore.secBootGen):
         self.printLog(cmdStr)
         return (status == boot.status.kStatus_Success)
 
-    def _getDeviceFuseByBlhost( self, fuseIndex, fuseName):
+    def _readDeviceFuseByBlhost( self, fuseIndex, fuseName):
         status, results, cmdStr = self.blhost.efuseReadOnce(fuseIndex)
         self.printLog(cmdStr)
         if (status == boot.status.kStatus_Success):
@@ -186,9 +187,9 @@ class secBootRun(gencore.secBootGen):
             self.printDeviceStatus(fuseName + " = --------")
 
     def getMcuDeviceInfoViaFlashloader( self ):
-        self._getDeviceFuseByBlhost(infodef.kEfuseAddr_BOOT_CFG0, 'Fuse->BOOT_CFG (0x450)')
-        self._getDeviceFuseByBlhost(infodef.kEfuseAddr_BOOT_CFG1, 'Fuse->BOOT_CFG (0x460)')
-        self._getDeviceFuseByBlhost(infodef.kEfuseAddr_BOOT_CFG2, 'Fuse->BOOT_CFG (0x470)')
+        self._readDeviceFuseByBlhost(infodef.kEfuseAddr_BOOT_CFG0, 'Fuse->BOOT_CFG (0x450)')
+        self._readDeviceFuseByBlhost(infodef.kEfuseAddr_BOOT_CFG1, 'Fuse->BOOT_CFG (0x460)')
+        self._readDeviceFuseByBlhost(infodef.kEfuseAddr_BOOT_CFG2, 'Fuse->BOOT_CFG (0x470)')
 
     def _prepareForBootDeviceOperation ( self ):
         if self.bootDevice == uidef.kBootDevice_FlexspiNor:
@@ -337,6 +338,19 @@ class secBootRun(gencore.secBootGen):
         else:
             pass
         return True
+
+    def _burnDeviceFuseByBlhost( self, fuseIndex, fuseValue):
+        status, results, cmdStr = self.blhost.efuseProgramOnce(fuseIndex, self.getFormattedFuseValue(fuseValue))
+        self.printLog(cmdStr)
+
+    def burnSrkData ( self ):
+        if os.path.isfile(self.srkFuseFilename):
+            keyWords = gendef.kSecKeyLengthInBits_SRK / 32
+            for i in range(keyWords):
+                val32 = self.getVal32FromBinFile(self.srkFuseFilename, (i * 4))
+                self._burnDeviceFuseByBlhost(infodef.kEfuseAddr_SRK0 + i, val32)
+        else:
+            self.popupMsgBox('Super Root Keys hasn\'t been generated!')
 
     def flashBootableImage ( self ):
         self._prepareForBootDeviceOperation()
