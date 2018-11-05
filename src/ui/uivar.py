@@ -31,11 +31,11 @@ def initVar():
     g_flexspiNorOpt1 = 0x00000000
 
     global g_certSettingsDict
-    g_certSettingsDict['useExistingCaKey'] = False
+    g_certSettingsDict['useExistingCaKey'] = 'n'
     g_certSettingsDict['pkiTreeKeyLen'] = 2048
     g_certSettingsDict['pkiTreeDuration'] = 10
     g_certSettingsDict['SRKs'] = 4
-    g_certSettingsDict['caFlagSet'] = True
+    g_certSettingsDict['caFlagSet'] = 'y'
 
 def getBootDeviceConfiguration( group ):
     if group == uidef.kBootDevice_SemcNand:

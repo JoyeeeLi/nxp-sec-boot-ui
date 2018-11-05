@@ -16,7 +16,7 @@ class secBootUiCertSettings(advSettingsWin_Cert.advSettingsWin_Cert):
 
     def _recoverLastSettings ( self ):
         useExistingCaKey = self.certSettingsDict['useExistingCaKey']
-        if not useExistingCaKey:
+        if useExistingCaKey == 'n':
             self.m_choice_useExistingCaKey.SetSelection(0)
         else:
             pass
@@ -37,15 +37,17 @@ class secBootUiCertSettings(advSettingsWin_Cert.advSettingsWin_Cert):
         self.m_choice_SRKs.SetSelection(SRKs - 1)
 
         caFlagSet = self.certSettingsDict['caFlagSet']
-        if caFlagSet:
+        if caFlagSet == 'y':
             self.m_choice_caFlagSet.SetSelection(0)
-        else:
+        elif caFlagSet == 'n':
             self.m_choice_caFlagSet.SetSelection(1)
+        else:
+            pass
 
     def _getUseExistingCaKey( self ):
         txt = self.m_choice_useExistingCaKey.GetString(self.m_choice_useExistingCaKey.GetSelection())
         if txt == 'No':
-            self.certSettingsDict['useExistingCaKey'] = False
+            self.certSettingsDict['useExistingCaKey'] = 'n'
         else:
             pass
 
@@ -61,9 +63,9 @@ class secBootUiCertSettings(advSettingsWin_Cert.advSettingsWin_Cert):
     def _getCaFlagSet( self ):
         txt = self.m_choice_caFlagSet.GetString(self.m_choice_caFlagSet.GetSelection())
         if txt == 'No - Fast Auth Tree':
-            self.certSettingsDict['caFlagSet'] = False
+            self.certSettingsDict['caFlagSet'] = 'n'
         elif txt == 'Yes - Standard PKI Tree':
-            self.certSettingsDict['caFlagSet'] = True
+            self.certSettingsDict['caFlagSet'] = 'y'
         else:
             pass
 

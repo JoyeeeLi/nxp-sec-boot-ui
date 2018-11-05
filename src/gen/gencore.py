@@ -9,6 +9,7 @@ sys.path.append(os.path.abspath(".."))
 from info import infomgr
 from utils import elf
 from ui import uidef
+from ui import uivar
 
 class secBootGen(infomgr.secBootInfo):
 
@@ -18,6 +19,9 @@ class secBootGen(infomgr.secBootInfo):
         self.serialFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'cert', 'serial')
         self.keypassFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'cert', 'key_pass.txt')
         self.cstKeysFolder = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', 'release', 'keys')
+        self.cstCrtsFolder = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', 'release', 'crts')
+        self.hab4PkiTreePath = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', 'release', 'keys')
+        self.hab4PkiTreeName = 'hab4_pki_tree.bat'
         self.srcAppFilename = None
         self.destAppFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bootable_image', 'ivt_application.bin')
         self.destAppNoPaddingFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bootable_image', 'ivt_application_nopadding.bin')
@@ -52,7 +56,17 @@ class secBootGen(infomgr.secBootInfo):
         return True
 
     def genCertificate( self ):
-        pass
+        certSettingsDict = uivar.getAdvancedSettings(uidef.kAdvancedSettings_Cert)
+        batArg = ''
+        batArg += ' ' + certSettingsDict['useExistingCaKey']
+        batArg += ' ' + str(certSettingsDict['pkiTreeKeyLen'])
+        batArg += ' ' + str(certSettingsDict['pkiTreeDuration'])
+        batArg += ' ' + str(certSettingsDict['SRKs'])
+        batArg += ' ' + certSettingsDict['caFlagSet']
+        # We have to change system dir to the path of hab4_pki_tree.bat, or hab4_pki_tree.bat will not be ran successfully
+        os.chdir(self.hab4PkiTreePath)
+        os.system(self.hab4PkiTreeName + batArg)
+        self.printLog('Certificates are generated into these folders: ' + self.cstKeysFolder + ' , ' + self.cstCrtsFolder)
 
     def _getImageInfo( self ):
         startAddress = None
