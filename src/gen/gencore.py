@@ -18,7 +18,7 @@ class secBootGen(infomgr.secBootInfo):
 
         self.serialFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'cert', 'serial')
         self.keypassFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'cert', 'key_pass.txt')
-        self.cstBinFolder = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', 'release', 'mingw32', 'bin')
+        #self.cstBinFolder = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', 'release', 'mingw32', 'bin')
         self.cstKeysFolder = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', 'release', 'keys')
         self.cstCrtsFolder = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', 'release', 'crts')
         self.hab4PkiTreePath = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', 'release', 'keys')
@@ -31,6 +31,9 @@ class secBootGen(infomgr.secBootInfo):
         self.crtCsfUsrPemFileList = [None] * 4
         self.crtImgUsrPemFileList = [None] * 4
         self.srkBatFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'cert', 'imx_srk_gen.bat')
+        self.cstBinToElftosbPath = '../../cst/release/mingw32/bin'
+        self.cstCrtsToElftosbPath = '../../cst/release/crts/'
+        self.genCertToElftosbPath = '../../../gen/cert/'
         self.srcAppFilename = None
         self.destAppFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bootable_image', 'ivt_application.bin')
         self.destAppNoPaddingFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bootable_image', 'ivt_application_nopadding.bin')
@@ -205,7 +208,9 @@ class secBootGen(infomgr.secBootInfo):
         bdContent += "    ivtOffset = " + str(hex(ivtOffset)) + ";\n"
         bdContent += "    initialLoadSize = " + str(hex(initialLoadSize)) + ";\n"
         if self.secureBootType == uidef.kSecureBootType_HabAuth:
-            bdContent += "    cstFolderPath = \"" + self.cstBinFolder + "\";\n"
+            #bdContent += "    cstFolderPath = \"" + self.cstBinFolder + "\";\n"
+            #bdContent += "    cstFolderPath = \"" + self.cstBinToElftosbPath + "\";\n"
+            pass
         else:
             pass
         bdContent += "    entryPointAddress = " + str(hex(entryPointAddress)) + ";\n"
@@ -253,13 +258,15 @@ class secBootGen(infomgr.secBootInfo):
             bdContent += "}\n"
             ########################################################################
             bdContent += "\nsection (SEC_CSF_INSTALL_SRK;\n"
-            bdContent += "    InstallSRK_Table=\"" + self.srkTableFilename + "\",\n"
+            #bdContent += "    InstallSRK_Table=\"" + self.srkTableFilename + "\",\n"
+            bdContent += "    InstallSRK_Table=\"" + self.genCertToElftosbPath + os.path.split(self.srkTableFilename)[1] + "\",\n"
             bdContent += "    InstallSRK_SourceIndex=0\n"
             bdContent += "    )\n"
             bdContent += "{\n"
             bdContent += "}\n"
             bdContent += "\nsection (SEC_CSF_INSTALL_CSFK;\n"
-            bdContent += "    InstallCSFK_File=\"" + self.crtCsfUsrPemFileList[0] + "\",\n"
+            #bdContent += "    InstallCSFK_File=\"" + self.crtCsfUsrPemFileList[0] + "\",\n"
+            bdContent += "    InstallCSFK_File=\"" + self.cstCrtsToElftosbPath + os.path.split(self.crtCsfUsrPemFileList[0])[1] + "\",\n"
             bdContent += "    InstallCSFK_CertificateFormat=\"x509\"\n"
             bdContent += "    )\n"
             bdContent += "{\n"
@@ -268,7 +275,8 @@ class secBootGen(infomgr.secBootInfo):
             bdContent += "{\n"
             bdContent += "}\n"
             bdContent += "\nsection (SEC_CSF_INSTALL_KEY;\n"
-            bdContent += "    InstallKey_File=\"" + self.crtImgUsrPemFileList[0] + "\",\n"
+            #bdContent += "    InstallKey_File=\"" + self.crtImgUsrPemFileList[0] + "\",\n"
+            bdContent += "    InstallKey_File=\"" + self.cstCrtsToElftosbPath + os.path.split(self.crtImgUsrPemFileList[0])[1] + "\",\n"
             bdContent += "    InstallKey_VerificationIndex=0,\n"
             bdContent += "    InstallKey_TargetIndex=2)\n"
             bdContent += "{\n"
@@ -343,6 +351,8 @@ class secBootGen(infomgr.secBootInfo):
 
     def genBootableImage( self ):
         self._updateBdBatfileContent()
+        # We have to change system dir to the path of elftosb.exe, or elftosb.exe may not be ran successfully
+        os.chdir(os.path.split(self.elftosbPath)[0])
         os.system(self.bdBatFilename)
         self.printLog('Bootable image is generated: ' + self.destAppFilename)
 
