@@ -183,8 +183,10 @@ class secBootRun(gencore.secBootGen):
         self.printLog(cmdStr)
         if (status == boot.status.kStatus_Success):
             self.printDeviceStatus(fuseName + " = " + str(hex(results[1])))
+            return results[1]
         else:
             self.printDeviceStatus(fuseName + " = --------")
+            return None
 
     def getMcuDeviceInfoViaFlashloader( self ):
         self._readDeviceFuseByBlhost(infodef.kEfuseAddr_BOOT_CFG0, 'Fuse->BOOT_CFG (0x450)')
@@ -339,16 +341,27 @@ class secBootRun(gencore.secBootGen):
             pass
         return True
 
+    def _isDeviceFuseSrkRegionBlank( self ):
+        keyWords = gendef.kSecKeyLengthInBits_SRK / 32
+        for i in range(keyWords):
+            srk = self._readDeviceFuseByBlhost(infodef.kEfuseAddr_SRK0 + i, 'Fuse->SRK' + str(i) + ' (' + str(hex(0x580 + i * 0x10)) + ')')
+            if srk != None and srk != 0:
+                return False
+        return True
+
     def _burnDeviceFuseByBlhost( self, fuseIndex, fuseValue):
         status, results, cmdStr = self.blhost.efuseProgramOnce(fuseIndex, self.getFormattedFuseValue(fuseValue))
         self.printLog(cmdStr)
 
     def burnSrkData ( self ):
         if os.path.isfile(self.srkFuseFilename):
-            keyWords = gendef.kSecKeyLengthInBits_SRK / 32
-            for i in range(keyWords):
-                val32 = self.getVal32FromBinFile(self.srkFuseFilename, (i * 4))
-                self._burnDeviceFuseByBlhost(infodef.kEfuseAddr_SRK0 + i, val32)
+            if self._isDeviceFuseSrkRegionBlank():
+                keyWords = gendef.kSecKeyLengthInBits_SRK / 32
+                for i in range(keyWords):
+                    val32 = self.getVal32FromBinFile(self.srkFuseFilename, (i * 4))
+                    self._burnDeviceFuseByBlhost(infodef.kEfuseAddr_SRK0 + i, val32)
+            else:
+                self.popupMsgBox('Fuse SRK Region has been burned, it is program-once!')
         else:
             self.popupMsgBox('Super Root Keys hasn\'t been generated!')
 

@@ -455,8 +455,8 @@ class Bootloader(object):
 
     ##
     # @brief efuse-program-once command
-    def efuseProgramOnce(self, address, data, lock=0):
-        return self._executeCommand('efuse-program-once', address, data, lock)
+    def efuseProgramOnce(self, address, data):
+        return self._executeCommand('efuse-program-once', address, data)
 
     ##
     # @brief efuse-read-once command
