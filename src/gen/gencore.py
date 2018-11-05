@@ -22,12 +22,18 @@ class secBootGen(infomgr.secBootInfo):
         self.cstCrtsFolder = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', 'release', 'crts')
         self.hab4PkiTreePath = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', 'release', 'keys')
         self.hab4PkiTreeName = 'hab4_pki_tree.bat'
+        self.srktoolPath = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', 'release', 'mingw32', 'bin', 'srktool.exe')
+        self.srkFolder = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'cert')
+        self.srkTableFilename = None
+        self.srkFuseFilename = None
+        self.crtPemFileList = [None] *4
+        self.srkBatFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'cert', 'imx_srk_gen.bat')
         self.srcAppFilename = None
         self.destAppFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bootable_image', 'ivt_application.bin')
         self.destAppNoPaddingFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bootable_image', 'ivt_application_nopadding.bin')
         self.bdFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bd_file', 'imx_secure_boot.bd')
         self.elftosbPath = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'elftosb', 'win', 'elftosb.exe')
-        self.batFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bd_file', 'imx_secure_boot.bat')
+        self.bdBatFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bd_file', 'imx_secure_boot.bat')
 
     def _copySerialAndKeypassfileToCstFolder( self ):
         shutil.copy(self.serialFilename, self.cstKeysFolder)
@@ -67,6 +73,55 @@ class secBootGen(infomgr.secBootInfo):
         os.chdir(self.hab4PkiTreePath)
         os.system(self.hab4PkiTreeName + batArg)
         self.printLog('Certificates are generated into these folders: ' + self.cstKeysFolder + ' , ' + self.cstCrtsFolder)
+
+    def _setSrkFilenames( self ):
+        certSettingsDict = uivar.getAdvancedSettings(uidef.kAdvancedSettings_Cert)
+        srkTableName = 'SRK'
+        srkFuseName = 'SRK'
+        for i in range(certSettingsDict['SRKs']):
+            srkTableName += '_' + str(i + 1)
+            srkFuseName += '_' + str(i + 1)
+        srkTableName += '_table.bin'
+        srkFuseName += '_fuse.bin'
+        self.srkTableFilename = os.path.join(self.srkFolder, srkTableName)
+        self.srkFuseFilename = os.path.join(self.srkFolder, srkFuseName)
+
+    def _getCrtPemFilenames( self ):
+        certSettingsDict = uivar.getAdvancedSettings(uidef.kAdvancedSettings_Cert)
+        for i in range(certSettingsDict['SRKs']):
+            self.crtPemFileList[i] = self.cstCrtsFolder + '/'
+            self.crtPemFileList[i] += 'SRK' + str(i + 1) + '_sha256'
+            self.crtPemFileList[i] += '_' + str(certSettingsDict['pkiTreeKeyLen'])
+            self.crtPemFileList[i] += '_65537_v3_ca_crt.pem'
+
+    def _updateSrkBatfileContent( self ):
+        self._setSrkFilenames()
+        self._getCrtPemFilenames()
+        certSettingsDict = uivar.getAdvancedSettings(uidef.kAdvancedSettings_Cert)
+        batContent = self.srktoolPath
+        batContent += " -h 4"
+        batContent += " -t " + self.srkTableFilename
+        batContent += " -e " + self.srkFuseFilename
+        batContent += " -d sha256"
+        batContent += " -c "
+        for i in range(certSettingsDict['SRKs']):
+            if i != 0:
+                batContent += ','
+            batContent += self.crtPemFileList[i]
+        batContent += " -f 1"
+        with open(self.srkBatFilename, 'wb') as fileObj:
+            fileObj.write(batContent)
+            fileObj.close()
+
+    def _copySrkTablefileToCstFolder( self ):
+        shutil.copy(self.srkTableFilename, self.cstKeysFolder)
+        self.printLog(self.srkTableFilename + ' is copied to: ' + self.cstKeysFolder)
+
+    def genSuperRootKeys( self ):
+        self._updateSrkBatfileContent()
+        os.system(self.srkBatFilename)
+        self._copySrkTablefileToCstFolder()
+        self.printLog('Public SuperRootKey files are generated successfully')
 
     def _getImageInfo( self ):
         startAddress = None
@@ -155,15 +210,15 @@ class secBootGen(infomgr.secBootInfo):
             return False
         return self._updateBdfileContent(imageStartAddr, imageEntryAddr)
 
-    def _updateBatfileContent( self ):
+    def _updateBdBatfileContent( self ):
         batContent = self.elftosbPath
         batContent += " -f imx -V -c " + self.bdFilename + ' -o ' + self.destAppFilename + ' ' + self.srcAppFilename
-        with open(self.batFilename, 'wb') as fileObj:
+        with open(self.bdBatFilename, 'wb') as fileObj:
             fileObj.write(batContent)
             fileObj.close()
 
     def genBootableImage( self ):
-        self._updateBatfileContent()
-        os.system(self.batFilename)
+        self._updateBdBatfileContent()
+        os.system(self.bdBatFilename)
         self.printLog('Bootable image is generated: ' + self.destAppFilename)
 

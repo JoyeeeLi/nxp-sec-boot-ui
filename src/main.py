@@ -76,6 +76,7 @@ class secBootMain(runcore.secBootRun):
         self.printLog("'Generate Certificate' button is clicked")
         if self.createSerialAndKeypassfile():
             self.genCertificate()
+            self.genSuperRootKeys()
 
     def callbackSetKeyStorageRegion( self, event ):
         self.setKeyStorageRegionColor()
