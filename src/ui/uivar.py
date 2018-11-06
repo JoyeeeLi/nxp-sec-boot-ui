@@ -32,7 +32,7 @@ def initVar():
     g_flexspiNorOpt1 = 0x00000000
 
     global g_certSettingsDict
-    g_certSettingsDict['cstVersion'] = uidef.kCstVersion_v2_3_3
+    g_certSettingsDict['cstVersion'] = uidef.kCstVersion_v3_0_1
     g_certSettingsDict['useExistingCaKey'] = 'n'
     g_certSettingsDict['pkiTreeKeyLen'] = 2048
     g_certSettingsDict['pkiTreeDuration'] = 10

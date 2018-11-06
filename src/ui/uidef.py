@@ -36,3 +36,7 @@ kAdvancedSettings_Cert = 'Cert'
 kAdvancedSettings_BD   = 'BD'
 kAdvancedSettings_Key  = 'Key'
 
+kCstVersion_Invalid = 'x.x.x'
+kCstVersion_v2_3_3  = '2.3.3'
+kCstVersion_v3_0_1  = '3.0.1'
+
