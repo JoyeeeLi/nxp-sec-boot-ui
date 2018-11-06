@@ -2,6 +2,7 @@
 import wx
 import sys
 import os
+import time
 from run import runcore
 from ui import uidef
 
@@ -12,59 +13,76 @@ class secBootMain(runcore.secBootRun):
 
         self.connectStage = uidef.kConnectStage_Rom
 
+    def callbackSetMcuSeries( self, event ):
+        self.setTargetSetupValue()
+
+    def callbackSetMcuDevice( self, event ):
+        self.setTargetSetupValue()
+        usbIdList = self.getUsbid()
+        self.adjustPortSetupValue(self.connectStage, usbIdList)
+
+    def callbackSetBootDevice( self, event ):
+        self.setTargetSetupValue()
+
     def callbackBootDeviceConfiguration( self, event ):
-        self.updateTargetSetupValue()
         self.runBootDeviceConfiguration()
 
     def callbackSetUartPort( self, event ):
         self.setPortSetupValue(self.connectStage)
 
     def callbackSetUsbhidPort( self, event ):
-        self.updateTargetSetupValue()
         usbIdList = self.getUsbid()
         self.setPortSetupValue(self.connectStage, usbIdList)
 
     def callbackConnectToDevice( self, event ):
         self.printLog("'Connect to xxx' button is clicked")
-        self.updateTargetSetupValue()
-        self.updatePortSetupValue()
-        if self.connectStage == uidef.kConnectStage_Rom:
-            self.connectToDevice(self.connectStage)
-            if self.pingRom():
-                self.getMcuDeviceInfoViaRom()
-                if self.jumpToFlashloader():
-                    self.updateConnectStatus('yellow')
-                    self.connectStage = uidef.kConnectStage_Flashloader
-                    usbIdList = self.getUsbid()
-                    self.adjustPortSetupValue(self.connectStage, usbIdList)
+        connectSteps = uidef.kConnectStep_Normal
+        self.getConnectSpeedMode()
+        if self.isConnectSpeedMode and self.connectStage != uidef.kConnectStage_Reset:
+            connectSteps = uidef.kConnectStep_Fast
+        while connectSteps:
+            self.updatePortSetupValue()
+            if self.connectStage == uidef.kConnectStage_Rom:
+                self.connectToDevice(self.connectStage)
+                if self.pingRom():
+                    self.getMcuDeviceInfoViaRom()
+                    if self.jumpToFlashloader():
+                        self.updateConnectStatus('yellow')
+                        self.connectStage = uidef.kConnectStage_Flashloader
+                        usbIdList = self.getUsbid()
+                        self.adjustPortSetupValue(self.connectStage, usbIdList)
+                    else:
+                        self.updateConnectStatus('red')
                 else:
                     self.updateConnectStatus('red')
+            elif self.connectStage == uidef.kConnectStage_Flashloader:
+                self.connectToDevice(self.connectStage)
+                # A new USB device is being enumerated, we need to delay some time here
+                if self.isUsbhidPortSelected and connectSteps > uidef.kConnectStep_Normal:
+                    time.sleep(5)
+                if self.pingFlashloader():
+                    self.getMcuDeviceInfoViaFlashloader()
+                    self.updateConnectStatus('green')
+                    self.connectStage = uidef.kConnectStage_ExternalMemory
+                else:
+                    self.updateConnectStatus('red')
+            elif self.connectStage == uidef.kConnectStage_ExternalMemory:
+                if self.configureBootDevice():
+                    self.getBootDeviceInfoViaFlashloader()
+                    self.connectStage = uidef.kConnectStage_Reset
+                    self.updateConnectStatus('blue')
+                else:
+                    self.updateConnectStatus('red')
+            elif self.connectStage == uidef.kConnectStage_Reset:
+                self.resetMcuDevice()
+                self.connectStage = uidef.kConnectStage_Rom
+                self.updateConnectStatus('black')
+                usbIdList = self.getUsbid()
+                self.adjustPortSetupValue(self.connectStage, usbIdList)
+                self.connectToDevice(self.connectStage)
             else:
-                self.updateConnectStatus('red')
-        elif self.connectStage == uidef.kConnectStage_Flashloader:
-            self.connectToDevice(self.connectStage)
-            if self.pingFlashloader():
-                self.getMcuDeviceInfoViaFlashloader()
-                self.updateConnectStatus('green')
-                self.connectStage = uidef.kConnectStage_ExternalMemory
-            else:
-                self.updateConnectStatus('red')
-        elif self.connectStage == uidef.kConnectStage_ExternalMemory:
-            if self.configureBootDevice():
-                self.getBootDeviceInfoViaFlashloader()
-                self.connectStage = uidef.kConnectStage_Reset
-                self.updateConnectStatus('blue')
-            else:
-                self.updateConnectStatus('red')
-        elif self.connectStage == uidef.kConnectStage_Reset:
-            self.resetMcuDevice()
-            self.connectStage = uidef.kConnectStage_Rom
-            self.updateConnectStatus('black')
-            usbIdList = self.getUsbid()
-            self.adjustPortSetupValue(self.connectStage, usbIdList)
-            self.connectToDevice(self.connectStage)
-        else:
-            pass
+                pass
+            connectSteps -= 1
 
     def callbackSetSecureBootType( self, event ):
         self.setSecureBootSeqColor()
@@ -90,7 +108,6 @@ class secBootMain(runcore.secBootRun):
 
     def callbackGenImage( self, event ):
         self.printLog("'Generate Bootable Image' button is clicked")
-        self.updateTargetSetupValue()
         if self.createMatchedBdfile():
             self.genBootableImage()
             self.showDekIfApplicable()

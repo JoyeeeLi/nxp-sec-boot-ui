@@ -147,16 +147,14 @@ class secBootWin ( wx.Frame ):
 
 		wSizer_portSetup.Add( self.m_staticText_null2PortSetup, 0, wx.ALL, 5 )
 
-		self.m_staticText_null3PortSetup = wx.StaticText( self.m_panel_portSetup, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 10,-1 ), 0 )
-		self.m_staticText_null3PortSetup.Wrap( -1 )
-
-		wSizer_portSetup.Add( self.m_staticText_null3PortSetup, 0, wx.ALL, 5 )
-
 		self.m_bitmap_connectLed = wx.StaticBitmap( self.m_panel_portSetup, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.Size( 30,30 ), 0 )
 		wSizer_portSetup.Add( self.m_bitmap_connectLed, 0, wx.ALL, 5 )
 
-		self.m_button_connect = wx.Button( self.m_panel_portSetup, wx.ID_ANY, u"Connect to ROM", wx.DefaultPosition, wx.Size( 150,-1 ), 0 )
+		self.m_button_connect = wx.Button( self.m_panel_portSetup, wx.ID_ANY, u"Connect to ROM", wx.DefaultPosition, wx.Size( 140,-1 ), 0 )
 		wSizer_portSetup.Add( self.m_button_connect, 0, wx.ALL, 5 )
+
+		self.m_checkBox_connectSpeedMode = wx.CheckBox( self.m_panel_portSetup, wx.ID_ANY, u"S", wx.DefaultPosition, wx.Size( -1,30 ), 0 )
+		wSizer_portSetup.Add( self.m_checkBox_connectSpeedMode, 0, wx.ALL, 5 )
 
 
 		self.m_panel_portSetup.SetSizer( wSizer_portSetup )
@@ -631,6 +629,9 @@ class secBootWin ( wx.Frame ):
 		self.Centre( wx.BOTH )
 
 		# Connect Events
+		self.m_choice_mcuSeries.Bind( wx.EVT_CHOICE, self.callbackSetMcuSeries )
+		self.m_choice_mcuDevice.Bind( wx.EVT_CHOICE, self.callbackSetMcuDevice )
+		self.m_choice_bootDevice.Bind( wx.EVT_CHOICE, self.callbackSetBootDevice )
 		self.m_button_BootDeviceConfiguration.Bind( wx.EVT_BUTTON, self.callbackBootDeviceConfiguration )
 		self.m_radioBtn_uart.Bind( wx.EVT_RADIOBUTTON, self.callbackSetUartPort )
 		self.m_radioBtn_usbhid.Bind( wx.EVT_RADIOBUTTON, self.callbackSetUsbhidPort )
@@ -650,6 +651,15 @@ class secBootWin ( wx.Frame ):
 
 
 	# Virtual event handlers, overide them in your derived class
+	def callbackSetMcuSeries( self, event ):
+		event.Skip()
+
+	def callbackSetMcuDevice( self, event ):
+		event.Skip()
+
+	def callbackSetBootDevice( self, event ):
+		event.Skip()
+
 	def callbackBootDeviceConfiguration( self, event ):
 		event.Skip()
 

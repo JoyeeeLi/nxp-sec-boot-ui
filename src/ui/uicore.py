@@ -27,7 +27,7 @@ class secBootUi(secBootWin.secBootWin):
         self.mcuSeries = None
         self.mcuDevice = None
         self.bootDevice = None
-        self.updateTargetSetupValue()
+        self.setTargetSetupValue()
         uivar.initVar()
 
         self.isUartPortSelected = None
@@ -37,6 +37,8 @@ class secBootUi(secBootWin.secBootWin):
         self.usbhidVid = None
         self.usbhidPid = None
         self._initPortSetupValue()
+        self.isConnectSpeedMode = None
+        self.getConnectSpeedMode()
 
         self.secureBootType = None
         self.keyStorageRegion = None
@@ -54,7 +56,7 @@ class secBootUi(secBootWin.secBootWin):
         else:
             pass
 
-    def updateTargetSetupValue( self ):
+    def setTargetSetupValue( self ):
         self.mcuSeries = self.m_choice_mcuSeries.GetString(self.m_choice_mcuSeries.GetSelection())
         self.mcuDevice = self.m_choice_mcuDevice.GetString(self.m_choice_mcuDevice.GetSelection())
         self.bootDevice = self.m_choice_bootDevice.GetString(self.m_choice_bootDevice.GetSelection())
@@ -124,6 +126,7 @@ class secBootUi(secBootWin.secBootWin):
             pass
 
     def updateConnectStatus( self, color='black' ):
+        os.chdir(os.path.join(os.path.dirname(os.path.dirname(__file__))))
         if color == 'black':
             self.m_button_connect.SetLabel('Connect to ROM')
             self.m_bitmap_connectLed.SetBitmap(wx.Bitmap( u"../img/led_black.png", wx.BITMAP_TYPE_ANY ))
@@ -141,6 +144,9 @@ class secBootUi(secBootWin.secBootWin):
             self.m_bitmap_connectLed.SetBitmap(wx.Bitmap( u"../img/led_red.png", wx.BITMAP_TYPE_ANY ))
         else:
             pass
+
+    def getConnectSpeedMode( self ):
+        self.isConnectSpeedMode = self.m_checkBox_connectSpeedMode.GetValue()
 
     def _initSecureBootSeqColor ( self ):
         self.secureBootType = self.m_choice_secureBootType.GetString(self.m_choice_secureBootType.GetSelection())
