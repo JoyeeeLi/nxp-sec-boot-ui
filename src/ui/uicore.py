@@ -5,9 +5,9 @@ import os
 import serial.tools.list_ports
 import uidef
 import uivar
-import ui_semcnand
-import ui_flexspinor
-import ui_certsettings
+import ui_cfg_semcnand
+import ui_cfg_flexspinor
+import ui_settings_cert
 import ui_settings_otpmk_key
 sys.path.append(os.path.abspath("../.."))
 from gui import secBootWin
@@ -47,11 +47,11 @@ class secBootUi(secBootWin.secBootWin):
 
     def runBootDeviceConfiguration( self ):
         if self.bootDevice == uidef.kBootDevice_SemcNand:
-            semcNandFrame = ui_semcnand.secBootUiSemcNand(None)
+            semcNandFrame = ui_cfg_semcnand.secBootUiCfgSemcNand(None)
             semcNandFrame.SetTitle(u"SEMC NAND Device Configuration")
             semcNandFrame.Show(True)
         elif self.bootDevice == uidef.kBootDevice_FlexspiNor:
-            flexspiNorFrame = ui_flexspinor.secBootUiFlexspiNor(None)
+            flexspiNorFrame = ui_cfg_flexspinor.secBootUiCfgFlexspiNor(None)
             flexspiNorFrame.SetTitle(u"FlexSPI NOR Device Configuration")
             flexspiNorFrame.Show(True)
         else:
@@ -206,7 +206,7 @@ class secBootUi(secBootWin.secBootWin):
         self.Refresh()
 
     def runAdvancedCertSettings( self ):
-        certSettingsFrame = ui_certsettings.secBootUiCertSettings(None)
+        certSettingsFrame = ui_settings_cert.secBootUiSettingsCert(None)
         certSettingsFrame.SetTitle(u"Advanced Certificate Settings")
         certSettingsFrame.Show(True)
 

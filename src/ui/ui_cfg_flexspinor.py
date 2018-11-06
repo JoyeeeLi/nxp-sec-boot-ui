@@ -14,7 +14,7 @@ g_flexspiNorOpt0_MXIC_MX25UM51345G = 0xc0403007
 g_flexspiNorOpt0_Micron_MT35X      = 0xc0600006
 g_flexspiNorOpt0_Adesto_ATXP032    = 0xc0803007
 
-class secBootUiFlexspiNor(bootDeviceWin_FlexspiNor.bootDeviceWin_FlexspiNor):
+class secBootUiCfgFlexspiNor(bootDeviceWin_FlexspiNor.bootDeviceWin_FlexspiNor):
 
     def __init__(self, parent):
         bootDeviceWin_FlexspiNor.bootDeviceWin_FlexspiNor.__init__(self, parent)

@@ -7,7 +7,7 @@ import uivar
 sys.path.append(os.path.abspath("../.."))
 from gui import bootDeviceWin_SemcNand
 
-class secBootUiSemcNand(bootDeviceWin_SemcNand.bootDeviceWin_SemcNand):
+class secBootUiCfgSemcNand(bootDeviceWin_SemcNand.bootDeviceWin_SemcNand):
 
     def __init__(self, parent):
         bootDeviceWin_SemcNand.bootDeviceWin_SemcNand.__init__(self, parent)
