@@ -19,6 +19,29 @@ class secBootUiFlexspiNor(bootDeviceWin_FlexspiNor.bootDeviceWin_FlexspiNor):
     def __init__(self, parent):
         bootDeviceWin_FlexspiNor.bootDeviceWin_FlexspiNor.__init__(self, parent)
         flexspiNorOpt0, flexspiNorOpt1 = uivar.getBootDeviceConfiguration(uidef.kBootDevice_FlexspiNor)
+        #1. Prepare Flash option
+        # 0xc0000006 is the tag for Serial NOR parameter selection
+        # bit [31:28] Tag fixed to 0x0C
+        # bit [27:24] Option size fixed to 0
+        # bit [23:20] Flash type option
+        #             0 - QuadSPI SDR NOR
+        #             1 - QUadSPI DDR NOR
+        # bit [19:16] Query pads (Pads used for query Flash Parameters)
+        #             0 - 1
+        # bit [15:12] CMD pads (Pads used for query Flash Parameters)
+        #             0 - 1
+        # bit [11: 08] Quad Mode Entry Setting
+        #             0 - Not Configured, apply to devices:
+        #                 - With Quad Mode enabled by default or
+        #                 - Compliant with JESD216A/B or later revision
+        #             1 - Set bit 6 in Status Register 1
+        #             2 - Set bit 1 in Status Register 2
+        #             3 - Set bit 7 in Status Register 2
+        #             4 - Set bit 1 in Status Register 2 by 0x31 command
+        # bit [07: 04]  Misc. control field
+        #             3 - Data Order swapped, used for Macronix OctaFLASH devcies only (except MX25UM51345G)
+        #             4 - Second QSPI NOR Pinmux
+        # bit [03: 00] Flash Frequency, device specific
         self.flexspiNorOpt0 = flexspiNorOpt0
         self.flexspiNorOpt1 = flexspiNorOpt1
         self._recoverLastSettings()

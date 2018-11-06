@@ -278,7 +278,7 @@ class secBootRun(gencore.secBootGen):
             pass
         return True
 
-    def geBootDeviceInfoViaFlashloader ( self ):
+    def getBootDeviceInfoViaFlashloader ( self ):
         if self.bootDevice == uidef.kBootDevice_SemcNand:
             self._getSemcNandDeviceInfo()
         elif self.bootDevice == uidef.kBootDevice_FlexspiNor:
@@ -290,53 +290,55 @@ class secBootRun(gencore.secBootGen):
         self._prepareForBootDeviceOperation()
         if self.bootDevice == uidef.kBootDevice_SemcNand:
             semcNandOpt, semcNandFcbOpt, semcNandImageInfo = uivar.getBootDeviceConfiguration(self.bootDevice)
-            status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_Flashloader, 0x4, semcNandOpt)
+            status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_LoadCommOpt, 0x4, semcNandOpt)
             self.printLog(cmdStr)
             if status != boot.status.kStatus_Success:
                 return False
-            status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_Flashloader + 4, 0x4, semcNandFcbOpt)
+            status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_LoadCommOpt + 4, 0x4, semcNandFcbOpt)
             self.printLog(cmdStr)
             if status != boot.status.kStatus_Success:
                 return False
             for i in range(len(semcNandImageInfo)):
                 if semcNandImageInfo[i] != None:
-                    status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_Flashloader + 8 + i * 4, 0x4, semcNandImageInfo[i])
+                    status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_LoadCommOpt + 8 + i * 4, 0x4, semcNandImageInfo[i])
                     self.printLog(cmdStr)
                     if status != boot.status.kStatus_Success:
                         return False
                 else:
                     break
-            status, results, cmdStr = self.blhost.configureMemory(self.bootDeviceMemId, rundef.kRamFreeSpaceStart_Flashloader)
+            status, results, cmdStr = self.blhost.configureMemory(self.bootDeviceMemId, rundef.kRamFreeSpaceStart_LoadCommOpt)
             self.printLog(cmdStr)
             if status != boot.status.kStatus_Success:
                 return False
         elif self.bootDevice == uidef.kBootDevice_FlexspiNor:
             flexspiNorOpt0, flexspiNorOpt1 = uivar.getBootDeviceConfiguration(self.bootDevice)
-            status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_Flashloader, 0x4, flexspiNorOpt0)
+            status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_LoadCommOpt, 0x4, flexspiNorOpt0)
             self.printLog(cmdStr)
             if status != boot.status.kStatus_Success:
                 return False
-            status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_Flashloader + 4, 0x4, flexspiNorOpt1)
+            status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_LoadCommOpt + 4, 0x4, flexspiNorOpt1)
             self.printLog(cmdStr)
             if status != boot.status.kStatus_Success:
                 return False
-            status, results, cmdStr = self.blhost.configureMemory(self.bootDeviceMemId, rundef.kRamFreeSpaceStart_Flashloader)
+            status, results, cmdStr = self.blhost.configureMemory(self.bootDeviceMemId, rundef.kRamFreeSpaceStart_LoadCommOpt)
             self.printLog(cmdStr)
             if status != boot.status.kStatus_Success:
                 return False
+            ########################################################################
             # 0xf000000f is the tag to notify Flashloader to program FlexSPI NOR config block to the start of device
             status, results, cmdStr = self.blhost.flashEraseRegion(self.bootDeviceMemBase, infodef.kFlexspiNorCfgInfo_Length, self.bootDeviceMemId)
             self.printLog(cmdStr)
             if status != boot.status.kStatus_Success:
                 return False
-            status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_FlashloaderCfg, 0x4, infodef.kFlexspiNorCfgInfo_Notify)
+            status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_LoadCfgBlock, 0x4, infodef.kFlexspiNorCfgInfo_Notify)
             self.printLog(cmdStr)
             if status != boot.status.kStatus_Success:
                 return False
-            status, results, cmdStr = self.blhost.configureMemory(self.bootDeviceMemId, rundef.kRamFreeSpaceStart_FlashloaderCfg)
+            status, results, cmdStr = self.blhost.configureMemory(self.bootDeviceMemId, rundef.kRamFreeSpaceStart_LoadCfgBlock)
             self.printLog(cmdStr)
             if status != boot.status.kStatus_Success:
                 return False
+            ########################################################################
         else:
             pass
         return True
@@ -396,6 +398,86 @@ class secBootRun(gencore.secBootGen):
                 return False
         else:
             pass
+
+    def flashDekToGenerateKeyBlob ( self ):
+        if os.path.isfile(self.dekFilename) and self.dekDataOffset != None:
+            self._prepareForBootDeviceOperation()
+            imageLen = os.path.getsize(self.destAppFilename)
+            imageCopies = 0x1
+            eraseUnit = 0x0
+            if self.bootDevice == uidef.kBootDevice_SemcNand:
+                imageCopies = self.semcNandImageCopies
+                eraseUnit = self.semcNandBlockSize
+            elif self.bootDevice == uidef.kBootDevice_FlexspiNor:
+                eraseUnit = self.flexspiNorSectorSize
+            else:
+                pass
+            # Construct KeyBlob Option
+            #---------------------------------------------------------------------------
+            # bit [31:28] tag, fixed to 0x0b
+            # bit [27:24] type, 0 - Update KeyBlob context, 1 Program Keyblob to SPI NAND
+            # bit [23:20] keyblob option block size, must equal to 3 if type =0,
+            #             reserved if type = 1
+            # bit [19:08] Reserved
+            # bit [07:04] DEK size, 0-128bit 1-192bit 2-256 bit, only applicable if type=0
+            # bit [03:00] Firmware Index, only applicable if type = 1
+            # if type = 0, next words indicate the address that holds dek
+            #              the 3rd word
+            #----------------------------------------------------------------------------
+            keyBlobContextOpt = 0xb0300000
+            keyBlobDataOpt = 0xb1000000
+            status, results, cmdStr = self.blhost.writeMemory(rundef.kRamFreeSpaceStart_LoadDekData, self.dekFilename)
+            self.printLog(cmdStr)
+            if status != boot.status.kStatus_Success:
+                return False
+            status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_LoadKeyBlobContext, 0x4, keyBlobContextOpt)
+            self.printLog(cmdStr)
+            if status != boot.status.kStatus_Success:
+                return False
+            status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_LoadKeyBlobContext + 4, 0x4, rundef.kRamFreeSpaceStart_LoadKeyBlobContext)
+            self.printLog(cmdStr)
+            if status != boot.status.kStatus_Success:
+                return False
+            status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_LoadKeyBlobContext + 8, 0x4, self.dekDataOffset)
+            self.printLog(cmdStr)
+            if status != boot.status.kStatus_Success:
+                return False
+            status, results, cmdStr = self.blhost.configureMemory(self.bootDeviceMemId, rundef.kRamFreeSpaceStart_LoadKeyBlobContext)
+            self.printLog(cmdStr)
+            if status != boot.status.kStatus_Success:
+                return False
+            for i in range(imageCopies):
+                ramFreeSpace = rundef.kRamFreeSpaceStart_LoadKeyBlobData + (rundef.kRamFreeSpaceStep_LoadKeyBlobData * i)
+                status, results, cmdStr = self.blhost.fillMemory(ramFreeSpace, 0x4, keyBlobDataOpt + i)
+                self.printLog(cmdStr)
+                if status != boot.status.kStatus_Success:
+                    return False
+                ########################################################################
+                # Flashloader will not erase keyblob region automatically, so we need to handle it here manually
+                imageLoadAddr = 0x0
+                if self.bootDevice == uidef.kBootDevice_SemcNand:
+                    semcNandOpt, semcNandFcbOpt, imageInfo = uivar.getBootDeviceConfiguration(self.bootDevice)
+                    imageLoadAddr = self.bootDeviceMemBase + (imageInfo[i] >> 16) * self.semcNandBlockSize
+                elif self.bootDevice == uidef.kBootDevice_FlexspiNor:
+                    imageLoadAddr = self.bootDeviceMemBase
+                else:
+                    pass
+                alignedErasedSize = misc.align_up(imageLen, eraseUnit)
+                needToBeErasedSize = misc.align_up(self.dekDataOffset + rundef.kKeyBlobMaxSize, eraseUnit)
+                if alignedErasedSize < needToBeErasedSize:
+                    memEraseLen = needToBeErasedSize - alignedErasedSize
+                    alignedMemEraseAddr = misc.align_up(imageLoadAddr, eraseUnit)
+                    status, results, cmdStr = self.blhost.flashEraseRegion(alignedMemEraseAddr, memEraseLen, self.bootDeviceMemId)
+                    self.printLog(cmdStr)
+                    if status != boot.status.kStatus_Success:
+                        return False
+                ########################################################################
+                status, results, cmdStr = self.blhost.configureMemory(self.bootDeviceMemId, ramFreeSpace)
+                self.printLog(cmdStr)
+                if status != boot.status.kStatus_Success:
+                    return False
+        else:
+            self.popupMsgBox('Dek file hasn\'t been generated!')
 
     def resetMcuDevice( self ):
         status, results, cmdStr = self.blhost.reset()

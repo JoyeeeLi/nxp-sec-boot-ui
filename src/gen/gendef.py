@@ -8,6 +8,7 @@ kBootImageCsfHeaderVersion_Signed    = '4.2'
 kBootImageCsfHeaderVersion_Encrypted = '4.3'
 
 kSecKeyLengthInBits_SRK = 256
+kSecKeyLengthInBits_DEK = 128
 
 kToolchainSymbolList_EntryAddr = ['Reset_Handler', '__iar_program_start']
 kToolchainSymbolList_VectorAddr = ['__VECTOR_TABLE', '__vector_table', '__Vectors']

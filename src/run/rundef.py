@@ -19,7 +19,15 @@ kBootDeviceMemBase_LpspiNor     = 0x0
 kBootDeviceMemBase_UsdhcSd      = 0x0
 kBootDeviceMemBase_UsdhcMmc     = 0x0
 
-kRamFreeSpaceStart_Flashloader    = 0x00002000
-kRamFreeSpaceStart_FlashloaderCfg = 0x00003000
-kRamFreeSpaceStart_Rom            = 0x20208000
+kRamFreeSpaceStart_LoadCommOpt        = 0x00002000
+kRamFreeSpaceStart_LoadDekData        = 0x00002100
+kRamFreeSpaceStart_LoadKeyBlobContext = 0x00002200
+kRamFreeSpaceStart_LoadKeyBlobData    = 0x00002300
+kRamFreeSpaceStart_LoadCfgBlock       = 0x00003000
+
+kRamFreeSpaceStep_LoadKeyBlobData    = 0x100
+
+kRamFreeSpaceStart_Rom         = 0x20208000
+
+kKeyBlobMaxSize = 512
 

@@ -3,6 +3,7 @@ import wx
 import sys
 import os
 import shutil
+import subprocess
 import bincopy
 import gendef
 sys.path.append(os.path.abspath(".."))
@@ -37,6 +38,7 @@ class secBootGen(infomgr.secBootInfo):
         self.genCryptoToElftosbPath = '../../../gen/crypto/'
         self.lastCstVersion = uidef.kCstVersion_Invalid
         self.dekFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'crypto', 'dek.bin')
+        self.dekDataOffset = None
         self.srcAppFilename = None
         self.destAppFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bootable_image', 'ivt_application.bin')
         self.destAppNoPaddingFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bootable_image', 'ivt_application_nopadding.bin')
@@ -403,10 +405,44 @@ class secBootGen(infomgr.secBootInfo):
             fileObj.write(batContent)
             fileObj.close()
 
+    def _parseBootableImageGenerationResult( self, output ):
+        # elftosb ouput template:
+        # (Signed)     CSF Processed successfully and signed data available in csf.bin
+        # (All)                Section: xxx
+        # (All)                ...
+        # (All)        iMX bootable image generated successfully
+        # (Encrypted)  Key Blob Address is 0xe000.
+        # (Encrypted)  Key Blob data should be placed at Offset :0x6000 in the image
+        info = 'iMX bootable image generated successfully'
+        if output.find(info) != -1:
+            self.printLog('Bootable image is generated: ' + self.destAppFilename)
+            info1 = 'Key Blob data should be placed at Offset :0x'
+            info2 = ' in the image'
+            loc1 = output.find(info1)
+            loc2 = output.find(info2)
+            if loc1 != -1 and loc1 < loc2:
+                loc1 += len(info1)
+                self.dekDataOffset = int(output[loc1:loc2], 16)
+            else:
+                self.dekDataOffset = None
+        else:
+            self.dekDataOffset = None
+            self.popupMsgBox('Bootable image is not generated successfully!')
+
     def genBootableImage( self ):
         self._updateBdBatfileContent()
         # We have to change system dir to the path of elftosb.exe, or elftosb.exe may not be ran successfully
         os.chdir(os.path.split(self.elftosbPath)[0])
-        os.system(self.bdBatFilename)
-        self.printLog('Bootable image is generated: ' + self.destAppFilename)
+        process = subprocess.Popen(self.bdBatFilename, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        commandOutput = process.communicate()[0]
+        print commandOutput
+        self._parseBootableImageGenerationResult(commandOutput)
+
+    def showDekIfApplicable( self ):
+        self.clearDekData()
+        if self.secureBootType == uidef.kSecureBootType_HabCrypto and self.dekDataOffset != None:
+            keyWords = gendef.kSecKeyLengthInBits_DEK / 32
+            for i in range(keyWords):
+                val32 = self.getVal32FromBinFile(self.dekFilename, (i * 4))
+                self.printDekData(str(hex(val32)))
 

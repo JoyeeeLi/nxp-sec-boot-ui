@@ -51,7 +51,7 @@ class secBootMain(runcore.secBootRun):
                 self.updateConnectStatus('red')
         elif self.connectStage == uidef.kConnectStage_ExternalMemory:
             if self.configureBootDevice():
-                self.geBootDeviceInfoViaFlashloader()
+                self.getBootDeviceInfoViaFlashloader()
                 self.connectStage = uidef.kConnectStage_Reset
                 self.updateConnectStatus('blue')
             else:
@@ -93,10 +93,15 @@ class secBootMain(runcore.secBootRun):
         self.updateTargetSetupValue()
         if self.createMatchedBdfile():
             self.genBootableImage()
+            self.showDekIfApplicable()
 
     def callbackFlashImage( self, event ):
         self.printLog("'Load Bootable Image' button is clicked")
         self.flashBootableImage()
+
+    def callbackFlashDek( self, event ):
+        self.printLog("'Load KeyBlob Data' button is clicked")
+        self.flashDekToGenerateKeyBlob()
 
     def callbackClearLog( self, event ):
         self.clearLog()
