@@ -17,6 +17,10 @@ g_certSettingsDict = {'cstVersion':None,
                       'SRKs':None,
                       'caFlagSet':None}
 
+g_otpmkKeyOpt = None
+g_otpmkEncryptedRegionStart = None
+g_otpmkEncryptedRegionLength = None
+
 def initVar():
     global g_semcNandOpt
     global g_semcNandFcbOpt
@@ -38,6 +42,13 @@ def initVar():
     g_certSettingsDict['pkiTreeDuration'] = 10
     g_certSettingsDict['SRKs'] = 4
     g_certSettingsDict['caFlagSet'] = 'y'
+
+    global g_otpmkKeyOpt
+    global g_otpmkEncryptedRegionStart
+    global g_otpmkEncryptedRegionLength
+    g_otpmkKeyOpt = 0xe0100000
+    g_otpmkEncryptedRegionStart = [None] * 3
+    g_otpmkEncryptedRegionLength = [None] * 3
 
 def getBootDeviceConfiguration( group ):
     if group == uidef.kBootDevice_SemcNand:
@@ -72,6 +83,11 @@ def getAdvancedSettings( group ):
     if group == uidef.kAdvancedSettings_Cert:
         global g_certSettingsDict
         return g_certSettingsDict
+    elif group == uidef.kAdvancedSettings_OtpmkKey:
+        global g_otpmkKeyOpt
+        global g_otpmkEncryptedRegionStart
+        global g_otpmkEncryptedRegionLength
+        return g_otpmkKeyOpt, g_otpmkEncryptedRegionStart, g_otpmkEncryptedRegionLength
     else:
         pass
 
@@ -79,6 +95,13 @@ def setAdvancedSettings( group, *args ):
     if group == uidef.kAdvancedSettings_Cert:
         global g_certSettingsDict
         g_certSettingsDict = args[0]
+    elif group == uidef.kAdvancedSettings_OtpmkKey:
+        global g_otpmkKeyOpt
+        global g_otpmkEncryptedRegionStart
+        global g_otpmkEncryptedRegionLength
+        g_otpmkKeyOpt = args[0]
+        g_otpmkEncryptedRegionStart = args[1]
+        g_otpmkEncryptedRegionLength = args[2]
     else:
         pass
 

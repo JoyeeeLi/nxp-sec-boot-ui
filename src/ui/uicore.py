@@ -8,6 +8,7 @@ import uivar
 import ui_semcnand
 import ui_flexspinor
 import ui_certsettings
+import ui_settings_otpmk_key
 sys.path.append(os.path.abspath("../.."))
 from gui import secBootWin
 sys.path.append(os.path.abspath(".."))
@@ -204,25 +205,6 @@ class secBootUi(secBootWin.secBootWin):
             pass
         self.Refresh()
 
-    def setKeyStorageRegionColor( self ):
-        self.secureBootType = self.m_choice_secureBootType.GetString(self.m_choice_secureBootType.GetSelection())
-        if self.secureBootType == uidef.kSecureBootType_BeeCrypto:
-            self._resetKeyStorageRegionColor()
-            self.keyStorageRegion = self.m_choice_keyStorageRegion.GetString(self.m_choice_keyStorageRegion.GetSelection())
-            self.m_panel_prepBee1_beeKeyRegion.SetBackgroundColour( uidef.kBootSeqColor_Active )
-            self.m_panel_prepBee4_beeCryptoAlgo.SetBackgroundColour( uidef.kBootSeqColor_Active )
-            if self.keyStorageRegion == uidef.kKeyStorageRegion_Optmk:
-                self.m_panel_operBeeKey1_readOtpmk.SetBackgroundColour( uidef.kBootSeqColor_Active )
-            elif self.keyStorageRegion == uidef.kKeyStorageRegion_Gp4 or keyStorageRegion == uidef.kKeyStorageRegion_SwGp2:
-                self.m_panel_prepBee2_beeKeyInput.SetBackgroundColour( uidef.kBootSeqColor_Active )
-                self.m_panel_operBeeKey2_progBeeKey.SetBackgroundColour( uidef.kBootSeqColor_Active )
-            elif self.keyStorageRegion == uidef.kKeyStorageRegion_Gp4SwGp2:
-                self.m_panel_prepBee3_advKeySettings.SetBackgroundColour( uidef.kBootSeqColor_Active )
-                self.m_panel_operBeeKey2_progBeeKey.SetBackgroundColour( uidef.kBootSeqColor_Active )
-            else:
-                pass
-        self.Refresh()
-
     def runAdvancedCertSettings( self ):
         certSettingsFrame = ui_certsettings.secBootUiCertSettings(None)
         certSettingsFrame.SetTitle(u"Advanced Certificate Settings")
@@ -232,3 +214,32 @@ class secBootUi(secBootWin.secBootWin):
         serialContent = self.m_textCtrl_serial.GetLineText(0)
         keypassContent = self.m_textCtrl_keyPass.GetLineText(0)
         return serialContent, keypassContent
+
+    def setKeyStorageRegionColor( self ):
+        self.secureBootType = self.m_choice_secureBootType.GetString(self.m_choice_secureBootType.GetSelection())
+        if self.secureBootType == uidef.kSecureBootType_BeeCrypto:
+            self._resetKeyStorageRegionColor()
+            self.keyStorageRegion = self.m_choice_keyStorageRegion.GetString(self.m_choice_keyStorageRegion.GetSelection())
+            self.m_panel_prepBee1_beeKeyRegion.SetBackgroundColour( uidef.kBootSeqColor_Active )
+            self.m_panel_prepBee4_beeCryptoAlgo.SetBackgroundColour( uidef.kBootSeqColor_Active )
+            self.m_panel_prepBee3_advKeySettings.SetBackgroundColour( uidef.kBootSeqColor_Active )
+            if self.keyStorageRegion == uidef.kKeyStorageRegion_Otpmk:
+                self.m_panel_operBeeKey1_readOtpmk.SetBackgroundColour( uidef.kBootSeqColor_Active )
+            elif self.keyStorageRegion == uidef.kKeyStorageRegion_Gp4 or self.keyStorageRegion == uidef.kKeyStorageRegion_SwGp2:
+                self.m_panel_prepBee2_beeKeyInput.SetBackgroundColour( uidef.kBootSeqColor_Active )
+                self.m_panel_operBeeKey2_progBeeKey.SetBackgroundColour( uidef.kBootSeqColor_Active )
+            elif self.keyStorageRegion == uidef.kKeyStorageRegion_Gp4SwGp2:
+                self.m_panel_operBeeKey2_progBeeKey.SetBackgroundColour( uidef.kBootSeqColor_Active )
+            else:
+                pass
+        self.Refresh()
+
+    def runAdvancedKeySettings( self ):
+        self.keyStorageRegion = self.m_choice_keyStorageRegion.GetString(self.m_choice_keyStorageRegion.GetSelection())
+        if self.keyStorageRegion == uidef.kKeyStorageRegion_Otpmk:
+            otpmkKeySettingsFrame = ui_settings_otpmk_key.secBootUiSettingsOtpmkKey(None)
+            otpmkKeySettingsFrame.SetTitle(u"Advanced Key Settings - OTPMK")
+            otpmkKeySettingsFrame.Show(True)
+        else:
+            pass
+

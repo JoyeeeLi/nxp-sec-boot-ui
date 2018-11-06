@@ -10,7 +10,6 @@ class secBootMain(runcore.secBootRun):
 
     def __init__(self, parent):
         runcore.secBootRun.__init__(self, parent)
-
         self.connectStage = uidef.kConnectStage_Rom
 
     def callbackSetMcuSeries( self, event ):
@@ -99,18 +98,21 @@ class secBootMain(runcore.secBootRun):
             self.genSuperRootKeys()
             self.showSuperRootKeys()
 
-    def callbackProgramSrk( self, event ):
-        self.printLog("'Load SRK data' button is clicked")
-        self.burnSrkData()
-
-    def callbackSetKeyStorageRegion( self, event ):
-        self.setKeyStorageRegionColor()
-
     def callbackGenImage( self, event ):
         self.printLog("'Generate Bootable Image' button is clicked")
         if self.createMatchedBdfile():
             self.genBootableImage()
             self.showDekIfApplicable()
+
+    def callbackSetKeyStorageRegion( self, event ):
+        self.setKeyStorageRegionColor()
+
+    def callbackAdvKeySettings( self, event ):
+        self.runAdvancedKeySettings()
+
+    def callbackProgramSrk( self, event ):
+        self.printLog("'Load SRK data' button is clicked")
+        self.burnSrkData()
 
     def callbackFlashImage( self, event ):
         self.printLog("'Load Bootable Image' button is clicked")

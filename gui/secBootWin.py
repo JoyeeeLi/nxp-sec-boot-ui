@@ -641,6 +641,7 @@ class secBootWin ( wx.Frame ):
 		self.m_button_genCert.Bind( wx.EVT_BUTTON, self.callbackGenCert )
 		self.m_button_genImage.Bind( wx.EVT_BUTTON, self.callbackGenImage )
 		self.m_choice_keyStorageRegion.Bind( wx.EVT_CHOICE, self.callbackSetKeyStorageRegion )
+		self.m_button_advKeySettings.Bind( wx.EVT_BUTTON, self.callbackAdvKeySettings )
 		self.m_button_progSrk.Bind( wx.EVT_BUTTON, self.callbackProgramSrk )
 		self.m_button_flashImage.Bind( wx.EVT_BUTTON, self.callbackFlashImage )
 		self.m_button_progDek.Bind( wx.EVT_BUTTON, self.callbackFlashDek )
@@ -685,6 +686,9 @@ class secBootWin ( wx.Frame ):
 		event.Skip()
 
 	def callbackSetKeyStorageRegion( self, event ):
+		event.Skip()
+
+	def callbackAdvKeySettings( self, event ):
 		event.Skip()
 
 	def callbackProgramSrk( self, event ):
