@@ -354,12 +354,12 @@ class secBootRun(gencore.secBootGen):
         otpmk6 = self._readDeviceFuseByBlhost(infodef.kEfuseAddr_OTPMK6, 'Fuse->OTPMK6 (0x560)')
         otpmk7 = self._readDeviceFuseByBlhost(infodef.kEfuseAddr_OTPMK7, 'Fuse->OTPMK7 (0x570)')
         if otpmk4 != None and otpmk5 != None and otpmk6 != None and otpmk7 != None:
-            self.clearBeeDekData()
-            self.printBeeDekData(self.getFormattedFuseValue(otpmk4, 'MSB'))
-            self.printBeeDekData(self.getFormattedFuseValue(otpmk5, 'MSB'))
-            self.printBeeDekData("\n")
-            self.printBeeDekData(self.getFormattedFuseValue(otpmk6, 'MSB'))
-            self.printBeeDekData(self.getFormattedFuseValue(otpmk7, 'MSB'))
+            self.clearOtpmkDekData()
+            self.printOtpmkDekData(self.getFormattedFuseValue(otpmk4, 'MSB'))
+            self.printOtpmkDekData(self.getFormattedFuseValue(otpmk5, 'MSB'))
+            self.printOtpmkDekData("\n")
+            self.printOtpmkDekData(self.getFormattedFuseValue(otpmk6, 'MSB'))
+            self.printOtpmkDekData(self.getFormattedFuseValue(otpmk7, 'MSB'))
 
     def _eraseFlexspiNorForImageLoading( self ):
         imageLen = os.path.getsize(self.destAppFilename)
@@ -370,7 +370,7 @@ class secBootRun(gencore.secBootGen):
             return False
         self.isFlexspiNorErasedForImage = True
 
-    def prepareForOtpmkEncryption( self ):
+    def prepareForFixedOtpmkEncryption( self ):
         self._prepareForBootDeviceOperation()
         self._showOtpmkDek()
         self._eraseFlexspiNorForImageLoading()

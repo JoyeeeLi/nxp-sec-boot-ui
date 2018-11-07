@@ -6260,7 +6260,7 @@
                                                                                     <property name="caption"></property>
                                                                                     <property name="caption_visible">1</property>
                                                                                     <property name="center_pane">0</property>
-                                                                                    <property name="choices">&quot;Fuse OTPMK&quot; &quot;Fuse GP4&quot; &quot;Fuse SW_GP2 &quot; &quot;Fuse GP4&amp;SW_GP2&quot;</property>
+                                                                                    <property name="choices">&quot;Fixed OTPMK Key&quot; &quot;Flexible User Keys&quot;</property>
                                                                                     <property name="close_button">1</property>
                                                                                     <property name="context_help"></property>
                                                                                     <property name="context_menu">1</property>
@@ -6379,7 +6379,7 @@
                                                                         <property name="minimize_button">0</property>
                                                                         <property name="minimum_size"></property>
                                                                         <property name="moveable">1</property>
-                                                                        <property name="name">m_panel_prepBee2_beeKeyInout</property>
+                                                                        <property name="name">m_panel_prepBee2_showOtpmkDek</property>
                                                                         <property name="pane_border">1</property>
                                                                         <property name="pane_position"></property>
                                                                         <property name="pane_size"></property>
@@ -6427,9 +6427,9 @@
                                                                         <event name="OnUpdateUI"></event>
                                                                         <object class="wxStaticBoxSizer" expanded="0">
                                                                             <property name="id">wxID_ANY</property>
-                                                                            <property name="label">DEK (Hex, LE) To Encrypte:</property>
+                                                                            <property name="label">Pre-burned DEK in OTPMK</property>
                                                                             <property name="minimum_size"></property>
-                                                                            <property name="name">sbSizer_beeKeyInout</property>
+                                                                            <property name="name">sbSizer_showOtpmkDek</property>
                                                                             <property name="orient">wxVERTICAL</property>
                                                                             <property name="parent">1</property>
                                                                             <property name="permission">none</property>
@@ -6448,7 +6448,7 @@
                                                                                     <property name="aui_position"></property>
                                                                                     <property name="aui_row"></property>
                                                                                     <property name="best_size"></property>
-                                                                                    <property name="bg"></property>
+                                                                                    <property name="bg">wxSYS_COLOUR_GRAYTEXT</property>
                                                                                     <property name="caption"></property>
                                                                                     <property name="caption_visible">1</property>
                                                                                     <property name="center_pane">0</property>
@@ -6474,7 +6474,7 @@
                                                                                     <property name="minimize_button">0</property>
                                                                                     <property name="minimum_size"></property>
                                                                                     <property name="moveable">1</property>
-                                                                                    <property name="name">m_textCtrl_beeKeyInout</property>
+                                                                                    <property name="name">m_textCtrl_otpmkDek128bit</property>
                                                                                     <property name="pane_border">1</property>
                                                                                     <property name="pane_position"></property>
                                                                                     <property name="pane_size"></property>
@@ -20544,7 +20544,7 @@
             <property name="id">wxID_ANY</property>
             <property name="maximum_size"></property>
             <property name="minimum_size"></property>
-            <property name="name">advSettingsWin_OtpmkKey</property>
+            <property name="name">advSettingsWin_FixedOtpmkKey</property>
             <property name="pos"></property>
             <property name="size">619,214</property>
             <property name="style">wxDEFAULT_FRAME_STYLE</property>

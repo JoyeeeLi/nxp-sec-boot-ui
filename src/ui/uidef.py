@@ -30,10 +30,8 @@ kSecureBootType_HabAuth     = 'Signed (XIP) Image Boot'
 kSecureBootType_HabCrypto   = 'HAB Signed Encrypted Image Boot'
 kSecureBootType_BeeCrypto   = 'BEE (Signed) Encrypted XIP Image Boot'
 
-kKeyStorageRegion_Otpmk    = 'Fuse OTPMK'
-kKeyStorageRegion_Gp4      = 'Fuse GP4'
-kKeyStorageRegion_SwGp2    = 'Fuse SW_GP2 '
-kKeyStorageRegion_Gp4SwGp2 = 'Fuse GP4&SW_GP2'
+kKeyStorageRegion_FixedOtpmkKey    = 'Fixed OTPMK Key'
+kKeyStorageRegion_FlexibleUserKeys = 'Flexible User Keys'
 
 kAdvancedSettings_Cert      = 1
 kAdvancedSettings_BD        = 2

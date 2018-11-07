@@ -377,7 +377,7 @@ class secBootWin ( wx.Frame ):
 
 		sbSizer_keyStorageRegion.Add( self.m_staticText_keyStorageRegion, 0, wx.ALL, 5 )
 
-		m_choice_keyStorageRegionChoices = [ u"Fuse OTPMK", u"Fuse GP4", u"Fuse SW_GP2 ", u"Fuse GP4&SW_GP2" ]
+		m_choice_keyStorageRegionChoices = [ u"Fixed OTPMK Key", u"Flexible User Keys" ]
 		self.m_choice_keyStorageRegion = wx.Choice( sbSizer_keyStorageRegion.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, m_choice_keyStorageRegionChoices, 0 )
 		self.m_choice_keyStorageRegion.SetSelection( 0 )
 		sbSizer_keyStorageRegion.Add( self.m_choice_keyStorageRegion, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
@@ -388,17 +388,19 @@ class secBootWin ( wx.Frame ):
 		sbSizer_keyStorageRegion.Fit( self.m_panel_prepBee1_beeKeyRegion )
 		bSizer_prepBee.Add( self.m_panel_prepBee1_beeKeyRegion, 1, wx.EXPAND |wx.ALL, 5 )
 
-		self.m_panel_prepBee2_beeKeyInout = wx.Panel( self.m_panel_prepBee, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		sbSizer_beeKeyInout = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_prepBee2_beeKeyInout, wx.ID_ANY, u"DEK (Hex, LE) To Encrypte:" ), wx.VERTICAL )
+		self.m_panel_prepBee2_showOtpmkDek = wx.Panel( self.m_panel_prepBee, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		sbSizer_showOtpmkDek = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_prepBee2_showOtpmkDek, wx.ID_ANY, u"Pre-burned DEK in OTPMK" ), wx.VERTICAL )
 
-		self.m_textCtrl_beeKeyInout = wx.TextCtrl( sbSizer_beeKeyInout.GetStaticBox(), wx.ID_ANY, u"0123456789abcdef\nfedcba987654321", wx.DefaultPosition, wx.Size( 145,40 ), wx.TE_MULTILINE )
-		sbSizer_beeKeyInout.Add( self.m_textCtrl_beeKeyInout, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
+		self.m_textCtrl_otpmkDek128bit = wx.TextCtrl( sbSizer_showOtpmkDek.GetStaticBox(), wx.ID_ANY, u"0123456789abcdef\nfedcba987654321", wx.DefaultPosition, wx.Size( 145,40 ), wx.TE_MULTILINE )
+		self.m_textCtrl_otpmkDek128bit.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
+
+		sbSizer_showOtpmkDek.Add( self.m_textCtrl_otpmkDek128bit, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
 
-		self.m_panel_prepBee2_beeKeyInout.SetSizer( sbSizer_beeKeyInout )
-		self.m_panel_prepBee2_beeKeyInout.Layout()
-		sbSizer_beeKeyInout.Fit( self.m_panel_prepBee2_beeKeyInout )
-		bSizer_prepBee.Add( self.m_panel_prepBee2_beeKeyInout, 1, wx.EXPAND |wx.ALL, 5 )
+		self.m_panel_prepBee2_showOtpmkDek.SetSizer( sbSizer_showOtpmkDek )
+		self.m_panel_prepBee2_showOtpmkDek.Layout()
+		sbSizer_showOtpmkDek.Fit( self.m_panel_prepBee2_showOtpmkDek )
+		bSizer_prepBee.Add( self.m_panel_prepBee2_showOtpmkDek, 1, wx.EXPAND |wx.ALL, 5 )
 
 		self.m_panel_prepBee3_advKeySettings = wx.Panel( self.m_panel_prepBee, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		sbSizer_advKeySettings = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_prepBee3_advKeySettings, wx.ID_ANY, wx.EmptyString ), wx.VERTICAL )

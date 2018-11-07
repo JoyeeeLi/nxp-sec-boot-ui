@@ -11,10 +11,10 @@ import wx
 import wx.xrc
 
 ###########################################################################
-## Class advSettingsWin_OtpmkKey
+## Class advSettingsWin_FixedOtpmkKey
 ###########################################################################
 
-class advSettingsWin_OtpmkKey ( wx.Frame ):
+class advSettingsWin_FixedOtpmkKey ( wx.Frame ):
 
 	def __init__( self, parent ):
 		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 619,214 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )

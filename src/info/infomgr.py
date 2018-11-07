@@ -39,11 +39,11 @@ class secBootInfo(uicore.secBootUi):
     def clearHabDekData( self ):
         self.m_textCtrl_habDek128bit.Clear()
 
-    def printBeeDekData( self, dekStr ):
-        self.m_textCtrl_beeKeyInout.write(dekStr)
+    def printOtpmkDekData( self, dekStr ):
+        self.m_textCtrl_otpmkDek128bit.write(dekStr)
 
-    def clearBeeDekData( self ):
-        self.m_textCtrl_beeKeyInout.Clear()
+    def clearOtpmkDekData( self ):
+        self.m_textCtrl_otpmkDek128bit.Clear()
 
     def getReg32FromBinFile( self, filename, offset=0):
         return hex(self.getVal32FromBinFile(filename, offset))

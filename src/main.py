@@ -8,7 +8,7 @@ from ui import uidef
 from ui import ui_cfg_semcnand
 from ui import ui_cfg_flexspinor
 from ui import ui_settings_cert
-from ui import ui_settings_otpmk_key
+from ui import ui_settings_fixed_otpmk_key
 
 class secBootMain(runcore.secBootRun):
 
@@ -149,8 +149,8 @@ class secBootMain(runcore.secBootRun):
 
     def callbackAdvKeySettings( self, event ):
         if self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.bootDevice == uidef.kBootDevice_FlexspiNor:
-            if self.keyStorageRegion == uidef.kKeyStorageRegion_Otpmk:
-                otpmkKeySettingsFrame = ui_settings_otpmk_key.secBootUiSettingsOtpmkKey(None)
+            if self.keyStorageRegion == uidef.kKeyStorageRegion_FixedOtpmkKey:
+                otpmkKeySettingsFrame = ui_settings_fixed_otpmk_key.secBootUiSettingsFixedOtpmkKey(None)
                 otpmkKeySettingsFrame.SetTitle(u"Advanced Key Settings - OTPMK")
                 otpmkKeySettingsFrame.Show(True)
             else:
@@ -160,8 +160,8 @@ class secBootMain(runcore.secBootRun):
 
     def callbackDoBeeEncryption( self, event ):
         if self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.bootDevice == uidef.kBootDevice_FlexspiNor:
-            if self.keyStorageRegion == uidef.kKeyStorageRegion_Otpmk:
-                self.prepareForOtpmkEncryption()
+            if self.keyStorageRegion == uidef.kKeyStorageRegion_FixedOtpmkKey:
+                self.prepareForFixedOtpmkEncryption()
             else:
                 pass
         else:

@@ -5,12 +5,12 @@ import os
 import uidef
 import uivar
 sys.path.append(os.path.abspath("../.."))
-from gui import advSettingsWin_OtpmkKey
+from gui import advSettingsWin_FixedOtpmkKey
 
-class secBootUiSettingsOtpmkKey(advSettingsWin_OtpmkKey.advSettingsWin_OtpmkKey):
+class secBootUiSettingsFixedOtpmkKey(advSettingsWin_FixedOtpmkKey.advSettingsWin_FixedOtpmkKey):
 
     def __init__(self, parent):
-        advSettingsWin_OtpmkKey.advSettingsWin_OtpmkKey.__init__(self, parent)
+        advSettingsWin_FixedOtpmkKey.advSettingsWin_FixedOtpmkKey.__init__(self, parent)
         otpmkKeyOpt, otpmkEncryptedRegionStart, otpmkEncryptedRegionLength = uivar.getAdvancedSettings(uidef.kAdvancedSettings_OtpmkKey)
         self.otpmkKeyOpt = otpmkKeyOpt
         self.otpmkEncryptedRegionStart = otpmkEncryptedRegionStart
@@ -115,4 +115,3 @@ class secBootUiSettingsOtpmkKey(advSettingsWin_OtpmkKey.advSettingsWin_OtpmkKey)
 
     def callbackCancel( self, event ):
         self.Show(False)
-
