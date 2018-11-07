@@ -438,11 +438,11 @@ class secBootGen(infomgr.secBootInfo):
         print commandOutput
         self._parseBootableImageGenerationResult(commandOutput)
 
-    def showDekIfApplicable( self ):
-        self.clearDekData()
+    def showHabDekIfApplicable( self ):
+        self.clearHabDekData()
         if self.secureBootType == uidef.kSecureBootType_HabCrypto and self.dekDataOffset != None:
             keyWords = gendef.kSecKeyLengthInBits_DEK / 32
             for i in range(keyWords):
                 val32 = self.getVal32FromBinFile(self.dekFilename, (i * 4))
-                self.printDekData(str(hex(val32)))
+                self.printHabDekData(str(hex(val32)))
 

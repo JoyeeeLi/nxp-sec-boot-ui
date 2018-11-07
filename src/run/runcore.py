@@ -343,6 +343,9 @@ class secBootRun(gencore.secBootGen):
             pass
         return True
 
+    def prepareForOtpmkEncryption( self ):
+        pass
+
     def _isDeviceFuseSrkRegionBlank( self ):
         keyWords = gendef.kSecKeyLengthInBits_SRK / 32
         for i in range(keyWords):
@@ -399,7 +402,7 @@ class secBootRun(gencore.secBootGen):
         else:
             pass
 
-    def flashDekToGenerateKeyBlob ( self ):
+    def flashHabDekToGenerateKeyBlob ( self ):
         if os.path.isfile(self.dekFilename) and self.dekDataOffset != None:
             self._prepareForBootDeviceOperation()
             imageLen = os.path.getsize(self.destAppFilename)

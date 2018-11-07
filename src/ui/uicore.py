@@ -5,10 +5,6 @@ import os
 import serial.tools.list_ports
 import uidef
 import uivar
-import ui_cfg_semcnand
-import ui_cfg_flexspinor
-import ui_settings_cert
-import ui_settings_otpmk_key
 sys.path.append(os.path.abspath("../.."))
 from gui import secBootWin
 sys.path.append(os.path.abspath(".."))
@@ -44,18 +40,6 @@ class secBootUi(secBootWin.secBootWin):
         self.secureBootType = None
         self.keyStorageRegion = None
         self._initSecureBootSeqColor()
-
-    def runBootDeviceConfiguration( self ):
-        if self.bootDevice == uidef.kBootDevice_SemcNand:
-            semcNandFrame = ui_cfg_semcnand.secBootUiCfgSemcNand(None)
-            semcNandFrame.SetTitle(u"SEMC NAND Device Configuration")
-            semcNandFrame.Show(True)
-        elif self.bootDevice == uidef.kBootDevice_FlexspiNor:
-            flexspiNorFrame = ui_cfg_flexspinor.secBootUiCfgFlexspiNor(None)
-            flexspiNorFrame.SetTitle(u"FlexSPI NOR Device Configuration")
-            flexspiNorFrame.Show(True)
-        else:
-            pass
 
     def setTargetSetupValue( self ):
         self.mcuSeries = self.m_choice_mcuSeries.GetString(self.m_choice_mcuSeries.GetSelection())
@@ -157,21 +141,22 @@ class secBootUi(secBootWin.secBootWin):
     def _resetSecureBootSeqColor( self ):
         self.m_panel_doAuth1_certInput.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
         self.m_panel_doAuth2_certFmt.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
-        self.m_panel_progSrk1_showSrk.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
         self.m_panel_genImage1_browseApp.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
         self.m_panel_genImage2_habCryptoAlgo.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
-        self.m_panel_progDek1_showDek.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
         self._resetKeyStorageRegionColor()
+        self.m_panel_progSrk1_showSrk.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
         self.m_panel_flashImage1_showImage.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
+        self.m_panel_progDek1_showHabDek.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
         self.Refresh()
 
     def _resetKeyStorageRegionColor( self ):
         self.m_panel_prepBee1_beeKeyRegion.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
-        self.m_panel_prepBee2_beeKeyInput.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
+        self.m_panel_prepBee2_beeKeyInout.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
         self.m_panel_prepBee3_advKeySettings.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
         self.m_panel_prepBee4_beeCryptoAlgo.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
-        self.m_panel_operBeeKey1_readOtpmk.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
-        self.m_panel_operBeeKey2_progBeeKey.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
+        self.m_panel_operBee1_beeKeyInfo.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
+        self.m_panel_operBee2_showGp4Dek.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
+        self.m_panel_operBee3_showSwgp2Dek.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
         self.Refresh()
 
     def setSecureBootSeqColor( self ):
@@ -180,35 +165,34 @@ class secBootUi(secBootWin.secBootWin):
         if self.secureBootType == uidef.kSecureBootType_Development:
             self.m_panel_genImage1_browseApp.SetBackgroundColour( uidef.kBootSeqColor_Active )
             self.m_panel_flashImage1_showImage.SetBackgroundColour( uidef.kBootSeqColor_Active )
+            self.m_button_genImage.SetLabel('Generate Unsigned Bootable Image')
         elif self.secureBootType == uidef.kSecureBootType_HabAuth:
             self.m_panel_doAuth1_certInput.SetBackgroundColour( uidef.kBootSeqColor_Active )
             self.m_panel_doAuth2_certFmt.SetBackgroundColour( uidef.kBootSeqColor_Active )
-            self.m_panel_progSrk1_showSrk.SetBackgroundColour( uidef.kBootSeqColor_Active )
             self.m_panel_genImage1_browseApp.SetBackgroundColour( uidef.kBootSeqColor_Active )
+            self.m_panel_progSrk1_showSrk.SetBackgroundColour( uidef.kBootSeqColor_Active )
             self.m_panel_flashImage1_showImage.SetBackgroundColour( uidef.kBootSeqColor_Active )
+            self.m_button_genImage.SetLabel('Generate Signed Bootable Image')
         elif self.secureBootType == uidef.kSecureBootType_HabCrypto:
             self.m_panel_doAuth1_certInput.SetBackgroundColour( uidef.kBootSeqColor_Active )
             self.m_panel_doAuth2_certFmt.SetBackgroundColour( uidef.kBootSeqColor_Active )
-            self.m_panel_progSrk1_showSrk.SetBackgroundColour( uidef.kBootSeqColor_Active )
             self.m_panel_genImage1_browseApp.SetBackgroundColour( uidef.kBootSeqColor_Active )
             self.m_panel_genImage2_habCryptoAlgo.SetBackgroundColour( uidef.kBootSeqColor_Active )
-            self.m_panel_progDek1_showDek.SetBackgroundColour( uidef.kBootSeqColor_Active )
+            self.m_panel_progSrk1_showSrk.SetBackgroundColour( uidef.kBootSeqColor_Active )
             self.m_panel_flashImage1_showImage.SetBackgroundColour( uidef.kBootSeqColor_Active )
+            self.m_panel_progDek1_showHabDek.SetBackgroundColour( uidef.kBootSeqColor_Active )
+            self.m_button_genImage.SetLabel('Generate Encrypted Bootable Image,DEK')
         elif self.secureBootType == uidef.kSecureBootType_BeeCrypto:
             self.m_panel_doAuth1_certInput.SetBackgroundColour( uidef.kBootSeqColor_Inactive )
             self.m_panel_doAuth2_certFmt.SetBackgroundColour( uidef.kBootSeqColor_Inactive )
-            self.m_panel_progSrk1_showSrk.SetBackgroundColour( uidef.kBootSeqColor_Inactive )
             self.m_panel_genImage1_browseApp.SetBackgroundColour( uidef.kBootSeqColor_Active )
             self.setKeyStorageRegionColor()
+            self.m_panel_progSrk1_showSrk.SetBackgroundColour( uidef.kBootSeqColor_Inactive )
             self.m_panel_flashImage1_showImage.SetBackgroundColour( uidef.kBootSeqColor_Active )
+            self.m_button_genImage.SetLabel('Generate (Signed) Bootable Image')
         else:
             pass
         self.Refresh()
-
-    def runAdvancedCertSettings( self ):
-        certSettingsFrame = ui_settings_cert.secBootUiSettingsCert(None)
-        certSettingsFrame.SetTitle(u"Advanced Certificate Settings")
-        certSettingsFrame.Show(True)
 
     def getSerialAndKeypassContent( self ):
         serialContent = self.m_textCtrl_serial.GetLineText(0)
@@ -216,30 +200,30 @@ class secBootUi(secBootWin.secBootWin):
         return serialContent, keypassContent
 
     def setKeyStorageRegionColor( self ):
-        self.secureBootType = self.m_choice_secureBootType.GetString(self.m_choice_secureBootType.GetSelection())
         if self.secureBootType == uidef.kSecureBootType_BeeCrypto:
             self._resetKeyStorageRegionColor()
             self.keyStorageRegion = self.m_choice_keyStorageRegion.GetString(self.m_choice_keyStorageRegion.GetSelection())
             self.m_panel_prepBee1_beeKeyRegion.SetBackgroundColour( uidef.kBootSeqColor_Active )
-            self.m_panel_prepBee4_beeCryptoAlgo.SetBackgroundColour( uidef.kBootSeqColor_Active )
             self.m_panel_prepBee3_advKeySettings.SetBackgroundColour( uidef.kBootSeqColor_Active )
+            self.m_panel_prepBee4_beeCryptoAlgo.SetBackgroundColour( uidef.kBootSeqColor_Active )
             if self.keyStorageRegion == uidef.kKeyStorageRegion_Otpmk:
-                self.m_panel_operBeeKey1_readOtpmk.SetBackgroundColour( uidef.kBootSeqColor_Active )
-            elif self.keyStorageRegion == uidef.kKeyStorageRegion_Gp4 or self.keyStorageRegion == uidef.kKeyStorageRegion_SwGp2:
-                self.m_panel_prepBee2_beeKeyInput.SetBackgroundColour( uidef.kBootSeqColor_Active )
-                self.m_panel_operBeeKey2_progBeeKey.SetBackgroundColour( uidef.kBootSeqColor_Active )
+                self.m_panel_prepBee2_beeKeyInout.SetBackgroundColour( uidef.kBootSeqColor_Active )
+                self.m_button_prepBee.SetLabel('Prepare For Encryption')
+            elif self.keyStorageRegion == uidef.kKeyStorageRegion_Gp4:
+                self.m_panel_prepBee2_beeKeyInout.SetBackgroundColour( uidef.kBootSeqColor_Active )
+                self.m_panel_operBee1_beeKeyInfo.SetBackgroundColour( uidef.kBootSeqColor_Active )
+                self.m_panel_operBee2_showGp4Dek.SetBackgroundColour( uidef.kBootSeqColor_Active )
+                self.m_button_prepBee.SetLabel('Encrypt Bootable Image')
+            elif self.keyStorageRegion == uidef.kKeyStorageRegion_SwGp2:
+                self.m_panel_prepBee2_beeKeyInout.SetBackgroundColour( uidef.kBootSeqColor_Active )
+                self.m_panel_operBee1_beeKeyInfo.SetBackgroundColour( uidef.kBootSeqColor_Active )
+                self.m_panel_operBee3_showSwgp2Dek.SetBackgroundColour( uidef.kBootSeqColor_Active )
+                self.m_button_prepBee.SetLabel('Encrypt Bootable Image')
             elif self.keyStorageRegion == uidef.kKeyStorageRegion_Gp4SwGp2:
-                self.m_panel_operBeeKey2_progBeeKey.SetBackgroundColour( uidef.kBootSeqColor_Active )
+                self.m_panel_operBee1_beeKeyInfo.SetBackgroundColour( uidef.kBootSeqColor_Active )
+                self.m_panel_operBee2_showGp4Dek.SetBackgroundColour( uidef.kBootSeqColor_Active )
+                self.m_panel_operBee3_showSwgp2Dek.SetBackgroundColour( uidef.kBootSeqColor_Active )
+                self.m_button_prepBee.SetLabel('Encrypt Bootable Image')
             else:
                 pass
         self.Refresh()
-
-    def runAdvancedKeySettings( self ):
-        self.keyStorageRegion = self.m_choice_keyStorageRegion.GetString(self.m_choice_keyStorageRegion.GetSelection())
-        if self.keyStorageRegion == uidef.kKeyStorageRegion_Otpmk:
-            otpmkKeySettingsFrame = ui_settings_otpmk_key.secBootUiSettingsOtpmkKey(None)
-            otpmkKeySettingsFrame.SetTitle(u"Advanced Key Settings - OTPMK")
-            otpmkKeySettingsFrame.Show(True)
-        else:
-            pass
-

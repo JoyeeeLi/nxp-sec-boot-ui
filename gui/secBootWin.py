@@ -328,7 +328,7 @@ class secBootWin ( wx.Frame ):
 		sbSizer_habCryptoAlgo.Fit( self.m_panel_genImage2_habCryptoAlgo )
 		bSizer_genImage.Add( self.m_panel_genImage2_habCryptoAlgo, 1, wx.EXPAND |wx.ALL, 5 )
 
-		self.m_button_genImage = wx.Button( self.m_panel_genImage, wx.ID_ANY, u"Generate Bootable Image,(DEK)", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_button_genImage = wx.Button( self.m_panel_genImage, wx.ID_ANY, u"Generate Unsigned Bootable Image", wx.DefaultPosition, wx.Size( 225,-1 ), 0 )
 		bSizer_genImage.Add( self.m_button_genImage, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
 
@@ -348,7 +348,7 @@ class secBootWin ( wx.Frame ):
 
 		sbSizer_keyStorageRegion.Add( self.m_staticText_keyStorageRegion, 0, wx.ALL, 5 )
 
-		m_choice_keyStorageRegionChoices = [ u"Fuse OTPMK", u"Fuse GP4", u"Fuse SW_GP2 ", u"Fuse GP4&SW_GP2", wx.EmptyString ]
+		m_choice_keyStorageRegionChoices = [ u"Fuse OTPMK", u"Fuse GP4", u"Fuse SW_GP2 ", u"Fuse GP4&SW_GP2" ]
 		self.m_choice_keyStorageRegion = wx.Choice( sbSizer_keyStorageRegion.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, m_choice_keyStorageRegionChoices, 0 )
 		self.m_choice_keyStorageRegion.SetSelection( 0 )
 		sbSizer_keyStorageRegion.Add( self.m_choice_keyStorageRegion, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
@@ -359,17 +359,17 @@ class secBootWin ( wx.Frame ):
 		sbSizer_keyStorageRegion.Fit( self.m_panel_prepBee1_beeKeyRegion )
 		bSizer_prepBee.Add( self.m_panel_prepBee1_beeKeyRegion, 1, wx.EXPAND |wx.ALL, 5 )
 
-		self.m_panel_prepBee2_beeKeyInput = wx.Panel( self.m_panel_prepBee, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		sbSizer_beeKeyInput = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_prepBee2_beeKeyInput, wx.ID_ANY, u"User Encryption Key:" ), wx.VERTICAL )
+		self.m_panel_prepBee2_beeKeyInout = wx.Panel( self.m_panel_prepBee, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		sbSizer_beeKeyInput = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_prepBee2_beeKeyInout, wx.ID_ANY, u"DEK (128bits) To Encrypte:" ), wx.VERTICAL )
 
-		self.m_textCtrl_beeKeyInput = wx.TextCtrl( sbSizer_beeKeyInput.GetStaticBox(), wx.ID_ANY, u"ABCDEFABCDEFABCD", wx.DefaultPosition, wx.Size( 145,40 ), wx.TE_MULTILINE )
+		self.m_textCtrl_beeKeyInput = wx.TextCtrl( sbSizer_beeKeyInput.GetStaticBox(), wx.ID_ANY, u"0123456789abcdef\nfedcba987654321", wx.DefaultPosition, wx.Size( 145,40 ), wx.TE_MULTILINE )
 		sbSizer_beeKeyInput.Add( self.m_textCtrl_beeKeyInput, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
 
-		self.m_panel_prepBee2_beeKeyInput.SetSizer( sbSizer_beeKeyInput )
-		self.m_panel_prepBee2_beeKeyInput.Layout()
-		sbSizer_beeKeyInput.Fit( self.m_panel_prepBee2_beeKeyInput )
-		bSizer_prepBee.Add( self.m_panel_prepBee2_beeKeyInput, 1, wx.EXPAND |wx.ALL, 5 )
+		self.m_panel_prepBee2_beeKeyInout.SetSizer( sbSizer_beeKeyInput )
+		self.m_panel_prepBee2_beeKeyInout.Layout()
+		sbSizer_beeKeyInput.Fit( self.m_panel_prepBee2_beeKeyInout )
+		bSizer_prepBee.Add( self.m_panel_prepBee2_beeKeyInout, 1, wx.EXPAND |wx.ALL, 5 )
 
 		self.m_panel_prepBee3_advKeySettings = wx.Panel( self.m_panel_prepBee, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		sbSizer_advKeySettings = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_prepBee3_advKeySettings, wx.ID_ANY, wx.EmptyString ), wx.VERTICAL )
@@ -397,7 +397,7 @@ class secBootWin ( wx.Frame ):
 		sbSizer_beeCryptoAlgo.Fit( self.m_panel_prepBee4_beeCryptoAlgo )
 		bSizer_prepBee.Add( self.m_panel_prepBee4_beeCryptoAlgo, 1, wx.EXPAND |wx.ALL, 5 )
 
-		self.m_button_prepBee = wx.Button( self.m_panel_prepBee, wx.ID_ANY, u"Run image_enc Tool", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_button_prepBee = wx.Button( self.m_panel_prepBee, wx.ID_ANY, u"Prepare For Encryption", wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer_prepBee.Add( self.m_button_prepBee, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
 
@@ -422,7 +422,7 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_progSrk1_showSrk = wx.Panel( self.m_panel_progSrk, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		sbSizer_showSrk = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_progSrk1_showSrk, wx.ID_ANY, u"Step 2:" ), wx.VERTICAL )
 
-		self.m_staticText_srk256bit = wx.StaticText( sbSizer_showSrk.GetStaticBox(), wx.ID_ANY, u"Program below public SRK data (256bits) to Fuse SRK Region (0 -7):", wx.DefaultPosition, wx.Size( 100,60 ), 0 )
+		self.m_staticText_srk256bit = wx.StaticText( sbSizer_showSrk.GetStaticBox(), wx.ID_ANY, u"Burn below SRK data (256bits) into Fuse SRK0-7 Region:", wx.DefaultPosition, wx.Size( 110,60 ), 0 )
 		self.m_staticText_srk256bit.Wrap( -1 )
 
 		sbSizer_showSrk.Add( self.m_staticText_srk256bit, 0, wx.ALL, 5 )
@@ -447,50 +447,59 @@ class secBootWin ( wx.Frame ):
 		bSizer_progSrk.Fit( self.m_panel_progSrk )
 		wSizer_loadSeq.Add( self.m_panel_progSrk, 1, wx.EXPAND |wx.ALL, 5 )
 
-		self.m_panel_operBeeKey = wx.Panel( self.m_panel_loadSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		bSizer_operBeeKey = wx.BoxSizer( wx.VERTICAL )
+		self.m_panel_operBee = wx.Panel( self.m_panel_loadSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		bSizer_operBee = wx.BoxSizer( wx.VERTICAL )
 
-		self.m_panel_operBeeKey1_readOtpmk = wx.Panel( self.m_panel_operBeeKey, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		sbSizer_readOtpmk = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_operBeeKey1_readOtpmk, wx.ID_ANY, u"Step 5:" ), wx.VERTICAL )
+		self.m_panel_operBee1_beeKeyInfo = wx.Panel( self.m_panel_operBee, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		sbSizer_beeKeyInfo = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_operBee1_beeKeyInfo, wx.ID_ANY, u"Step 5:" ), wx.VERTICAL )
 
-		self.m_staticText_otpmk128bit = wx.StaticText( sbSizer_readOtpmk.GetStaticBox(), wx.ID_ANY, u"Readback default encryption key data from Fuse OTPMK region:", wx.DefaultPosition, wx.Size( 135,50 ), 0 )
-		self.m_staticText_otpmk128bit.Wrap( -1 )
+		self.m_staticText_beeKeyInfo = wx.StaticText( sbSizer_beeKeyInfo.GetStaticBox(), wx.ID_ANY, u"Burn below user DEK data (128bits * n) into below Region for BEE:", wx.DefaultPosition, wx.Size( 130,45 ), 0 )
+		self.m_staticText_beeKeyInfo.Wrap( -1 )
 
-		sbSizer_readOtpmk.Add( self.m_staticText_otpmk128bit, 0, wx.ALL, 5 )
-
-		self.m_textCtrl_otpmk128bit = wx.TextCtrl( sbSizer_readOtpmk.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 145,40 ), wx.TE_MULTILINE )
-		self.m_textCtrl_otpmk128bit.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
-
-		sbSizer_readOtpmk.Add( self.m_textCtrl_otpmk128bit, 0, wx.ALL, 5 )
+		sbSizer_beeKeyInfo.Add( self.m_staticText_beeKeyInfo, 0, wx.ALL, 5 )
 
 
-		self.m_panel_operBeeKey1_readOtpmk.SetSizer( sbSizer_readOtpmk )
-		self.m_panel_operBeeKey1_readOtpmk.Layout()
-		sbSizer_readOtpmk.Fit( self.m_panel_operBeeKey1_readOtpmk )
-		bSizer_operBeeKey.Add( self.m_panel_operBeeKey1_readOtpmk, 1, wx.EXPAND |wx.ALL, 5 )
+		self.m_panel_operBee1_beeKeyInfo.SetSizer( sbSizer_beeKeyInfo )
+		self.m_panel_operBee1_beeKeyInfo.Layout()
+		sbSizer_beeKeyInfo.Fit( self.m_panel_operBee1_beeKeyInfo )
+		bSizer_operBee.Add( self.m_panel_operBee1_beeKeyInfo, 1, wx.EXPAND |wx.ALL, 5 )
 
-		self.m_panel_operBeeKey2_progBeeKey = wx.Panel( self.m_panel_operBeeKey, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		sbSizer_progBeeKey = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_operBeeKey2_progBeeKey, wx.ID_ANY, wx.EmptyString ), wx.VERTICAL )
+		self.m_panel_operBee2_showGp4Dek = wx.Panel( self.m_panel_operBee, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		sbSizer_showGp4Dek = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_operBee2_showGp4Dek, wx.ID_ANY, u"Fuse GP4 Region:" ), wx.VERTICAL )
 
-		self.m_staticText_progBeeKey = wx.StaticText( sbSizer_progBeeKey.GetStaticBox(), wx.ID_ANY, u"Program user encryption key data in Fuse Key Region for BEE:", wx.DefaultPosition, wx.Size( 135,50 ), 0 )
-		self.m_staticText_progBeeKey.Wrap( -1 )
+		self.m_textCtrl_gp4Dek128bit = wx.TextCtrl( sbSizer_showGp4Dek.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 100,70 ), wx.TE_MULTILINE )
+		self.m_textCtrl_gp4Dek128bit.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
 
-		sbSizer_progBeeKey.Add( self.m_staticText_progBeeKey, 0, wx.ALL, 5 )
-
-
-		self.m_panel_operBeeKey2_progBeeKey.SetSizer( sbSizer_progBeeKey )
-		self.m_panel_operBeeKey2_progBeeKey.Layout()
-		sbSizer_progBeeKey.Fit( self.m_panel_operBeeKey2_progBeeKey )
-		bSizer_operBeeKey.Add( self.m_panel_operBeeKey2_progBeeKey, 1, wx.EXPAND |wx.ALL, 5 )
-
-		self.m_button_operBeeKey = wx.Button( self.m_panel_operBeeKey, wx.ID_ANY, u"Run blhost Tool", wx.DefaultPosition, wx.DefaultSize, 0 )
-		bSizer_operBeeKey.Add( self.m_button_operBeeKey, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
+		sbSizer_showGp4Dek.Add( self.m_textCtrl_gp4Dek128bit, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
 
-		self.m_panel_operBeeKey.SetSizer( bSizer_operBeeKey )
-		self.m_panel_operBeeKey.Layout()
-		bSizer_operBeeKey.Fit( self.m_panel_operBeeKey )
-		wSizer_loadSeq.Add( self.m_panel_operBeeKey, 1, wx.EXPAND |wx.ALL, 5 )
+		self.m_panel_operBee2_showGp4Dek.SetSizer( sbSizer_showGp4Dek )
+		self.m_panel_operBee2_showGp4Dek.Layout()
+		sbSizer_showGp4Dek.Fit( self.m_panel_operBee2_showGp4Dek )
+		bSizer_operBee.Add( self.m_panel_operBee2_showGp4Dek, 1, wx.EXPAND |wx.ALL, 5 )
+
+		self.m_panel_operBee3_showSwgp2Dek = wx.Panel( self.m_panel_operBee, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		sbSizer_showSwgp2Dek = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_operBee3_showSwgp2Dek, wx.ID_ANY, u"Fuse SW_GP2 Region:" ), wx.VERTICAL )
+
+		self.m_textCtrl_swgp2Dek128bit = wx.TextCtrl( sbSizer_showSwgp2Dek.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 100,70 ), wx.TE_MULTILINE )
+		self.m_textCtrl_swgp2Dek128bit.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
+
+		sbSizer_showSwgp2Dek.Add( self.m_textCtrl_swgp2Dek128bit, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
+
+
+		self.m_panel_operBee3_showSwgp2Dek.SetSizer( sbSizer_showSwgp2Dek )
+		self.m_panel_operBee3_showSwgp2Dek.Layout()
+		sbSizer_showSwgp2Dek.Fit( self.m_panel_operBee3_showSwgp2Dek )
+		bSizer_operBee.Add( self.m_panel_operBee3_showSwgp2Dek, 1, wx.EXPAND |wx.ALL, 5 )
+
+		self.m_button_operBee = wx.Button( self.m_panel_operBee, wx.ID_ANY, u"Burn DEK data", wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer_operBee.Add( self.m_button_operBee, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
+
+
+		self.m_panel_operBee.SetSizer( bSizer_operBee )
+		self.m_panel_operBee.Layout()
+		bSizer_operBee.Fit( self.m_panel_operBee )
+		wSizer_loadSeq.Add( self.m_panel_operBee, 1, wx.EXPAND |wx.ALL, 5 )
 
 		self.m_panel_flashImage = wx.Panel( self.m_panel_loadSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		self.m_panel_flashImage.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNSHADOW ) )
@@ -502,13 +511,13 @@ class secBootWin ( wx.Frame ):
 
 		sbSizer_showImage = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_flashImage1_showImage, wx.ID_ANY, u"Step 6:" ), wx.VERTICAL )
 
-		self.m_staticText_showImage = wx.StaticText( sbSizer_showImage.GetStaticBox(), wx.ID_ANY, u"Program final bootable image to flash:", wx.DefaultPosition, wx.Size( 120,100 ), 0 )
+		self.m_staticText_showImage = wx.StaticText( sbSizer_showImage.GetStaticBox(), wx.ID_ANY, u"Program final bootable image to flash:", wx.DefaultPosition, wx.Size( 140,50 ), 0 )
 		self.m_staticText_showImage.Wrap( -1 )
 
 		sbSizer_showImage.Add( self.m_staticText_showImage, 0, wx.ALL, 5 )
 
 		self.m_bitmap_bootableImage = wx.StaticBitmap( sbSizer_showImage.GetStaticBox(), wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.DefaultSize, 0 )
-		sbSizer_showImage.Add( self.m_bitmap_bootableImage, 0, wx.ALL, 5 )
+		sbSizer_showImage.Add( self.m_bitmap_bootableImage, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
 
 		self.m_panel_flashImage1_showImage.SetSizer( sbSizer_showImage )
@@ -516,7 +525,7 @@ class secBootWin ( wx.Frame ):
 		sbSizer_showImage.Fit( self.m_panel_flashImage1_showImage )
 		bSizer_flashImage.Add( self.m_panel_flashImage1_showImage, 1, wx.EXPAND |wx.ALL, 5 )
 
-		self.m_button_flashImage = wx.Button( self.m_panel_flashImage, wx.ID_ANY, u"Load Bootable Image", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_button_flashImage = wx.Button( self.m_panel_flashImage, wx.ID_ANY, u"Load Generated Image", wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer_flashImage.Add( self.m_button_flashImage, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
 
@@ -528,24 +537,24 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_progDek = wx.Panel( self.m_panel_loadSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer_progDek = wx.BoxSizer( wx.VERTICAL )
 
-		self.m_panel_progDek1_showDek = wx.Panel( self.m_panel_progDek, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		sbSizer_showDek = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_progDek1_showDek, wx.ID_ANY, u"Step 7:" ), wx.VERTICAL )
+		self.m_panel_progDek1_showHabDek = wx.Panel( self.m_panel_progDek, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		sbSizer_showHabDek = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_progDek1_showHabDek, wx.ID_ANY, u"Step 7:" ), wx.VERTICAL )
 
-		self.m_staticText_dek128bit = wx.StaticText( sbSizer_showDek.GetStaticBox(), wx.ID_ANY, u"Use below DEK data (128bits) to generate keyblob and program it to flash for HAB:", wx.DefaultPosition, wx.Size( 100,80 ), 0 )
-		self.m_staticText_dek128bit.Wrap( -1 )
+		self.m_staticText_habDek128bit = wx.StaticText( sbSizer_showHabDek.GetStaticBox(), wx.ID_ANY, u"Use below DEK data (128bits) to generate keyblob and program it to flash for HAB:", wx.DefaultPosition, wx.Size( 100,80 ), 0 )
+		self.m_staticText_habDek128bit.Wrap( -1 )
 
-		sbSizer_showDek.Add( self.m_staticText_dek128bit, 0, wx.ALL, 5 )
+		sbSizer_showHabDek.Add( self.m_staticText_habDek128bit, 0, wx.ALL, 5 )
 
-		self.m_textCtrl_dek128bit = wx.TextCtrl( sbSizer_showDek.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 100,70 ), wx.TE_MULTILINE )
-		self.m_textCtrl_dek128bit.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
+		self.m_textCtrl_habDek128bit = wx.TextCtrl( sbSizer_showHabDek.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 100,70 ), wx.TE_MULTILINE )
+		self.m_textCtrl_habDek128bit.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
 
-		sbSizer_showDek.Add( self.m_textCtrl_dek128bit, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
+		sbSizer_showHabDek.Add( self.m_textCtrl_habDek128bit, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
 
-		self.m_panel_progDek1_showDek.SetSizer( sbSizer_showDek )
-		self.m_panel_progDek1_showDek.Layout()
-		sbSizer_showDek.Fit( self.m_panel_progDek1_showDek )
-		bSizer_progDek.Add( self.m_panel_progDek1_showDek, 1, wx.EXPAND |wx.ALL, 5 )
+		self.m_panel_progDek1_showHabDek.SetSizer( sbSizer_showHabDek )
+		self.m_panel_progDek1_showHabDek.Layout()
+		sbSizer_showHabDek.Fit( self.m_panel_progDek1_showHabDek )
+		bSizer_progDek.Add( self.m_panel_progDek1_showHabDek, 1, wx.EXPAND |wx.ALL, 5 )
 
 		self.m_button_progDek = wx.Button( self.m_panel_progDek, wx.ID_ANY, u"Load KeyBlob Data", wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer_progDek.Add( self.m_button_progDek, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
@@ -642,9 +651,10 @@ class secBootWin ( wx.Frame ):
 		self.m_button_genImage.Bind( wx.EVT_BUTTON, self.callbackGenImage )
 		self.m_choice_keyStorageRegion.Bind( wx.EVT_CHOICE, self.callbackSetKeyStorageRegion )
 		self.m_button_advKeySettings.Bind( wx.EVT_BUTTON, self.callbackAdvKeySettings )
+		self.m_button_prepBee.Bind( wx.EVT_BUTTON, self.callbackDoBeeEncryption )
 		self.m_button_progSrk.Bind( wx.EVT_BUTTON, self.callbackProgramSrk )
 		self.m_button_flashImage.Bind( wx.EVT_BUTTON, self.callbackFlashImage )
-		self.m_button_progDek.Bind( wx.EVT_BUTTON, self.callbackFlashDek )
+		self.m_button_progDek.Bind( wx.EVT_BUTTON, self.callbackFlashHabDek )
 		self.m_button_clearLog.Bind( wx.EVT_BUTTON, self.callbackClearLog )
 
 	def __del__( self ):
@@ -691,13 +701,16 @@ class secBootWin ( wx.Frame ):
 	def callbackAdvKeySettings( self, event ):
 		event.Skip()
 
+	def callbackDoBeeEncryption( self, event ):
+		event.Skip()
+
 	def callbackProgramSrk( self, event ):
 		event.Skip()
 
 	def callbackFlashImage( self, event ):
 		event.Skip()
 
-	def callbackFlashDek( self, event ):
+	def callbackFlashHabDek( self, event ):
 		event.Skip()
 
 	def callbackClearLog( self, event ):

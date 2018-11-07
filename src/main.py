@@ -5,6 +5,10 @@ import os
 import time
 from run import runcore
 from ui import uidef
+from ui import ui_cfg_semcnand
+from ui import ui_cfg_flexspinor
+from ui import ui_settings_cert
+from ui import ui_settings_otpmk_key
 
 class secBootMain(runcore.secBootRun):
 
@@ -24,7 +28,16 @@ class secBootMain(runcore.secBootRun):
         self.setTargetSetupValue()
 
     def callbackBootDeviceConfiguration( self, event ):
-        self.runBootDeviceConfiguration()
+        if self.bootDevice == uidef.kBootDevice_SemcNand:
+            semcNandFrame = ui_cfg_semcnand.secBootUiCfgSemcNand(None)
+            semcNandFrame.SetTitle(u"SEMC NAND Device Configuration")
+            semcNandFrame.Show(True)
+        elif self.bootDevice == uidef.kBootDevice_FlexspiNor:
+            flexspiNorFrame = ui_cfg_flexspinor.secBootUiCfgFlexspiNor(None)
+            flexspiNorFrame.SetTitle(u"FlexSPI NOR Device Configuration")
+            flexspiNorFrame.Show(True)
+        else:
+            pass
 
     def callbackSetUartPort( self, event ):
         self.setPortSetupValue(self.connectStage)
@@ -87,7 +100,9 @@ class secBootMain(runcore.secBootRun):
         self.setSecureBootSeqColor()
 
     def callbackAdvCertSettings( self, event ):
-        self.runAdvancedCertSettings()
+        certSettingsFrame = ui_settings_cert.secBootUiSettingsCert(None)
+        certSettingsFrame.SetTitle(u"Advanced Certificate Settings")
+        certSettingsFrame.Show(True)
         self.updateAllCstPathToCorrectVersion()
 
     def callbackGenCert( self, event ):
@@ -102,13 +117,24 @@ class secBootMain(runcore.secBootRun):
         self.printLog("'Generate Bootable Image' button is clicked")
         if self.createMatchedBdfile():
             self.genBootableImage()
-            self.showDekIfApplicable()
+            self.showHabDekIfApplicable()
 
     def callbackSetKeyStorageRegion( self, event ):
         self.setKeyStorageRegionColor()
 
     def callbackAdvKeySettings( self, event ):
-        self.runAdvancedKeySettings()
+        if self.keyStorageRegion == uidef.kKeyStorageRegion_Otpmk:
+            otpmkKeySettingsFrame = ui_settings_otpmk_key.secBootUiSettingsOtpmkKey(None)
+            otpmkKeySettingsFrame.SetTitle(u"Advanced Key Settings - OTPMK")
+            otpmkKeySettingsFrame.Show(True)
+        else:
+            pass
+
+    def callbackDoBeeEncryption( self, event ):
+        if self.keyStorageRegion == uidef.kKeyStorageRegion_Otpmk:
+            self.prepareForOtpmkEncryption()
+        else:
+            pass
 
     def callbackProgramSrk( self, event ):
         self.printLog("'Load SRK data' button is clicked")
@@ -118,9 +144,9 @@ class secBootMain(runcore.secBootRun):
         self.printLog("'Load Bootable Image' button is clicked")
         self.flashBootableImage()
 
-    def callbackFlashDek( self, event ):
+    def callbackFlashHabDek( self, event ):
         self.printLog("'Load KeyBlob Data' button is clicked")
-        self.flashDekToGenerateKeyBlob()
+        self.flashHabDekToGenerateKeyBlob()
 
     def callbackClearLog( self, event ):
         self.clearLog()

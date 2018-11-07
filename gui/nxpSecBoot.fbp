@@ -5433,7 +5433,7 @@
                                                                         <property name="gripper">0</property>
                                                                         <property name="hidden">0</property>
                                                                         <property name="id">wxID_ANY</property>
-                                                                        <property name="label">Generate Bootable Image,(DEK)</property>
+                                                                        <property name="label">Generate Unsigned Bootable Image</property>
                                                                         <property name="margins"></property>
                                                                         <property name="markup">0</property>
                                                                         <property name="max_size"></property>
@@ -5454,7 +5454,7 @@
                                                                         <property name="pressed"></property>
                                                                         <property name="resize">Resizable</property>
                                                                         <property name="show">1</property>
-                                                                        <property name="size"></property>
+                                                                        <property name="size">225,-1</property>
                                                                         <property name="style"></property>
                                                                         <property name="subclass">; ; forward_declare</property>
                                                                         <property name="toolbar_pane">0</property>
@@ -5795,7 +5795,7 @@
                                                                                     <property name="caption"></property>
                                                                                     <property name="caption_visible">1</property>
                                                                                     <property name="center_pane">0</property>
-                                                                                    <property name="choices">&quot;Fuse OTPMK&quot; &quot;Fuse GP4&quot; &quot;Fuse SW_GP2 &quot; &quot;Fuse GP4&amp;SW_GP2&quot; &quot;&quot;</property>
+                                                                                    <property name="choices">&quot;Fuse OTPMK&quot; &quot;Fuse GP4&quot; &quot;Fuse SW_GP2 &quot; &quot;Fuse GP4&amp;SW_GP2&quot;</property>
                                                                                     <property name="close_button">1</property>
                                                                                     <property name="context_help"></property>
                                                                                     <property name="context_menu">1</property>
@@ -5914,7 +5914,7 @@
                                                                         <property name="minimize_button">0</property>
                                                                         <property name="minimum_size"></property>
                                                                         <property name="moveable">1</property>
-                                                                        <property name="name">m_panel_prepBee2_beeKeyInput</property>
+                                                                        <property name="name">m_panel_prepBee2_beeKeyInout</property>
                                                                         <property name="pane_border">1</property>
                                                                         <property name="pane_position"></property>
                                                                         <property name="pane_size"></property>
@@ -5962,7 +5962,7 @@
                                                                         <event name="OnUpdateUI"></event>
                                                                         <object class="wxStaticBoxSizer" expanded="0">
                                                                             <property name="id">wxID_ANY</property>
-                                                                            <property name="label">User Encryption Key:</property>
+                                                                            <property name="label">DEK (128bits) To Encrypte:</property>
                                                                             <property name="minimum_size"></property>
                                                                             <property name="name">sbSizer_beeKeyInput</property>
                                                                             <property name="orient">wxVERTICAL</property>
@@ -6027,7 +6027,7 @@
                                                                                     <property name="validator_style">wxFILTER_NONE</property>
                                                                                     <property name="validator_type">wxDefaultValidator</property>
                                                                                     <property name="validator_variable"></property>
-                                                                                    <property name="value">ABCDEFABCDEFABCD</property>
+                                                                                    <property name="value">0123456789abcdef&#x0A;fedcba987654321</property>
                                                                                     <property name="window_extra_style"></property>
                                                                                     <property name="window_name"></property>
                                                                                     <property name="window_style"></property>
@@ -6499,7 +6499,7 @@
                                                                         <property name="gripper">0</property>
                                                                         <property name="hidden">0</property>
                                                                         <property name="id">wxID_ANY</property>
-                                                                        <property name="label">Run image_enc Tool</property>
+                                                                        <property name="label">Prepare For Encryption</property>
                                                                         <property name="margins"></property>
                                                                         <property name="markup">0</property>
                                                                         <property name="max_size"></property>
@@ -6538,7 +6538,7 @@
                                                                         <event name="OnAux2DClick"></event>
                                                                         <event name="OnAux2Down"></event>
                                                                         <event name="OnAux2Up"></event>
-                                                                        <event name="OnButtonClick"></event>
+                                                                        <event name="OnButtonClick">callbackDoBeeEncryption</event>
                                                                         <event name="OnChar"></event>
                                                                         <event name="OnCharHook"></event>
                                                                         <event name="OnEnterWindow"></event>
@@ -6878,7 +6878,7 @@
                                                                                     <property name="gripper">0</property>
                                                                                     <property name="hidden">0</property>
                                                                                     <property name="id">wxID_ANY</property>
-                                                                                    <property name="label">Program below public SRK data (256bits) to Fuse SRK Region (0 -7):</property>
+                                                                                    <property name="label">Burn below SRK data (256bits) into Fuse SRK0-7 Region:</property>
                                                                                     <property name="markup">0</property>
                                                                                     <property name="max_size"></property>
                                                                                     <property name="maximize_button">0</property>
@@ -6896,7 +6896,7 @@
                                                                                     <property name="pos"></property>
                                                                                     <property name="resize">Resizable</property>
                                                                                     <property name="show">1</property>
-                                                                                    <property name="size">100,60</property>
+                                                                                    <property name="size">110,60</property>
                                                                                     <property name="style"></property>
                                                                                     <property name="subclass">; ; forward_declare</property>
                                                                                     <property name="toolbar_pane">0</property>
@@ -7183,7 +7183,7 @@
                                                             <property name="minimize_button">0</property>
                                                             <property name="minimum_size"></property>
                                                             <property name="moveable">1</property>
-                                                            <property name="name">m_panel_operBeeKey</property>
+                                                            <property name="name">m_panel_operBee</property>
                                                             <property name="pane_border">1</property>
                                                             <property name="pane_position"></property>
                                                             <property name="pane_size"></property>
@@ -7231,7 +7231,7 @@
                                                             <event name="OnUpdateUI"></event>
                                                             <object class="wxBoxSizer" expanded="0">
                                                                 <property name="minimum_size"></property>
-                                                                <property name="name">bSizer_operBeeKey</property>
+                                                                <property name="name">bSizer_operBee</property>
                                                                 <property name="orient">wxVERTICAL</property>
                                                                 <property name="permission">none</property>
                                                                 <object class="sizeritem" expanded="0">
@@ -7273,7 +7273,7 @@
                                                                         <property name="minimize_button">0</property>
                                                                         <property name="minimum_size"></property>
                                                                         <property name="moveable">1</property>
-                                                                        <property name="name">m_panel_operBeeKey1_readOtpmk</property>
+                                                                        <property name="name">m_panel_operBee1_beeKeyInfo</property>
                                                                         <property name="pane_border">1</property>
                                                                         <property name="pane_position"></property>
                                                                         <property name="pane_size"></property>
@@ -7323,7 +7323,7 @@
                                                                             <property name="id">wxID_ANY</property>
                                                                             <property name="label">Step 5:</property>
                                                                             <property name="minimum_size"></property>
-                                                                            <property name="name">sbSizer_readOtpmk</property>
+                                                                            <property name="name">sbSizer_beeKeyInfo</property>
                                                                             <property name="orient">wxVERTICAL</property>
                                                                             <property name="parent">1</property>
                                                                             <property name="permission">none</property>
@@ -7360,7 +7360,7 @@
                                                                                     <property name="gripper">0</property>
                                                                                     <property name="hidden">0</property>
                                                                                     <property name="id">wxID_ANY</property>
-                                                                                    <property name="label">Readback default encryption key data from Fuse OTPMK region:</property>
+                                                                                    <property name="label">Burn below user DEK data (128bits * n) into below Region for BEE:</property>
                                                                                     <property name="markup">0</property>
                                                                                     <property name="max_size"></property>
                                                                                     <property name="maximize_button">0</property>
@@ -7369,7 +7369,7 @@
                                                                                     <property name="minimize_button">0</property>
                                                                                     <property name="minimum_size"></property>
                                                                                     <property name="moveable">1</property>
-                                                                                    <property name="name">m_staticText_otpmk128bit</property>
+                                                                                    <property name="name">m_staticText_beeKeyInfo</property>
                                                                                     <property name="pane_border">1</property>
                                                                                     <property name="pane_position"></property>
                                                                                     <property name="pane_size"></property>
@@ -7378,7 +7378,7 @@
                                                                                     <property name="pos"></property>
                                                                                     <property name="resize">Resizable</property>
                                                                                     <property name="show">1</property>
-                                                                                    <property name="size">135,50</property>
+                                                                                    <property name="size">130,45</property>
                                                                                     <property name="style"></property>
                                                                                     <property name="subclass">; ; forward_declare</property>
                                                                                     <property name="toolbar_pane">0</property>
@@ -7419,9 +7419,106 @@
                                                                                     <event name="OnUpdateUI"></event>
                                                                                 </object>
                                                                             </object>
+                                                                        </object>
+                                                                    </object>
+                                                                </object>
+                                                                <object class="sizeritem" expanded="0">
+                                                                    <property name="border">5</property>
+                                                                    <property name="flag">wxEXPAND | wxALL</property>
+                                                                    <property name="proportion">1</property>
+                                                                    <object class="wxPanel" expanded="0">
+                                                                        <property name="BottomDockable">1</property>
+                                                                        <property name="LeftDockable">1</property>
+                                                                        <property name="RightDockable">1</property>
+                                                                        <property name="TopDockable">1</property>
+                                                                        <property name="aui_layer"></property>
+                                                                        <property name="aui_name"></property>
+                                                                        <property name="aui_position"></property>
+                                                                        <property name="aui_row"></property>
+                                                                        <property name="best_size"></property>
+                                                                        <property name="bg"></property>
+                                                                        <property name="caption"></property>
+                                                                        <property name="caption_visible">1</property>
+                                                                        <property name="center_pane">0</property>
+                                                                        <property name="close_button">1</property>
+                                                                        <property name="context_help"></property>
+                                                                        <property name="context_menu">1</property>
+                                                                        <property name="default_pane">0</property>
+                                                                        <property name="dock">Dock</property>
+                                                                        <property name="dock_fixed">0</property>
+                                                                        <property name="docking">Left</property>
+                                                                        <property name="enabled">1</property>
+                                                                        <property name="fg"></property>
+                                                                        <property name="floatable">1</property>
+                                                                        <property name="font"></property>
+                                                                        <property name="gripper">0</property>
+                                                                        <property name="hidden">0</property>
+                                                                        <property name="id">wxID_ANY</property>
+                                                                        <property name="max_size"></property>
+                                                                        <property name="maximize_button">0</property>
+                                                                        <property name="maximum_size"></property>
+                                                                        <property name="min_size"></property>
+                                                                        <property name="minimize_button">0</property>
+                                                                        <property name="minimum_size"></property>
+                                                                        <property name="moveable">1</property>
+                                                                        <property name="name">m_panel_operBee2_showGp4Dek</property>
+                                                                        <property name="pane_border">1</property>
+                                                                        <property name="pane_position"></property>
+                                                                        <property name="pane_size"></property>
+                                                                        <property name="permission">protected</property>
+                                                                        <property name="pin_button">1</property>
+                                                                        <property name="pos"></property>
+                                                                        <property name="resize">Resizable</property>
+                                                                        <property name="show">1</property>
+                                                                        <property name="size"></property>
+                                                                        <property name="subclass">; ; forward_declare</property>
+                                                                        <property name="toolbar_pane">0</property>
+                                                                        <property name="tooltip"></property>
+                                                                        <property name="window_extra_style"></property>
+                                                                        <property name="window_name"></property>
+                                                                        <property name="window_style">wxTAB_TRAVERSAL</property>
+                                                                        <event name="OnAux1DClick"></event>
+                                                                        <event name="OnAux1Down"></event>
+                                                                        <event name="OnAux1Up"></event>
+                                                                        <event name="OnAux2DClick"></event>
+                                                                        <event name="OnAux2Down"></event>
+                                                                        <event name="OnAux2Up"></event>
+                                                                        <event name="OnChar"></event>
+                                                                        <event name="OnCharHook"></event>
+                                                                        <event name="OnEnterWindow"></event>
+                                                                        <event name="OnEraseBackground"></event>
+                                                                        <event name="OnKeyDown"></event>
+                                                                        <event name="OnKeyUp"></event>
+                                                                        <event name="OnKillFocus"></event>
+                                                                        <event name="OnLeaveWindow"></event>
+                                                                        <event name="OnLeftDClick"></event>
+                                                                        <event name="OnLeftDown"></event>
+                                                                        <event name="OnLeftUp"></event>
+                                                                        <event name="OnMiddleDClick"></event>
+                                                                        <event name="OnMiddleDown"></event>
+                                                                        <event name="OnMiddleUp"></event>
+                                                                        <event name="OnMotion"></event>
+                                                                        <event name="OnMouseEvents"></event>
+                                                                        <event name="OnMouseWheel"></event>
+                                                                        <event name="OnPaint"></event>
+                                                                        <event name="OnRightDClick"></event>
+                                                                        <event name="OnRightDown"></event>
+                                                                        <event name="OnRightUp"></event>
+                                                                        <event name="OnSetFocus"></event>
+                                                                        <event name="OnSize"></event>
+                                                                        <event name="OnUpdateUI"></event>
+                                                                        <object class="wxStaticBoxSizer" expanded="0">
+                                                                            <property name="id">wxID_ANY</property>
+                                                                            <property name="label">Fuse GP4 Region:</property>
+                                                                            <property name="minimum_size"></property>
+                                                                            <property name="name">sbSizer_showGp4Dek</property>
+                                                                            <property name="orient">wxVERTICAL</property>
+                                                                            <property name="parent">1</property>
+                                                                            <property name="permission">none</property>
+                                                                            <event name="OnUpdateUI"></event>
                                                                             <object class="sizeritem" expanded="0">
                                                                                 <property name="border">5</property>
-                                                                                <property name="flag">wxALL</property>
+                                                                                <property name="flag">wxALIGN_CENTER|wxALL</property>
                                                                                 <property name="proportion">0</property>
                                                                                 <object class="wxTextCtrl" expanded="0">
                                                                                     <property name="BottomDockable">1</property>
@@ -7459,7 +7556,7 @@
                                                                                     <property name="minimize_button">0</property>
                                                                                     <property name="minimum_size"></property>
                                                                                     <property name="moveable">1</property>
-                                                                                    <property name="name">m_textCtrl_otpmk128bit</property>
+                                                                                    <property name="name">m_textCtrl_gp4Dek128bit</property>
                                                                                     <property name="pane_border">1</property>
                                                                                     <property name="pane_position"></property>
                                                                                     <property name="pane_size"></property>
@@ -7468,7 +7565,7 @@
                                                                                     <property name="pos"></property>
                                                                                     <property name="resize">Resizable</property>
                                                                                     <property name="show">1</property>
-                                                                                    <property name="size">145,40</property>
+                                                                                    <property name="size">100,70</property>
                                                                                     <property name="style">wxTE_MULTILINE</property>
                                                                                     <property name="subclass">; ; forward_declare</property>
                                                                                     <property name="toolbar_pane">0</property>
@@ -7559,7 +7656,7 @@
                                                                         <property name="minimize_button">0</property>
                                                                         <property name="minimum_size"></property>
                                                                         <property name="moveable">1</property>
-                                                                        <property name="name">m_panel_operBeeKey2_progBeeKey</property>
+                                                                        <property name="name">m_panel_operBee3_showSwgp2Dek</property>
                                                                         <property name="pane_border">1</property>
                                                                         <property name="pane_position"></property>
                                                                         <property name="pane_size"></property>
@@ -7607,18 +7704,18 @@
                                                                         <event name="OnUpdateUI"></event>
                                                                         <object class="wxStaticBoxSizer" expanded="0">
                                                                             <property name="id">wxID_ANY</property>
-                                                                            <property name="label"></property>
+                                                                            <property name="label">Fuse SW_GP2 Region:</property>
                                                                             <property name="minimum_size"></property>
-                                                                            <property name="name">sbSizer_progBeeKey</property>
+                                                                            <property name="name">sbSizer_showSwgp2Dek</property>
                                                                             <property name="orient">wxVERTICAL</property>
                                                                             <property name="parent">1</property>
                                                                             <property name="permission">none</property>
                                                                             <event name="OnUpdateUI"></event>
                                                                             <object class="sizeritem" expanded="0">
                                                                                 <property name="border">5</property>
-                                                                                <property name="flag">wxALL</property>
+                                                                                <property name="flag">wxALIGN_CENTER|wxALL</property>
                                                                                 <property name="proportion">0</property>
-                                                                                <object class="wxStaticText" expanded="0">
+                                                                                <object class="wxTextCtrl" expanded="0">
                                                                                     <property name="BottomDockable">1</property>
                                                                                     <property name="LeftDockable">1</property>
                                                                                     <property name="RightDockable">1</property>
@@ -7628,7 +7725,7 @@
                                                                                     <property name="aui_position"></property>
                                                                                     <property name="aui_row"></property>
                                                                                     <property name="best_size"></property>
-                                                                                    <property name="bg"></property>
+                                                                                    <property name="bg">wxSYS_COLOUR_GRAYTEXT</property>
                                                                                     <property name="caption"></property>
                                                                                     <property name="caption_visible">1</property>
                                                                                     <property name="center_pane">0</property>
@@ -7646,16 +7743,15 @@
                                                                                     <property name="gripper">0</property>
                                                                                     <property name="hidden">0</property>
                                                                                     <property name="id">wxID_ANY</property>
-                                                                                    <property name="label">Program user encryption key data in Fuse Key Region for BEE:</property>
-                                                                                    <property name="markup">0</property>
                                                                                     <property name="max_size"></property>
                                                                                     <property name="maximize_button">0</property>
                                                                                     <property name="maximum_size"></property>
+                                                                                    <property name="maxlength"></property>
                                                                                     <property name="min_size"></property>
                                                                                     <property name="minimize_button">0</property>
                                                                                     <property name="minimum_size"></property>
                                                                                     <property name="moveable">1</property>
-                                                                                    <property name="name">m_staticText_progBeeKey</property>
+                                                                                    <property name="name">m_textCtrl_swgp2Dek128bit</property>
                                                                                     <property name="pane_border">1</property>
                                                                                     <property name="pane_position"></property>
                                                                                     <property name="pane_size"></property>
@@ -7664,15 +7760,19 @@
                                                                                     <property name="pos"></property>
                                                                                     <property name="resize">Resizable</property>
                                                                                     <property name="show">1</property>
-                                                                                    <property name="size">135,50</property>
-                                                                                    <property name="style"></property>
+                                                                                    <property name="size">100,70</property>
+                                                                                    <property name="style">wxTE_MULTILINE</property>
                                                                                     <property name="subclass">; ; forward_declare</property>
                                                                                     <property name="toolbar_pane">0</property>
                                                                                     <property name="tooltip"></property>
+                                                                                    <property name="validator_data_type"></property>
+                                                                                    <property name="validator_style">wxFILTER_NONE</property>
+                                                                                    <property name="validator_type">wxDefaultValidator</property>
+                                                                                    <property name="validator_variable"></property>
+                                                                                    <property name="value"></property>
                                                                                     <property name="window_extra_style"></property>
                                                                                     <property name="window_name"></property>
                                                                                     <property name="window_style"></property>
-                                                                                    <property name="wrap">-1</property>
                                                                                     <event name="OnAux1DClick"></event>
                                                                                     <event name="OnAux1Down"></event>
                                                                                     <event name="OnAux1Up"></event>
@@ -7702,6 +7802,10 @@
                                                                                     <event name="OnRightUp"></event>
                                                                                     <event name="OnSetFocus"></event>
                                                                                     <event name="OnSize"></event>
+                                                                                    <event name="OnText"></event>
+                                                                                    <event name="OnTextEnter"></event>
+                                                                                    <event name="OnTextMaxLen"></event>
+                                                                                    <event name="OnTextURL"></event>
                                                                                     <event name="OnUpdateUI"></event>
                                                                                 </object>
                                                                             </object>
@@ -7745,7 +7849,7 @@
                                                                         <property name="gripper">0</property>
                                                                         <property name="hidden">0</property>
                                                                         <property name="id">wxID_ANY</property>
-                                                                        <property name="label">Run blhost Tool</property>
+                                                                        <property name="label">Burn DEK data</property>
                                                                         <property name="margins"></property>
                                                                         <property name="markup">0</property>
                                                                         <property name="max_size"></property>
@@ -7755,7 +7859,7 @@
                                                                         <property name="minimize_button">0</property>
                                                                         <property name="minimum_size"></property>
                                                                         <property name="moveable">1</property>
-                                                                        <property name="name">m_button_operBeeKey</property>
+                                                                        <property name="name">m_button_operBee</property>
                                                                         <property name="pane_border">1</property>
                                                                         <property name="pane_position"></property>
                                                                         <property name="pane_size"></property>
@@ -8048,7 +8152,7 @@
                                                                                     <property name="pos"></property>
                                                                                     <property name="resize">Resizable</property>
                                                                                     <property name="show">1</property>
-                                                                                    <property name="size">120,100</property>
+                                                                                    <property name="size">140,50</property>
                                                                                     <property name="style"></property>
                                                                                     <property name="subclass">; ; forward_declare</property>
                                                                                     <property name="toolbar_pane">0</property>
@@ -8091,7 +8195,7 @@
                                                                             </object>
                                                                             <object class="sizeritem" expanded="0">
                                                                                 <property name="border">5</property>
-                                                                                <property name="flag">wxALL</property>
+                                                                                <property name="flag">wxALIGN_CENTER|wxALL</property>
                                                                                 <property name="proportion">0</property>
                                                                                 <object class="wxStaticBitmap" expanded="0">
                                                                                     <property name="BottomDockable">1</property>
@@ -8217,7 +8321,7 @@
                                                                         <property name="gripper">0</property>
                                                                         <property name="hidden">0</property>
                                                                         <property name="id">wxID_ANY</property>
-                                                                        <property name="label">Load Bootable Image</property>
+                                                                        <property name="label">Load Generated Image</property>
                                                                         <property name="margins"></property>
                                                                         <property name="markup">0</property>
                                                                         <property name="max_size"></property>
@@ -8415,7 +8519,7 @@
                                                                         <property name="minimize_button">0</property>
                                                                         <property name="minimum_size"></property>
                                                                         <property name="moveable">1</property>
-                                                                        <property name="name">m_panel_progDek1_showDek</property>
+                                                                        <property name="name">m_panel_progDek1_showHabDek</property>
                                                                         <property name="pane_border">1</property>
                                                                         <property name="pane_position"></property>
                                                                         <property name="pane_size"></property>
@@ -8465,7 +8569,7 @@
                                                                             <property name="id">wxID_ANY</property>
                                                                             <property name="label">Step 7:</property>
                                                                             <property name="minimum_size"></property>
-                                                                            <property name="name">sbSizer_showDek</property>
+                                                                            <property name="name">sbSizer_showHabDek</property>
                                                                             <property name="orient">wxVERTICAL</property>
                                                                             <property name="parent">1</property>
                                                                             <property name="permission">none</property>
@@ -8511,7 +8615,7 @@
                                                                                     <property name="minimize_button">0</property>
                                                                                     <property name="minimum_size"></property>
                                                                                     <property name="moveable">1</property>
-                                                                                    <property name="name">m_staticText_dek128bit</property>
+                                                                                    <property name="name">m_staticText_habDek128bit</property>
                                                                                     <property name="pane_border">1</property>
                                                                                     <property name="pane_position"></property>
                                                                                     <property name="pane_size"></property>
@@ -8601,7 +8705,7 @@
                                                                                     <property name="minimize_button">0</property>
                                                                                     <property name="minimum_size"></property>
                                                                                     <property name="moveable">1</property>
-                                                                                    <property name="name">m_textCtrl_dek128bit</property>
+                                                                                    <property name="name">m_textCtrl_habDek128bit</property>
                                                                                     <property name="pane_border">1</property>
                                                                                     <property name="pane_position"></property>
                                                                                     <property name="pane_size"></property>
@@ -8738,7 +8842,7 @@
                                                                         <event name="OnAux2DClick"></event>
                                                                         <event name="OnAux2Down"></event>
                                                                         <event name="OnAux2Up"></event>
-                                                                        <event name="OnButtonClick">callbackFlashDek</event>
+                                                                        <event name="OnButtonClick">callbackFlashHabDek</event>
                                                                         <event name="OnChar"></event>
                                                                         <event name="OnCharHook"></event>
                                                                         <event name="OnEnterWindow"></event>
