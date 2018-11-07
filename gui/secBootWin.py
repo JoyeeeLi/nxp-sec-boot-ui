@@ -265,7 +265,7 @@ class secBootWin ( wx.Frame ):
 		sbSizer_certFmt = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_doAuth2_certFmt, wx.ID_ANY, u"Certificate Format:" ), wx.VERTICAL )
 
 		m_choice_certFmtChoices = [ u"X.509v3" ]
-		self.m_choice_certFmt = wx.Choice( sbSizer_certFmt.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, m_choice_certFmtChoices, 0 )
+		self.m_choice_certFmt = wx.Choice( sbSizer_certFmt.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.Size( 80,-1 ), m_choice_certFmtChoices, 0 )
 		self.m_choice_certFmt.SetSelection( 0 )
 		sbSizer_certFmt.Add( self.m_choice_certFmt, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
@@ -275,7 +275,7 @@ class secBootWin ( wx.Frame ):
 		sbSizer_certFmt.Add( self.m_staticText_hashAlgo, 0, wx.ALL, 5 )
 
 		m_choice_hashAlgoChoices = [ u"SHA-256" ]
-		self.m_choice_hashAlgo = wx.Choice( sbSizer_certFmt.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, m_choice_hashAlgoChoices, 0 )
+		self.m_choice_hashAlgo = wx.Choice( sbSizer_certFmt.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.Size( 80,-1 ), m_choice_hashAlgoChoices, 0 )
 		self.m_choice_hashAlgo.SetSelection( 0 )
 		sbSizer_certFmt.Add( self.m_choice_hashAlgo, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
@@ -333,7 +333,7 @@ class secBootWin ( wx.Frame ):
 		sbSizer_habCryptoAlgo = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_genImage2_habCryptoAlgo, wx.ID_ANY, u"HAB Encryption Algorithm:" ), wx.VERTICAL )
 
 		m_choice_habCryptoAlgoChoices = [ u"AES-128" ]
-		self.m_choice_habCryptoAlgo = wx.Choice( sbSizer_habCryptoAlgo.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, m_choice_habCryptoAlgoChoices, 0 )
+		self.m_choice_habCryptoAlgo = wx.Choice( sbSizer_habCryptoAlgo.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.Size( 80,-1 ), m_choice_habCryptoAlgoChoices, 0 )
 		self.m_choice_habCryptoAlgo.SetSelection( 0 )
 		sbSizer_habCryptoAlgo.Add( self.m_choice_habCryptoAlgo, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
@@ -342,6 +342,20 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_genImage2_habCryptoAlgo.Layout()
 		sbSizer_habCryptoAlgo.Fit( self.m_panel_genImage2_habCryptoAlgo )
 		bSizer_genImage.Add( self.m_panel_genImage2_habCryptoAlgo, 1, wx.EXPAND |wx.ALL, 5 )
+
+		self.m_panel_genImage3_enableCertForBee = wx.Panel( self.m_panel_genImage, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,-1 ), wx.TAB_TRAVERSAL )
+		sbSizer_enableCertForBee = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_genImage3_enableCertForBee, wx.ID_ANY, u"Enable Certificate for BEE Encryption" ), wx.VERTICAL )
+
+		m_choice_enableCertForBeeChoices = [ u"No", u"Yes" ]
+		self.m_choice_enableCertForBee = wx.Choice( sbSizer_enableCertForBee.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.Size( 80,-1 ), m_choice_enableCertForBeeChoices, 0 )
+		self.m_choice_enableCertForBee.SetSelection( 0 )
+		sbSizer_enableCertForBee.Add( self.m_choice_enableCertForBee, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
+
+
+		self.m_panel_genImage3_enableCertForBee.SetSizer( sbSizer_enableCertForBee )
+		self.m_panel_genImage3_enableCertForBee.Layout()
+		sbSizer_enableCertForBee.Fit( self.m_panel_genImage3_enableCertForBee )
+		bSizer_genImage.Add( self.m_panel_genImage3_enableCertForBee, 1, wx.EXPAND |wx.ALL, 5 )
 
 		self.m_button_genImage = wx.Button( self.m_panel_genImage, wx.ID_ANY, u"Generate Unsigned Bootable Image", wx.DefaultPosition, wx.Size( 225,-1 ), 0 )
 		bSizer_genImage.Add( self.m_button_genImage, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
@@ -375,7 +389,7 @@ class secBootWin ( wx.Frame ):
 		bSizer_prepBee.Add( self.m_panel_prepBee1_beeKeyRegion, 1, wx.EXPAND |wx.ALL, 5 )
 
 		self.m_panel_prepBee2_beeKeyInout = wx.Panel( self.m_panel_prepBee, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		sbSizer_beeKeyInout = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_prepBee2_beeKeyInout, wx.ID_ANY, u"DEK (128bits) To Encrypte:" ), wx.VERTICAL )
+		sbSizer_beeKeyInout = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_prepBee2_beeKeyInout, wx.ID_ANY, u"DEK (Hex, LE) To Encrypte:" ), wx.VERTICAL )
 
 		self.m_textCtrl_beeKeyInout = wx.TextCtrl( sbSizer_beeKeyInout.GetStaticBox(), wx.ID_ANY, u"0123456789abcdef\nfedcba987654321", wx.DefaultPosition, wx.Size( 145,40 ), wx.TE_MULTILINE )
 		sbSizer_beeKeyInout.Add( self.m_textCtrl_beeKeyInout, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
@@ -402,7 +416,7 @@ class secBootWin ( wx.Frame ):
 		sbSizer_beeCryptoAlgo = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_prepBee4_beeCryptoAlgo, wx.ID_ANY, u"BEE Encryption Algorithm:" ), wx.VERTICAL )
 
 		m_choice_beeCryptoAlgoChoices = [ u"AES-128" ]
-		self.m_choice_beeCryptoAlgo = wx.Choice( sbSizer_beeCryptoAlgo.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, m_choice_beeCryptoAlgoChoices, 0 )
+		self.m_choice_beeCryptoAlgo = wx.Choice( sbSizer_beeCryptoAlgo.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.Size( 80,-1 ), m_choice_beeCryptoAlgoChoices, 0 )
 		self.m_choice_beeCryptoAlgo.SetSelection( 0 )
 		sbSizer_beeCryptoAlgo.Add( self.m_choice_beeCryptoAlgo, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
@@ -663,6 +677,7 @@ class secBootWin ( wx.Frame ):
 		self.m_choice_secureBootType.Bind( wx.EVT_CHOICE, self.callbackSetSecureBootType )
 		self.m_button_advCertSettings.Bind( wx.EVT_BUTTON, self.callbackAdvCertSettings )
 		self.m_button_genCert.Bind( wx.EVT_BUTTON, self.callbackGenCert )
+		self.m_choice_enableCertForBee.Bind( wx.EVT_CHOICE, self.callbackSetCertForBee )
 		self.m_button_genImage.Bind( wx.EVT_BUTTON, self.callbackGenImage )
 		self.m_choice_keyStorageRegion.Bind( wx.EVT_CHOICE, self.callbackSetKeyStorageRegion )
 		self.m_button_advKeySettings.Bind( wx.EVT_BUTTON, self.callbackAdvKeySettings )
@@ -705,6 +720,9 @@ class secBootWin ( wx.Frame ):
 		event.Skip()
 
 	def callbackGenCert( self, event ):
+		event.Skip()
+
+	def callbackSetCertForBee( self, event ):
 		event.Skip()
 
 	def callbackGenImage( self, event ):

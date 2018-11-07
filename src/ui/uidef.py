@@ -10,7 +10,7 @@ kConnectStep_Fast   = 3
 kConnectStep_Normal = 1
 
 kBootSeqColor_Invalid  = wx.Colour( 160, 160, 160 )
-kBootSeqColor_Inactive = wx.Colour( 166, 255, 255 )
+kBootSeqColor_Optional = wx.Colour( 166, 255, 255 )
 kBootSeqColor_Active   = wx.Colour( 147, 255, 174 )
 
 kMcuDevice_iMXRT102x = 'i.MXRT102x'

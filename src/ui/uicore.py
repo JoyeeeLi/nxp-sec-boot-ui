@@ -39,6 +39,7 @@ class secBootUi(secBootWin.secBootWin):
 
         self.secureBootType = None
         self.keyStorageRegion = None
+        self.isCertEnabledForBee = None
         self._initSecureBootSeqColor()
 
     def setTargetSetupValue( self ):
@@ -139,12 +140,11 @@ class secBootUi(secBootWin.secBootWin):
         self.setSecureBootSeqColor()
 
     def _resetSecureBootSeqColor( self ):
-        self.m_panel_doAuth1_certInput.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
-        self.m_panel_doAuth2_certFmt.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
+        self._resetCertificateColor()
         self.m_panel_genImage1_browseApp.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
         self.m_panel_genImage2_habCryptoAlgo.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
+        self.m_panel_genImage3_enableCertForBee.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
         self._resetKeyStorageRegionColor()
-        self.m_panel_progSrk1_showSrk.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
         self.m_panel_flashImage1_showImage.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
         self.m_panel_progDek1_showHabDek.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
         self.Refresh()
@@ -157,6 +157,12 @@ class secBootUi(secBootWin.secBootWin):
         self.m_panel_operBee1_beeKeyInfo.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
         self.m_panel_operBee2_showGp4Dek.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
         self.m_panel_operBee3_showSwgp2Dek.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
+        self.Refresh()
+
+    def _resetCertificateColor( self ):
+        self.m_panel_doAuth1_certInput.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
+        self.m_panel_doAuth2_certFmt.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
+        self.m_panel_progSrk1_showSrk.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
         self.Refresh()
 
     def setSecureBootSeqColor( self ):
@@ -184,11 +190,10 @@ class secBootUi(secBootWin.secBootWin):
             self.m_button_genImage.SetLabel('Generate Encrypted Bootable Image,DEK')
         elif self.secureBootType == uidef.kSecureBootType_BeeCrypto:
             if self.bootDevice == uidef.kBootDevice_FlexspiNor:
-                self.m_panel_doAuth1_certInput.SetBackgroundColour( uidef.kBootSeqColor_Inactive )
-                self.m_panel_doAuth2_certFmt.SetBackgroundColour( uidef.kBootSeqColor_Inactive )
+                self.setBeeCertColor()
                 self.m_panel_genImage1_browseApp.SetBackgroundColour( uidef.kBootSeqColor_Active )
+                self.m_panel_genImage3_enableCertForBee.SetBackgroundColour( uidef.kBootSeqColor_Active )
                 self.setKeyStorageRegionColor()
-                self.m_panel_progSrk1_showSrk.SetBackgroundColour( uidef.kBootSeqColor_Inactive )
                 self.m_panel_flashImage1_showImage.SetBackgroundColour( uidef.kBootSeqColor_Active )
                 self.m_button_genImage.SetLabel('Generate (Signed) Bootable Image')
             else:
@@ -201,6 +206,21 @@ class secBootUi(secBootWin.secBootWin):
         serialContent = self.m_textCtrl_serial.GetLineText(0)
         keypassContent = self.m_textCtrl_keyPass.GetLineText(0)
         return serialContent, keypassContent
+
+    def setBeeCertColor( self ):
+        txt = self.m_choice_enableCertForBee.GetString(self.m_choice_enableCertForBee.GetSelection())
+        if txt == 'No':
+            self.isCertEnabledForBee = False
+        elif txt == 'Yes':
+            self.isCertEnabledForBee = True
+        else:
+            pass
+        self._resetCertificateColor()
+        if self.isCertEnabledForBee:
+            self.m_panel_doAuth1_certInput.SetBackgroundColour( uidef.kBootSeqColor_Optional )
+            self.m_panel_doAuth2_certFmt.SetBackgroundColour( uidef.kBootSeqColor_Optional )
+            self.m_panel_progSrk1_showSrk.SetBackgroundColour( uidef.kBootSeqColor_Optional )
+        self.Refresh()
 
     def setKeyStorageRegionColor( self ):
         self.keyStorageRegion = self.m_choice_keyStorageRegion.GetString(self.m_choice_keyStorageRegion.GetSelection())

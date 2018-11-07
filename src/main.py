@@ -133,6 +133,10 @@ class secBootMain(runcore.secBootRun):
                 self.genBootableImage()
                 self.showHabDekIfApplicable()
 
+    def callbackSetCertForBee( self, event ):
+        if self.secureBootType == uidef.kSecureBootType_BeeCrypto:
+            self.setBeeCertColor()
+
     def callbackSetKeyStorageRegion( self, event ):
         if self.secureBootType == uidef.kSecureBootType_BeeCrypto:
             self.setKeyStorageRegionColor()

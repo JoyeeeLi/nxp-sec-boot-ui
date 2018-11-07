@@ -80,13 +80,13 @@ class advSettingsWin_OtpmkKey ( wx.Frame ):
 
 		gSizer_encryptedRegionInfo.Add( self.m_staticText_regionLength, 0, wx.ALL, 5 )
 
-		self.m_textCtrl_region0Start = wx.TextCtrl( self.m_panel_encryptedRegionInfo, wx.ID_ANY, u"0x0", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_textCtrl_region0Start = wx.TextCtrl( self.m_panel_encryptedRegionInfo, wx.ID_ANY, u"0x60001000", wx.DefaultPosition, wx.DefaultSize, 0 )
 		gSizer_encryptedRegionInfo.Add( self.m_textCtrl_region0Start, 0, wx.ALL, 5 )
 
 		self.m_textCtrl_region0Length = wx.TextCtrl( self.m_panel_encryptedRegionInfo, wx.ID_ANY, u"0x1000", wx.DefaultPosition, wx.DefaultSize, 0 )
 		gSizer_encryptedRegionInfo.Add( self.m_textCtrl_region0Length, 0, wx.ALL, 5 )
 
-		self.m_textCtrl_region1Start = wx.TextCtrl( self.m_panel_encryptedRegionInfo, wx.ID_ANY, u"0x2000", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_textCtrl_region1Start = wx.TextCtrl( self.m_panel_encryptedRegionInfo, wx.ID_ANY, u"0x60002000", wx.DefaultPosition, wx.DefaultSize, 0 )
 		gSizer_encryptedRegionInfo.Add( self.m_textCtrl_region1Start, 0, wx.ALL, 5 )
 
 		self.m_textCtrl_region1Length = wx.TextCtrl( self.m_panel_encryptedRegionInfo, wx.ID_ANY, u"0xe000", wx.DefaultPosition, wx.DefaultSize, 0 )
