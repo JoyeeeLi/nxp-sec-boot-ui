@@ -104,10 +104,13 @@ class secBootMain(runcore.secBootRun):
         if self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.bootDevice != uidef.kBootDevice_FlexspiNor:
             self.popupMsgBox('Action is not available because BEE encryption boot is only designed for FlexSPI NOR device!')
         elif self.secureBootType != uidef.kSecureBootType_Development:
-            certSettingsFrame = ui_settings_cert.secBootUiSettingsCert(None)
-            certSettingsFrame.SetTitle(u"Advanced Certificate Settings")
-            certSettingsFrame.Show(True)
-            self.updateAllCstPathToCorrectVersion()
+            if self.secureBootType == uidef.kSecureBootType_BeeCrypto and (not self.isCertEnabledForBee):
+                self.popupMsgBox('Certificate is not enabled for BEE, You can enable it then try again!')
+            else:
+                certSettingsFrame = ui_settings_cert.secBootUiSettingsCert(None)
+                certSettingsFrame.SetTitle(u"Advanced Certificate Settings")
+                certSettingsFrame.Show(True)
+                self.updateAllCstPathToCorrectVersion()
         else:
             self.popupMsgBox('No need to set certificate option when booting unsigned image!')
 
@@ -115,12 +118,15 @@ class secBootMain(runcore.secBootRun):
         if self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.bootDevice != uidef.kBootDevice_FlexspiNor:
             self.popupMsgBox('Action is not available because BEE encryption boot is only designed for FlexSPI NOR device!')
         elif self.secureBootType != uidef.kSecureBootType_Development:
-            self.printLog("'Generate Certificate' button is clicked")
-            self.updateAllCstPathToCorrectVersion()
-            if self.createSerialAndKeypassfile():
-                self.genCertificate()
-                self.genSuperRootKeys()
-                self.showSuperRootKeys()
+            if self.secureBootType == uidef.kSecureBootType_BeeCrypto and (not self.isCertEnabledForBee):
+                self.popupMsgBox('Certificate is not enabled for BEE, You can enable it then try again!')
+            else:
+                self.printLog("'Generate Certificate' button is clicked")
+                self.updateAllCstPathToCorrectVersion()
+                if self.createSerialAndKeypassfile():
+                    self.genCertificate()
+                    self.genSuperRootKeys()
+                    self.showSuperRootKeys()
         else:
             self.popupMsgBox('No need to generate certificate when booting unsigned image!')
 
@@ -165,8 +171,11 @@ class secBootMain(runcore.secBootRun):
         if self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.bootDevice != uidef.kBootDevice_FlexspiNor:
             self.popupMsgBox('Action is not available because BEE encryption boot is only designed for FlexSPI NOR device!')
         elif self.secureBootType != uidef.kSecureBootType_Development:
-            self.printLog("'Load SRK data' button is clicked")
-            self.burnSrkData()
+            if self.secureBootType == uidef.kSecureBootType_BeeCrypto and (not self.isCertEnabledForBee):
+                self.popupMsgBox('Certificate is not enabled for BEE, You can enable it then try again!')
+            else:
+                self.printLog("'Load SRK data' button is clicked")
+                self.burnSrkData()
         else:
             self.popupMsgBox('No need to burn SRK data when booting unsigned image!')
 

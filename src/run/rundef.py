@@ -24,6 +24,7 @@ kRamFreeSpaceStart_LoadDekData        = 0x00002100
 kRamFreeSpaceStart_LoadKeyBlobContext = 0x00002200
 kRamFreeSpaceStart_LoadKeyBlobData    = 0x00002300
 kRamFreeSpaceStart_LoadCfgBlock       = 0x00003000
+kRamFreeSpaceStart_LoadPrdbOpt        = 0x00004000
 
 kRamFreeSpaceStep_LoadKeyBlobData    = 0x100
 

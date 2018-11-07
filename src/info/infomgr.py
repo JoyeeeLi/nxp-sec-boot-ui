@@ -39,6 +39,12 @@ class secBootInfo(uicore.secBootUi):
     def clearHabDekData( self ):
         self.m_textCtrl_habDek128bit.Clear()
 
+    def printBeeDekData( self, dekStr ):
+        self.m_textCtrl_beeKeyInout.write(dekStr)
+
+    def clearBeeDekData( self ):
+        self.m_textCtrl_beeKeyInout.Clear()
+
     def getReg32FromBinFile( self, filename, offset=0):
         return hex(self.getVal32FromBinFile(filename, offset))
 
@@ -57,10 +63,16 @@ class secBootInfo(uicore.secBootUi):
         val32Vaule = ((binarray[3+offset]<<24) + (binarray[2+offset]<<16) + (binarray[1+offset]<<8) + binarray[0+offset])
         return val32Vaule
 
-    def getFormattedFuseValue( self, fuseValue):
+    def getFormattedFuseValue( self, fuseValue, direction='LSB'):
         formattedVal32 = ''
         for i in range(8):
-            loc = 32 - (i + 1) * 4
+            loc = 0
+            if direction =='LSB':
+                loc = 32 - (i + 1) * 4
+            elif direction =='MSB':
+                loc = i * 4
+            else:
+                pass
             halfbyteStr = str(hex((fuseValue & (0xF << loc))>> loc))
             formattedVal32 += halfbyteStr[2]
         return formattedVal32

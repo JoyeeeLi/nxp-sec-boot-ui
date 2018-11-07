@@ -10,6 +10,11 @@ kEfuseAddr_BOOT_CFG0  = 0x5
 kEfuseAddr_BOOT_CFG1  = 0x6
 kEfuseAddr_BOOT_CFG2  = 0x7
 
+kEfuseAddr_OTPMK0 = 0x10
+kEfuseAddr_OTPMK1 = 0x11
+kEfuseAddr_OTPMK2 = 0x12
+kEfuseAddr_OTPMK3 = 0x13
+
 kEfuseAddr_SRK0 = 0x18
 kEfuseAddr_SRK1 = 0x19
 kEfuseAddr_SRK2 = 0x1A

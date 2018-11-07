@@ -64,6 +64,7 @@ class secBootRun(gencore.secBootGen):
         self.semcNandImageCopies = None
         self.semcNandBlockSize = None
         self.flexspiNorSectorSize = None
+        self.isFlexspiNorErasedForImage = False
 
     def getUsbid( self ):
         # Create the target object.
@@ -286,6 +287,23 @@ class secBootRun(gencore.secBootGen):
         else:
             pass
 
+    def _eraseFlexspiNorForConfigBlockLoading( self ):
+        status, results, cmdStr = self.blhost.flashEraseRegion(rundef.kBootDeviceMemBase_FlexspiNor, infodef.kFlexspiNorCfgInfo_Length, rundef.kBootDeviceMemId_FlexspiNor)
+        self.printLog(cmdStr)
+        if status != boot.status.kStatus_Success:
+            return False
+
+    def _programFlexspiNorConfigBlock ( self ):
+        # 0xf000000f is the tag to notify Flashloader to program FlexSPI NOR config block to the start of device
+        status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_LoadCfgBlock, 0x4, infodef.kFlexspiNorCfgInfo_Notify)
+        self.printLog(cmdStr)
+        if status != boot.status.kStatus_Success:
+            return False
+        status, results, cmdStr = self.blhost.configureMemory(self.bootDeviceMemId, rundef.kRamFreeSpaceStart_LoadCfgBlock)
+        self.printLog(cmdStr)
+        if status != boot.status.kStatus_Success:
+            return False
+
     def configureBootDevice ( self ):
         self._prepareForBootDeviceOperation()
         if self.bootDevice == uidef.kBootDevice_SemcNand:
@@ -324,27 +342,74 @@ class secBootRun(gencore.secBootGen):
             self.printLog(cmdStr)
             if status != boot.status.kStatus_Success:
                 return False
-            ########################################################################
-            # 0xf000000f is the tag to notify Flashloader to program FlexSPI NOR config block to the start of device
-            status, results, cmdStr = self.blhost.flashEraseRegion(self.bootDeviceMemBase, infodef.kFlexspiNorCfgInfo_Length, self.bootDeviceMemId)
-            self.printLog(cmdStr)
-            if status != boot.status.kStatus_Success:
-                return False
-            status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_LoadCfgBlock, 0x4, infodef.kFlexspiNorCfgInfo_Notify)
-            self.printLog(cmdStr)
-            if status != boot.status.kStatus_Success:
-                return False
-            status, results, cmdStr = self.blhost.configureMemory(self.bootDeviceMemId, rundef.kRamFreeSpaceStart_LoadCfgBlock)
-            self.printLog(cmdStr)
-            if status != boot.status.kStatus_Success:
-                return False
-            ########################################################################
+            self._eraseFlexspiNorForConfigBlockLoading()
+            self._programFlexspiNorConfigBlock()
         else:
             pass
         return True
 
+    def _showOtpmkDek( self ):
+        otpmk0 = self._readDeviceFuseByBlhost(infodef.kEfuseAddr_OTPMK0, 'Fuse->OTPMK0 (0x500)')
+        otpmk1 = self._readDeviceFuseByBlhost(infodef.kEfuseAddr_OTPMK1, 'Fuse->OTPMK1 (0x510)')
+        otpmk2 = self._readDeviceFuseByBlhost(infodef.kEfuseAddr_OTPMK2, 'Fuse->OTPMK2 (0x520)')
+        otpmk3 = self._readDeviceFuseByBlhost(infodef.kEfuseAddr_OTPMK3, 'Fuse->OTPMK3 (0x530)')
+        if otpmk0 != None and otpmk1 != None and otpmk2 != None and otpmk3 != None:
+            self.clearBeeDekData()
+            self.printBeeDekData(self.getFormattedFuseValue(otpmk0, 'MSB'))
+            self.printBeeDekData(self.getFormattedFuseValue(otpmk1, 'MSB'))
+            self.printBeeDekData("\n")
+            self.printBeeDekData(self.getFormattedFuseValue(otpmk2, 'MSB'))
+            self.printBeeDekData(self.getFormattedFuseValue(otpmk3, 'MSB'))
+
+    def _eraseFlexspiNorForImageLoading( self ):
+        imageLen = os.path.getsize(self.destAppFilename)
+        memEraseLen = misc.align_up(imageLen, self.flexspiNorSectorSize)
+        status, results, cmdStr = self.blhost.flashEraseRegion(rundef.kBootDeviceMemBase_FlexspiNor, memEraseLen, rundef.kBootDeviceMemId_FlexspiNor)
+        self.printLog(cmdStr)
+        if status != boot.status.kStatus_Success:
+            return False
+        self.isFlexspiNorErasedForImage = True
+
     def prepareForOtpmkEncryption( self ):
-        pass
+        self._prepareForBootDeviceOperation()
+        self._showOtpmkDek()
+        self._eraseFlexspiNorForImageLoading()
+        otpmkKeyOpt, otpmkEncryptedRegionStart, otpmkEncryptedRegionLength = uivar.getAdvancedSettings(uidef.kAdvancedSettings_OtpmkKey)
+        # Prepare PRDB options
+        #---------------------------------------------------------------------------
+        # 0xe0120000 is an option for PRDB contruction and image encryption
+        # bit[31:28] tag, fixed to 0x0E
+        # bit[27:24] Key source, fixed to 0 for A0 silicon
+        # bit[23:20] AES mode: 1 - CTR mode
+        # bit[19:16] Encrypted region count
+        # bit[15:00] reserved in A0
+        #---------------------------------------------------------------------------
+        encryptedRegionCnt = (otpmkKeyOpt & 0x000F0000) >> 16
+        if encryptedRegionCnt == 0:
+            otpmkKeyOpt = (otpmkKeyOpt & 0xFFF0FFFF) | (0x1 << 16)
+            encryptedRegionCnt = 1
+            otpmkEncryptedRegionStart[0] = rundef.kBootDeviceMemBase_FlexspiNor + gendef.kIvtOffset_NOR
+            otpmkEncryptedRegionLength[0] = os.path.getsize(self.destAppFilename) - gendef.kIvtOffset_NOR
+        else:
+            pass
+        status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_LoadPrdbOpt, 0x4, otpmkKeyOpt)
+        self.printLog(cmdStr)
+        if status != boot.status.kStatus_Success:
+            return False
+        for i in range(encryptedRegionCnt):
+            status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_LoadPrdbOpt + i * 8 + 4, 0x4, otpmkEncryptedRegionStart[i])
+            self.printLog(cmdStr)
+            if status != boot.status.kStatus_Success:
+                return False
+            status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_LoadPrdbOpt + i * 8 + 8, 0x4, otpmkEncryptedRegionLength[i])
+            self.printLog(cmdStr)
+            if status != boot.status.kStatus_Success:
+                return False
+        status, results, cmdStr = self.blhost.configureMemory(self.bootDeviceMemId, rundef.kRamFreeSpaceStart_LoadPrdbOpt)
+        self.printLog(cmdStr)
+        if status != boot.status.kStatus_Success:
+            return False
+        self._programFlexspiNorConfigBlock()
 
     def _isDeviceFuseSrkRegionBlank( self ):
         keyWords = gendef.kSecKeyLengthInBits_SRK / 32
@@ -387,18 +452,14 @@ class secBootRun(gencore.secBootGen):
                 if status != boot.status.kStatus_Success:
                     return False
         elif self.bootDevice == uidef.kBootDevice_FlexspiNor:
-            memEraseLen = misc.align_up(imageLen, self.flexspiNorSectorSize) - misc.align_up(infodef.kFlexspiNorCfgInfo_Length, self.flexspiNorSectorSize)
+            if not self.isFlexspiNorErasedForImage:
+                self._eraseFlexspiNorForImageLoading()
             imageLoadAddr = self.bootDeviceMemBase + infodef.kFlexspiNorCfgInfo_Length
-            if memEraseLen:
-                alignedMemEraseAddr = misc.align_up(imageLoadAddr, self.flexspiNorSectorSize)
-                status, results, cmdStr = self.blhost.flashEraseRegion(alignedMemEraseAddr, memEraseLen, self.bootDeviceMemId)
-                self.printLog(cmdStr)
-                if status != boot.status.kStatus_Success:
-                    return False
             status, results, cmdStr = self.blhost.writeMemory(imageLoadAddr, self.destAppNoPaddingFilename, self.bootDeviceMemId)
             self.printLog(cmdStr)
             if status != boot.status.kStatus_Success:
                 return False
+            self.isFlexspiNorErasedForImage = False
         else:
             pass
 
@@ -469,7 +530,7 @@ class secBootRun(gencore.secBootGen):
                 needToBeErasedSize = misc.align_up(self.dekDataOffset + rundef.kKeyBlobMaxSize, eraseUnit)
                 if alignedErasedSize < needToBeErasedSize:
                     memEraseLen = needToBeErasedSize - alignedErasedSize
-                    alignedMemEraseAddr = misc.align_up(imageLoadAddr, eraseUnit)
+                    alignedMemEraseAddr = imageLoadAddr + alignedErasedSize
                     status, results, cmdStr = self.blhost.flashEraseRegion(alignedMemEraseAddr, memEraseLen, self.bootDeviceMemId)
                     self.printLog(cmdStr)
                     if status != boot.status.kStatus_Success:

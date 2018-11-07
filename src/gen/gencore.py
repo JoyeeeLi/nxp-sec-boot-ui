@@ -219,6 +219,11 @@ class secBootGen(infomgr.secBootInfo):
             flags = gendef.kBootImageTypeFlag_Signed
         elif self.secureBootType == uidef.kSecureBootType_HabCrypto:
             flags = gendef.kBootImageTypeFlag_Encrypted
+        elif self.secureBootType == uidef.kSecureBootType_BeeCrypto:
+            if self.isCertEnabledForBee:
+                flags = gendef.kBootImageTypeFlag_Signed
+            else:
+                flags = gendef.kBootImageTypeFlag_Unsigned
         else:
             pass
         bdContent += "    flags = " + flags + ";\n"
@@ -256,10 +261,13 @@ class secBootGen(infomgr.secBootInfo):
         bdContent += "    elfFile = extern(0);\n"
         bdContent += "}\n"
         ############################################################################
-        if self.secureBootType == uidef.kSecureBootType_Development:
+        if self.secureBootType == uidef.kSecureBootType_Development or \
+           (self.secureBootType == uidef.kSecureBootType_BeeCrypto and (not self.isCertEnabledForBee)):
             bdContent += "\nsection (0) {\n"
             bdContent += "}\n"
-        elif self.secureBootType == uidef.kSecureBootType_HabAuth or self.secureBootType == uidef.kSecureBootType_HabCrypto:
+        elif self.secureBootType == uidef.kSecureBootType_HabAuth or \
+             self.secureBootType == uidef.kSecureBootType_HabCrypto or \
+             (self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.isCertEnabledForBee):
             ########################################################################
             bdContent += "\nconstants {\n"
             bdContent += "    SEC_CSF_HEADER              = 20;\n"
@@ -279,7 +287,8 @@ class secBootGen(infomgr.secBootInfo):
             bdContent += "}\n"
             ########################################################################
             bdContent += "\nsection (SEC_CSF_HEADER;\n"
-            if self.secureBootType == uidef.kSecureBootType_HabAuth:
+            if self.secureBootType == uidef.kSecureBootType_HabAuth or \
+               (self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.isCertEnabledForBee):
                 headerVersion = gendef.kBootImageCsfHeaderVersion_Signed
             elif self.secureBootType == uidef.kSecureBootType_HabCrypto:
                 headerVersion = gendef.kBootImageCsfHeaderVersion_Encrypted
@@ -326,7 +335,8 @@ class secBootGen(infomgr.secBootInfo):
             bdContent += "{\n"
             bdContent += "}\n"
             ########################################################################
-            if self.secureBootType == uidef.kSecureBootType_HabAuth:
+            if self.secureBootType == uidef.kSecureBootType_HabAuth or \
+               (self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.isCertEnabledForBee):
                 bdContent += "\nsection (SEC_SET_ENGINE;\n"
                 bdContent += "    SetEngine_HashAlgorithm = \"sha256\",\n"
                 bdContent += "    SetEngine_Engine = \"DCP\",\n"
@@ -369,7 +379,9 @@ class secBootGen(infomgr.secBootInfo):
         return True
 
     def _isCertificateGenerated( self ):
-        if self.secureBootType == uidef.kSecureBootType_HabAuth or self.secureBootType == uidef.kSecureBootType_HabCrypto:
+        if self.secureBootType == uidef.kSecureBootType_HabAuth or \
+           self.secureBootType == uidef.kSecureBootType_HabCrypto or \
+           (self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.isCertEnabledForBee):
             if ((self.srkTableFilename != None) and \
                 (self.srkFuseFilename != None) and \
                 (self.crtSrkCaPemFileList[0] != None) and \
@@ -382,7 +394,8 @@ class secBootGen(infomgr.secBootInfo):
                          os.path.isfile(self.crtImgUsrPemFileList[0]))
             else:
                 return False
-        elif self.secureBootType == uidef.kSecureBootType_Development:
+        elif self.secureBootType == uidef.kSecureBootType_Development or \
+             (self.secureBootType == uidef.kSecureBootType_BeeCrypto and (not self.isCertEnabledForBee)):
             return True
         else:
             pass
