@@ -34,8 +34,8 @@ class secBootUi(secBootWin.secBootWin):
         self.usbhidVid = None
         self.usbhidPid = None
         self._initPortSetupValue()
-        self.isConnectSpeedMode = None
-        self.getConnectSpeedMode()
+        self.isOneStepConnectMode = None
+        self.getOneStepConnectMode()
 
         self.secureBootType = None
         self.keyStorageRegion = None
@@ -130,8 +130,8 @@ class secBootUi(secBootWin.secBootWin):
         else:
             pass
 
-    def getConnectSpeedMode( self ):
-        self.isConnectSpeedMode = self.m_checkBox_connectSpeedMode.GetValue()
+    def getOneStepConnectMode( self ):
+        self.isOneStepConnectMode = self.m_checkBox_oneStepConnect.GetValue()
 
     def _initSecureBootSeqColor ( self ):
         self.secureBootType = self.m_choice_secureBootType.GetString(self.m_choice_secureBootType.GetSelection())

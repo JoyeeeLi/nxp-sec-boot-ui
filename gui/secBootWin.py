@@ -17,7 +17,7 @@ import wx.xrc
 class secBootWin ( wx.Frame ):
 
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"nxpSecBoot", pos = wx.DefaultPosition, size = wx.Size( 930,730 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"nxpSecBoot", pos = wx.DefaultPosition, size = wx.Size( 960,730 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 
 		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 		self.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
@@ -35,7 +35,7 @@ class secBootWin ( wx.Frame ):
 
 		wSizer_logo = wx.WrapSizer( wx.HORIZONTAL, wx.WRAPSIZER_DEFAULT_FLAGS )
 
-		self.m_staticText_null1Logo = wx.StaticText( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 800,-1 ), 0 )
+		self.m_staticText_null1Logo = wx.StaticText( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 830,-1 ), 0 )
 		self.m_staticText_null1Logo.Wrap( -1 )
 
 		wSizer_logo.Add( self.m_staticText_null1Logo, 0, wx.ALL, 5 )
@@ -56,42 +56,42 @@ class secBootWin ( wx.Frame ):
 
 		wSizer_targetSetup = wx.WrapSizer( wx.HORIZONTAL, wx.WRAPSIZER_DEFAULT_FLAGS )
 
-		self.m_staticText_mcuSeries = wx.StaticText( self.m_panel_targetSetup, wx.ID_ANY, u"MCU Series:", wx.DefaultPosition, wx.Size( 80,-1 ), 0 )
+		self.m_staticText_mcuSeries = wx.StaticText( self.m_panel_targetSetup, wx.ID_ANY, u"MCU Series:", wx.DefaultPosition, wx.Size( 95,-1 ), 0 )
 		self.m_staticText_mcuSeries.Wrap( -1 )
 
 		wSizer_targetSetup.Add( self.m_staticText_mcuSeries, 0, wx.ALL, 5 )
 
 		m_choice_mcuSeriesChoices = [ u"i.MXRT", u"LPC", u"Kinetis" ]
-		self.m_choice_mcuSeries = wx.Choice( self.m_panel_targetSetup, wx.ID_ANY, wx.DefaultPosition, wx.Size( 135,-1 ), m_choice_mcuSeriesChoices, 0 )
+		self.m_choice_mcuSeries = wx.Choice( self.m_panel_targetSetup, wx.ID_ANY, wx.DefaultPosition, wx.Size( 150,-1 ), m_choice_mcuSeriesChoices, 0 )
 		self.m_choice_mcuSeries.SetSelection( 0 )
 		wSizer_targetSetup.Add( self.m_choice_mcuSeries, 0, wx.ALL, 5 )
 
-		self.m_staticText_mcuDevice = wx.StaticText( self.m_panel_targetSetup, wx.ID_ANY, u"MCU Device:", wx.DefaultPosition, wx.Size( 80,-1 ), 0 )
+		self.m_staticText_mcuDevice = wx.StaticText( self.m_panel_targetSetup, wx.ID_ANY, u"MCU Device:", wx.DefaultPosition, wx.Size( 95,-1 ), 0 )
 		self.m_staticText_mcuDevice.Wrap( -1 )
 
 		wSizer_targetSetup.Add( self.m_staticText_mcuDevice, 0, wx.ALL, 5 )
 
 		m_choice_mcuDeviceChoices = [ u"i.MXRT105x", u"i.MXRT106x", u"i.MXRT102x" ]
-		self.m_choice_mcuDevice = wx.Choice( self.m_panel_targetSetup, wx.ID_ANY, wx.DefaultPosition, wx.Size( 135,-1 ), m_choice_mcuDeviceChoices, 0 )
+		self.m_choice_mcuDevice = wx.Choice( self.m_panel_targetSetup, wx.ID_ANY, wx.DefaultPosition, wx.Size( 150,-1 ), m_choice_mcuDeviceChoices, 0 )
 		self.m_choice_mcuDevice.SetSelection( 0 )
 		wSizer_targetSetup.Add( self.m_choice_mcuDevice, 0, wx.ALL, 5 )
 
-		self.m_staticText_bootDevice = wx.StaticText( self.m_panel_targetSetup, wx.ID_ANY, u"Boot Device:", wx.DefaultPosition, wx.Size( 80,-1 ), 0 )
+		self.m_staticText_bootDevice = wx.StaticText( self.m_panel_targetSetup, wx.ID_ANY, u"Boot Device:", wx.DefaultPosition, wx.Size( 95,-1 ), 0 )
 		self.m_staticText_bootDevice.Wrap( -1 )
 
 		wSizer_targetSetup.Add( self.m_staticText_bootDevice, 0, wx.ALL, 5 )
 
 		m_choice_bootDeviceChoices = [ u"FLEXSPI NOR", u"FLEXSPI NAND", u"SEMC NOR", u"SEMC NAND", u"uSDHC SD", u"uSDHC MMC/eMMC", u"LPSPI NOR,EEPROM" ]
-		self.m_choice_bootDevice = wx.Choice( self.m_panel_targetSetup, wx.ID_ANY, wx.DefaultPosition, wx.Size( 135,-1 ), m_choice_bootDeviceChoices, 0 )
+		self.m_choice_bootDevice = wx.Choice( self.m_panel_targetSetup, wx.ID_ANY, wx.DefaultPosition, wx.Size( 150,-1 ), m_choice_bootDeviceChoices, 0 )
 		self.m_choice_bootDevice.SetSelection( 0 )
 		wSizer_targetSetup.Add( self.m_choice_bootDevice, 0, wx.ALL, 5 )
 
-		self.m_staticText_null1TargetSetup = wx.StaticText( self.m_panel_targetSetup, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 226,5 ), 0 )
+		self.m_staticText_null1TargetSetup = wx.StaticText( self.m_panel_targetSetup, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 256,5 ), 0 )
 		self.m_staticText_null1TargetSetup.Wrap( -1 )
 
 		wSizer_targetSetup.Add( self.m_staticText_null1TargetSetup, 0, wx.ALL, 5 )
 
-		self.m_staticText_null2TargetSetup = wx.StaticText( self.m_panel_targetSetup, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 15,-1 ), 0 )
+		self.m_staticText_null2TargetSetup = wx.StaticText( self.m_panel_targetSetup, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 30,-1 ), 0 )
 		self.m_staticText_null2TargetSetup.Wrap( -1 )
 
 		wSizer_targetSetup.Add( self.m_staticText_null2TargetSetup, 0, wx.ALL, 5 )
@@ -111,7 +111,7 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_portSetup = wx.Panel( self.m_notebook_portSetup, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		wSizer_portSetup = wx.WrapSizer( wx.HORIZONTAL, wx.WRAPSIZER_DEFAULT_FLAGS )
 
-		self.m_staticText_null1PortSetup = wx.StaticText( self.m_panel_portSetup, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 35,-1 ), 0 )
+		self.m_staticText_null1PortSetup = wx.StaticText( self.m_panel_portSetup, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 50,-1 ), 0 )
 		self.m_staticText_null1PortSetup.Wrap( -1 )
 
 		wSizer_portSetup.Add( self.m_staticText_null1PortSetup, 0, wx.ALL, 5 )
@@ -122,39 +122,54 @@ class secBootWin ( wx.Frame ):
 		self.m_radioBtn_usbhid = wx.RadioButton( self.m_panel_portSetup, wx.ID_ANY, u"USB-HID", wx.DefaultPosition, wx.Size( 70,-1 ), 0 )
 		wSizer_portSetup.Add( self.m_radioBtn_usbhid, 0, wx.ALL, 5 )
 
-		self.m_staticText_portVid = wx.StaticText( self.m_panel_portSetup, wx.ID_ANY, u"COM Port:", wx.DefaultPosition, wx.Size( 60,-1 ), 0 )
+		self.m_staticText_portVid = wx.StaticText( self.m_panel_portSetup, wx.ID_ANY, u"COM Port:", wx.DefaultPosition, wx.Size( 95,-1 ), 0 )
 		self.m_staticText_portVid.Wrap( -1 )
 
 		wSizer_portSetup.Add( self.m_staticText_portVid, 0, wx.ALL, 5 )
 
 		m_choice_portVidChoices = []
-		self.m_choice_portVid = wx.Choice( self.m_panel_portSetup, wx.ID_ANY, wx.DefaultPosition, wx.Size( 155,-1 ), m_choice_portVidChoices, 0 )
+		self.m_choice_portVid = wx.Choice( self.m_panel_portSetup, wx.ID_ANY, wx.DefaultPosition, wx.Size( 150,-1 ), m_choice_portVidChoices, 0 )
 		self.m_choice_portVid.SetSelection( 0 )
 		wSizer_portSetup.Add( self.m_choice_portVid, 0, wx.ALL, 5 )
 
-		self.m_staticText_baudPid = wx.StaticText( self.m_panel_portSetup, wx.ID_ANY, u"Baudrate:", wx.DefaultPosition, wx.Size( 60,-1 ), 0 )
+		self.m_staticText_baudPid = wx.StaticText( self.m_panel_portSetup, wx.ID_ANY, u"Baudrate:", wx.DefaultPosition, wx.Size( 95,-1 ), 0 )
 		self.m_staticText_baudPid.Wrap( -1 )
 
 		wSizer_portSetup.Add( self.m_staticText_baudPid, 0, wx.ALL, 5 )
 
 		m_choice_baudPidChoices = []
-		self.m_choice_baudPid = wx.Choice( self.m_panel_portSetup, wx.ID_ANY, wx.DefaultPosition, wx.Size( 155,-1 ), m_choice_baudPidChoices, 0 )
+		self.m_choice_baudPid = wx.Choice( self.m_panel_portSetup, wx.ID_ANY, wx.DefaultPosition, wx.Size( 150,-1 ), m_choice_baudPidChoices, 0 )
 		self.m_choice_baudPid.SetSelection( 0 )
 		wSizer_portSetup.Add( self.m_choice_baudPid, 0, wx.ALL, 5 )
 
-		self.m_staticText_null2PortSetup = wx.StaticText( self.m_panel_portSetup, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 226,5 ), 0 )
+		self.m_staticText_null2PortSetup = wx.StaticText( self.m_panel_portSetup, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 256,5 ), 0 )
 		self.m_staticText_null2PortSetup.Wrap( -1 )
 
 		wSizer_portSetup.Add( self.m_staticText_null2PortSetup, 0, wx.ALL, 5 )
 
+		self.m_staticText_null3PortSetup = wx.StaticText( self.m_panel_portSetup, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 45,-1 ), 0 )
+		self.m_staticText_null3PortSetup.Wrap( -1 )
+
+		wSizer_portSetup.Add( self.m_staticText_null3PortSetup, 0, wx.ALL, 5 )
+
 		self.m_bitmap_connectLed = wx.StaticBitmap( self.m_panel_portSetup, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.Size( 30,30 ), 0 )
 		wSizer_portSetup.Add( self.m_bitmap_connectLed, 0, wx.ALL, 5 )
 
-		self.m_button_connect = wx.Button( self.m_panel_portSetup, wx.ID_ANY, u"Connect to ROM", wx.DefaultPosition, wx.Size( 140,-1 ), 0 )
-		wSizer_portSetup.Add( self.m_button_connect, 0, wx.ALL, 5 )
+		self.m_staticText_null4PortSetup = wx.StaticText( self.m_panel_portSetup, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 30,-1 ), 0 )
+		self.m_staticText_null4PortSetup.Wrap( -1 )
 
-		self.m_checkBox_connectSpeedMode = wx.CheckBox( self.m_panel_portSetup, wx.ID_ANY, u"S", wx.DefaultPosition, wx.Size( -1,30 ), 0 )
-		wSizer_portSetup.Add( self.m_checkBox_connectSpeedMode, 0, wx.ALL, 5 )
+		wSizer_portSetup.Add( self.m_staticText_null4PortSetup, 0, wx.ALL, 5 )
+
+		self.m_checkBox_oneStepConnect = wx.CheckBox( self.m_panel_portSetup, wx.ID_ANY, u"One Step", wx.DefaultPosition, wx.Size( -1,30 ), 0 )
+		wSizer_portSetup.Add( self.m_checkBox_oneStepConnect, 0, wx.ALL, 5 )
+
+		self.m_staticText_null5PortSetup = wx.StaticText( self.m_panel_portSetup, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 45,-1 ), 0 )
+		self.m_staticText_null5PortSetup.Wrap( -1 )
+
+		wSizer_portSetup.Add( self.m_staticText_null5PortSetup, 0, wx.ALL, 5 )
+
+		self.m_button_connect = wx.Button( self.m_panel_portSetup, wx.ID_ANY, u"Connect to ROM", wx.DefaultPosition, wx.Size( 150,-1 ), 0 )
+		wSizer_portSetup.Add( self.m_button_connect, 0, wx.ALL, 5 )
 
 
 		self.m_panel_portSetup.SetSizer( wSizer_portSetup )
@@ -168,7 +183,7 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_deviceStatus = wx.Panel( self.m_notebook_deviceStatus, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer_deviceStatus = wx.BoxSizer( wx.VERTICAL )
 
-		self.m_textCtrl_deviceStatus = wx.TextCtrl( self.m_panel_deviceStatus, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 220,180 ), wx.TE_MULTILINE )
+		self.m_textCtrl_deviceStatus = wx.TextCtrl( self.m_panel_deviceStatus, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 250,140 ), wx.TE_MULTILINE )
 		bSizer_deviceStatus.Add( self.m_textCtrl_deviceStatus, 0, wx.ALL, 5 )
 
 
@@ -360,15 +375,15 @@ class secBootWin ( wx.Frame ):
 		bSizer_prepBee.Add( self.m_panel_prepBee1_beeKeyRegion, 1, wx.EXPAND |wx.ALL, 5 )
 
 		self.m_panel_prepBee2_beeKeyInout = wx.Panel( self.m_panel_prepBee, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		sbSizer_beeKeyInput = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_prepBee2_beeKeyInout, wx.ID_ANY, u"DEK (128bits) To Encrypte:" ), wx.VERTICAL )
+		sbSizer_beeKeyInout = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_prepBee2_beeKeyInout, wx.ID_ANY, u"DEK (128bits) To Encrypte:" ), wx.VERTICAL )
 
-		self.m_textCtrl_beeKeyInput = wx.TextCtrl( sbSizer_beeKeyInput.GetStaticBox(), wx.ID_ANY, u"0123456789abcdef\nfedcba987654321", wx.DefaultPosition, wx.Size( 145,40 ), wx.TE_MULTILINE )
-		sbSizer_beeKeyInput.Add( self.m_textCtrl_beeKeyInput, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
+		self.m_textCtrl_beeKeyInout = wx.TextCtrl( sbSizer_beeKeyInout.GetStaticBox(), wx.ID_ANY, u"0123456789abcdef\nfedcba987654321", wx.DefaultPosition, wx.Size( 145,40 ), wx.TE_MULTILINE )
+		sbSizer_beeKeyInout.Add( self.m_textCtrl_beeKeyInout, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
 
-		self.m_panel_prepBee2_beeKeyInout.SetSizer( sbSizer_beeKeyInput )
+		self.m_panel_prepBee2_beeKeyInout.SetSizer( sbSizer_beeKeyInout )
 		self.m_panel_prepBee2_beeKeyInout.Layout()
-		sbSizer_beeKeyInput.Fit( self.m_panel_prepBee2_beeKeyInout )
+		sbSizer_beeKeyInout.Fit( self.m_panel_prepBee2_beeKeyInout )
 		bSizer_prepBee.Add( self.m_panel_prepBee2_beeKeyInout, 1, wx.EXPAND |wx.ALL, 5 )
 
 		self.m_panel_prepBee3_advKeySettings = wx.Panel( self.m_panel_prepBee, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )

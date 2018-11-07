@@ -50,8 +50,8 @@ class secBootMain(runcore.secBootRun):
     def callbackConnectToDevice( self, event ):
         self.printLog("'Connect to xxx' button is clicked")
         connectSteps = uidef.kConnectStep_Normal
-        self.getConnectSpeedMode()
-        if self.isConnectSpeedMode and self.connectStage != uidef.kConnectStage_Reset:
+        self.getOneStepConnectMode()
+        if self.isOneStepConnectMode and self.connectStage != uidef.kConnectStage_Reset:
             connectSteps = uidef.kConnectStep_Fast
         while connectSteps:
             self.updatePortSetupValue()
