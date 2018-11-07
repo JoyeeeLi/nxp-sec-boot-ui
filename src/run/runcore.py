@@ -349,17 +349,17 @@ class secBootRun(gencore.secBootGen):
         return True
 
     def _showOtpmkDek( self ):
-        otpmk0 = self._readDeviceFuseByBlhost(infodef.kEfuseAddr_OTPMK0, 'Fuse->OTPMK0 (0x500)')
-        otpmk1 = self._readDeviceFuseByBlhost(infodef.kEfuseAddr_OTPMK1, 'Fuse->OTPMK1 (0x510)')
-        otpmk2 = self._readDeviceFuseByBlhost(infodef.kEfuseAddr_OTPMK2, 'Fuse->OTPMK2 (0x520)')
-        otpmk3 = self._readDeviceFuseByBlhost(infodef.kEfuseAddr_OTPMK3, 'Fuse->OTPMK3 (0x530)')
-        if otpmk0 != None and otpmk1 != None and otpmk2 != None and otpmk3 != None:
+        otpmk4 = self._readDeviceFuseByBlhost(infodef.kEfuseAddr_OTPMK4, 'Fuse->OTPMK4 (0x540)')
+        otpmk5 = self._readDeviceFuseByBlhost(infodef.kEfuseAddr_OTPMK5, 'Fuse->OTPMK5 (0x550)')
+        otpmk6 = self._readDeviceFuseByBlhost(infodef.kEfuseAddr_OTPMK6, 'Fuse->OTPMK6 (0x560)')
+        otpmk7 = self._readDeviceFuseByBlhost(infodef.kEfuseAddr_OTPMK7, 'Fuse->OTPMK7 (0x570)')
+        if otpmk4 != None and otpmk5 != None and otpmk6 != None and otpmk7 != None:
             self.clearBeeDekData()
-            self.printBeeDekData(self.getFormattedFuseValue(otpmk0, 'MSB'))
-            self.printBeeDekData(self.getFormattedFuseValue(otpmk1, 'MSB'))
+            self.printBeeDekData(self.getFormattedFuseValue(otpmk4, 'MSB'))
+            self.printBeeDekData(self.getFormattedFuseValue(otpmk5, 'MSB'))
             self.printBeeDekData("\n")
-            self.printBeeDekData(self.getFormattedFuseValue(otpmk2, 'MSB'))
-            self.printBeeDekData(self.getFormattedFuseValue(otpmk3, 'MSB'))
+            self.printBeeDekData(self.getFormattedFuseValue(otpmk6, 'MSB'))
+            self.printBeeDekData(self.getFormattedFuseValue(otpmk7, 'MSB'))
 
     def _eraseFlexspiNorForImageLoading( self ):
         imageLen = os.path.getsize(self.destAppFilename)

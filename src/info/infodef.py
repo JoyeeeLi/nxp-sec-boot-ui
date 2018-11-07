@@ -14,6 +14,10 @@ kEfuseAddr_OTPMK0 = 0x10
 kEfuseAddr_OTPMK1 = 0x11
 kEfuseAddr_OTPMK2 = 0x12
 kEfuseAddr_OTPMK3 = 0x13
+kEfuseAddr_OTPMK4 = 0x14
+kEfuseAddr_OTPMK5 = 0x15
+kEfuseAddr_OTPMK6 = 0x16
+kEfuseAddr_OTPMK7 = 0x17
 
 kEfuseAddr_SRK0 = 0x18
 kEfuseAddr_SRK1 = 0x19

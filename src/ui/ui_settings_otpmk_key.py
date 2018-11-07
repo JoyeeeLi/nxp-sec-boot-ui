@@ -30,12 +30,6 @@ class secBootUiSettingsOtpmkKey(advSettingsWin_OtpmkKey.advSettingsWin_OtpmkKey)
         else:
             self.m_textCtrl_region1Start.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
             self.m_textCtrl_region1Length.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
-        if regionCnt < 3:
-            self.m_textCtrl_region2Start.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
-            self.m_textCtrl_region2Length.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
-        else:
-            self.m_textCtrl_region2Start.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
-            self.m_textCtrl_region2Length.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
         self.Refresh()
 
     def _recoverLastSettings ( self ):
@@ -60,15 +54,10 @@ class secBootUiSettingsOtpmkKey(advSettingsWin_OtpmkKey.advSettingsWin_OtpmkKey)
             self.m_textCtrl_region1Length.Clear()
             self.m_textCtrl_region1Start.write(str(hex(self.otpmkEncryptedRegionStart[1])))
             self.m_textCtrl_region1Length.write(str(hex(self.otpmkEncryptedRegionLength[1])))
-        if encryptedRegionCnt > 2:
-            self.m_textCtrl_region2Start.Clear()
-            self.m_textCtrl_region2Length.Clear()
-            self.m_textCtrl_region2Start.write(str(hex(self.otpmkEncryptedRegionStart[2])))
-            self.m_textCtrl_region2Length.write(str(hex(self.otpmkEncryptedRegionLength[2])))
 
     def _getKeySource( self ):
         txt = self.m_choice_keySource.GetString(self.m_choice_keySource.GetSelection())
-        if txt == 'Fuse OTPMK[127:0]':
+        if txt == 'Fuse OTPMK[255:128]':
             val = 0x0
         else:
             pass
@@ -76,7 +65,9 @@ class secBootUiSettingsOtpmkKey(advSettingsWin_OtpmkKey.advSettingsWin_OtpmkKey)
 
     def _getAesMode( self ):
         txt = self.m_choice_aesMode.GetString(self.m_choice_aesMode.GetSelection())
-        if txt == 'CTR':
+        if txt == 'ECB':
+            val = 0x0
+        elif txt == 'CTR':
             val = 0x1
         else:
             pass
@@ -108,12 +99,6 @@ class secBootUiSettingsOtpmkKey(advSettingsWin_OtpmkKey.advSettingsWin_OtpmkKey)
         else:
             self.otpmkEncryptedRegionStart[1] = None
             self.otpmkEncryptedRegionLength[1] = None
-        if regionCnt > 2:
-            self.otpmkEncryptedRegionStart[2] = self._convertRegionInfoToVal32(self.m_textCtrl_region2Start.GetLineText(0))
-            self.otpmkEncryptedRegionLength[2] = self._convertRegionInfoToVal32(self.m_textCtrl_region2Length.GetLineText(0))
-        else:
-            self.otpmkEncryptedRegionStart[2] = None
-            self.otpmkEncryptedRegionLength[2] = None
 
     def callbackChangeRegionCount( self, event ):
         txt = self.m_choice_encryptedRegionCnt.GetString(self.m_choice_encryptedRegionCnt.GetSelection())

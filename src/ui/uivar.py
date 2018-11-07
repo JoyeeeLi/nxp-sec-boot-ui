@@ -47,8 +47,8 @@ def initVar():
     global g_otpmkEncryptedRegionStart
     global g_otpmkEncryptedRegionLength
     g_otpmkKeyOpt = 0xe0100000
-    g_otpmkEncryptedRegionStart = [None] * 3
-    g_otpmkEncryptedRegionLength = [None] * 3
+    g_otpmkEncryptedRegionStart = [None] * 2
+    g_otpmkEncryptedRegionLength = [None] * 2
 
 def getBootDeviceConfiguration( group ):
     if group == uidef.kBootDevice_SemcNand:
