@@ -40,7 +40,7 @@ class secBootUiSettingsFixedOtpmkKey(advSettingsWin_FixedOtpmkKey.advSettingsWin
         self.m_choice_aesMode.SetSelection(aesMode)
 
         encryptedRegionCnt = (self.otpmkKeyOpt & 0x000F0000) >> 16
-        self.m_choice_encryptedRegionCnt.SetSelection(encryptedRegionCnt)
+        self.m_choice_regionCnt.SetSelection(encryptedRegionCnt)
 
         self._updateRegionInfoField(encryptedRegionCnt)
 
@@ -74,7 +74,7 @@ class secBootUiSettingsFixedOtpmkKey(advSettingsWin_FixedOtpmkKey.advSettingsWin
         self.otpmkKeyOpt = (self.otpmkKeyOpt & 0xFF0FFFFF) | (val << 20)
 
     def _getEncryptedRegionCount( self ):
-        txt = self.m_choice_encryptedRegionCnt.GetString(self.m_choice_encryptedRegionCnt.GetSelection())
+        txt = self.m_choice_regionCnt.GetString(self.m_choice_regionCnt.GetSelection())
         val = int(txt[0])
         self.otpmkKeyOpt = (self.otpmkKeyOpt & 0xFFF0FFFF) | (val << 16)
 
@@ -85,7 +85,7 @@ class secBootUiSettingsFixedOtpmkKey(advSettingsWin_FixedOtpmkKey.advSettingsWin
             return None
 
     def _getEncryptedRegionInfo( self ):
-        txt = self.m_choice_encryptedRegionCnt.GetString(self.m_choice_encryptedRegionCnt.GetSelection())
+        txt = self.m_choice_regionCnt.GetString(self.m_choice_regionCnt.GetSelection())
         regionCnt = int(txt[0])
         if regionCnt > 0:
             self.otpmkEncryptedRegionStart[0] = self._convertRegionInfoToVal32(self.m_textCtrl_region0Start.GetLineText(0))
@@ -101,7 +101,7 @@ class secBootUiSettingsFixedOtpmkKey(advSettingsWin_FixedOtpmkKey.advSettingsWin
             self.otpmkEncryptedRegionLength[1] = None
 
     def callbackChangeRegionCount( self, event ):
-        txt = self.m_choice_encryptedRegionCnt.GetString(self.m_choice_encryptedRegionCnt.GetSelection())
+        txt = self.m_choice_regionCnt.GetString(self.m_choice_regionCnt.GetSelection())
         regionCnt = int(txt[0])
         self._updateRegionInfoField(regionCnt)
 

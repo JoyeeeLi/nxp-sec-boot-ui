@@ -17,7 +17,7 @@ import wx.xrc
 class advSettingsWin_FixedOtpmkKey ( wx.Frame ):
 
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 619,214 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 619,250 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 
 		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 		self.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
@@ -48,15 +48,15 @@ class advSettingsWin_FixedOtpmkKey ( wx.Frame ):
 		self.m_choice_aesMode.SetSelection( 1 )
 		gSizer_encryptionOpt.Add( self.m_choice_aesMode, 0, wx.ALL, 5 )
 
-		self.m_staticText_encryptedRegionCnt = wx.StaticText( self.m_panel_encryptionOpt, wx.ID_ANY, u"Encrypted Region Count:", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText_encryptedRegionCnt.Wrap( -1 )
+		self.m_staticText_regionCnt = wx.StaticText( self.m_panel_encryptionOpt, wx.ID_ANY, u"Region Count:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_regionCnt.Wrap( -1 )
 
-		gSizer_encryptionOpt.Add( self.m_staticText_encryptedRegionCnt, 0, wx.ALL, 5 )
+		gSizer_encryptionOpt.Add( self.m_staticText_regionCnt, 0, wx.ALL, 5 )
 
-		m_choice_encryptedRegionCntChoices = [ u"0 - Whole Image", u"1 - User Defined", u"2 - User Defined" ]
-		self.m_choice_encryptedRegionCnt = wx.Choice( self.m_panel_encryptionOpt, wx.ID_ANY, wx.DefaultPosition, wx.Size( 150,-1 ), m_choice_encryptedRegionCntChoices, 0 )
-		self.m_choice_encryptedRegionCnt.SetSelection( 0 )
-		gSizer_encryptionOpt.Add( self.m_choice_encryptedRegionCnt, 0, wx.ALL, 5 )
+		m_choice_regionCntChoices = [ u"0 - Whole Image", u"1 - User Defined", u"2 - User Defined" ]
+		self.m_choice_regionCnt = wx.Choice( self.m_panel_encryptionOpt, wx.ID_ANY, wx.DefaultPosition, wx.Size( 150,-1 ), m_choice_regionCntChoices, 0 )
+		self.m_choice_regionCnt.SetSelection( 0 )
+		gSizer_encryptionOpt.Add( self.m_choice_regionCnt, 0, wx.ALL, 5 )
 
 
 		self.m_panel_encryptionOpt.SetSizer( gSizer_encryptionOpt )
@@ -66,39 +66,49 @@ class advSettingsWin_FixedOtpmkKey ( wx.Frame ):
 
 		wSizer_win.Add( self.m_notebook_encryptionOpt, 1, wx.EXPAND |wx.ALL, 5 )
 
-		self.m_notebook_encryptedRegionInfo = wx.Notebook( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_panel_encryptedRegionInfo = wx.Panel( self.m_notebook_encryptedRegionInfo, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		gSizer_encryptedRegionInfo = wx.GridSizer( 0, 2, 0, 0 )
+		self.m_notebook_regionInfo = wx.Notebook( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_panel_regionInfo = wx.Panel( self.m_notebook_regionInfo, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		gSizer_regionInfo = wx.GridSizer( 0, 2, 0, 0 )
 
-		self.m_staticText_regionStart = wx.StaticText( self.m_panel_encryptedRegionInfo, wx.ID_ANY, u"Region Start", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_regionStart = wx.StaticText( self.m_panel_regionInfo, wx.ID_ANY, u"Region Start", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText_regionStart.Wrap( -1 )
 
-		gSizer_encryptedRegionInfo.Add( self.m_staticText_regionStart, 0, wx.ALL, 5 )
+		gSizer_regionInfo.Add( self.m_staticText_regionStart, 0, wx.ALL, 5 )
 
-		self.m_staticText_regionLength = wx.StaticText( self.m_panel_encryptedRegionInfo, wx.ID_ANY, u"Region Length", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_regionLength = wx.StaticText( self.m_panel_regionInfo, wx.ID_ANY, u"Region Length", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText_regionLength.Wrap( -1 )
 
-		gSizer_encryptedRegionInfo.Add( self.m_staticText_regionLength, 0, wx.ALL, 5 )
+		gSizer_regionInfo.Add( self.m_staticText_regionLength, 0, wx.ALL, 5 )
 
-		self.m_textCtrl_region0Start = wx.TextCtrl( self.m_panel_encryptedRegionInfo, wx.ID_ANY, u"0x60001000", wx.DefaultPosition, wx.DefaultSize, 0 )
-		gSizer_encryptedRegionInfo.Add( self.m_textCtrl_region0Start, 0, wx.ALL, 5 )
+		self.m_staticText_regionStartEg = wx.StaticText( self.m_panel_regionInfo, wx.ID_ANY, u"eg. 0x60001000", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_regionStartEg.Wrap( -1 )
 
-		self.m_textCtrl_region0Length = wx.TextCtrl( self.m_panel_encryptedRegionInfo, wx.ID_ANY, u"0x1000", wx.DefaultPosition, wx.DefaultSize, 0 )
-		gSizer_encryptedRegionInfo.Add( self.m_textCtrl_region0Length, 0, wx.ALL, 5 )
+		gSizer_regionInfo.Add( self.m_staticText_regionStartEg, 0, wx.ALL, 5 )
 
-		self.m_textCtrl_region1Start = wx.TextCtrl( self.m_panel_encryptedRegionInfo, wx.ID_ANY, u"0x60002000", wx.DefaultPosition, wx.DefaultSize, 0 )
-		gSizer_encryptedRegionInfo.Add( self.m_textCtrl_region1Start, 0, wx.ALL, 5 )
+		self.m_staticText_regionLengthEg = wx.StaticText( self.m_panel_regionInfo, wx.ID_ANY, u"eg. 0x1000", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_regionLengthEg.Wrap( -1 )
 
-		self.m_textCtrl_region1Length = wx.TextCtrl( self.m_panel_encryptedRegionInfo, wx.ID_ANY, u"0xe000", wx.DefaultPosition, wx.DefaultSize, 0 )
-		gSizer_encryptedRegionInfo.Add( self.m_textCtrl_region1Length, 0, wx.ALL, 5 )
+		gSizer_regionInfo.Add( self.m_staticText_regionLengthEg, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_region0Start = wx.TextCtrl( self.m_panel_regionInfo, wx.ID_ANY, u"0x60001000", wx.DefaultPosition, wx.DefaultSize, 0 )
+		gSizer_regionInfo.Add( self.m_textCtrl_region0Start, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_region0Length = wx.TextCtrl( self.m_panel_regionInfo, wx.ID_ANY, u"0x1000", wx.DefaultPosition, wx.DefaultSize, 0 )
+		gSizer_regionInfo.Add( self.m_textCtrl_region0Length, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_region1Start = wx.TextCtrl( self.m_panel_regionInfo, wx.ID_ANY, u"0x60002000", wx.DefaultPosition, wx.DefaultSize, 0 )
+		gSizer_regionInfo.Add( self.m_textCtrl_region1Start, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_region1Length = wx.TextCtrl( self.m_panel_regionInfo, wx.ID_ANY, u"0xe000", wx.DefaultPosition, wx.DefaultSize, 0 )
+		gSizer_regionInfo.Add( self.m_textCtrl_region1Length, 0, wx.ALL, 5 )
 
 
-		self.m_panel_encryptedRegionInfo.SetSizer( gSizer_encryptedRegionInfo )
-		self.m_panel_encryptedRegionInfo.Layout()
-		gSizer_encryptedRegionInfo.Fit( self.m_panel_encryptedRegionInfo )
-		self.m_notebook_encryptedRegionInfo.AddPage( self.m_panel_encryptedRegionInfo, u"Encrypted Region Info", False )
+		self.m_panel_regionInfo.SetSizer( gSizer_regionInfo )
+		self.m_panel_regionInfo.Layout()
+		gSizer_regionInfo.Fit( self.m_panel_regionInfo )
+		self.m_notebook_regionInfo.AddPage( self.m_panel_regionInfo, u"Encrypted Region Info", False )
 
-		wSizer_win.Add( self.m_notebook_encryptedRegionInfo, 1, wx.EXPAND |wx.ALL, 5 )
+		wSizer_win.Add( self.m_notebook_regionInfo, 1, wx.EXPAND |wx.ALL, 5 )
 
 		self.m_staticText_winNull0 = wx.StaticText( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 348,-1 ), 0 )
 		self.m_staticText_winNull0.Wrap( -1 )
@@ -118,7 +128,7 @@ class advSettingsWin_FixedOtpmkKey ( wx.Frame ):
 		self.Centre( wx.BOTH )
 
 		# Connect Events
-		self.m_choice_encryptedRegionCnt.Bind( wx.EVT_CHOICE, self.callbackChangeRegionCount )
+		self.m_choice_regionCnt.Bind( wx.EVT_CHOICE, self.callbackChangeRegionCount )
 		self.m_button_ok.Bind( wx.EVT_BUTTON, self.callbackOk )
 		self.m_button_cancel.Bind( wx.EVT_BUTTON, self.callbackCancel )
 

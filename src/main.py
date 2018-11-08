@@ -9,6 +9,7 @@ from ui import ui_cfg_semcnand
 from ui import ui_cfg_flexspinor
 from ui import ui_settings_cert
 from ui import ui_settings_fixed_otpmk_key
+from ui import ui_settings_flexible_user_keys
 
 class secBootMain(runcore.secBootRun):
 
@@ -151,8 +152,12 @@ class secBootMain(runcore.secBootRun):
         if self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.bootDevice == uidef.kBootDevice_FlexspiNor:
             if self.keyStorageRegion == uidef.kKeyStorageRegion_FixedOtpmkKey:
                 otpmkKeySettingsFrame = ui_settings_fixed_otpmk_key.secBootUiSettingsFixedOtpmkKey(None)
-                otpmkKeySettingsFrame.SetTitle(u"Advanced Key Settings - OTPMK")
+                otpmkKeySettingsFrame.SetTitle(u"Advanced Key Settings - Fixed OTPMK")
                 otpmkKeySettingsFrame.Show(True)
+            elif self.keyStorageRegion == uidef.kKeyStorageRegion_FlexibleUserKeys:
+                userKeySettingsFrame = ui_settings_flexible_user_keys.secBootUiSettingsFlexibleUserKeys(None)
+                userKeySettingsFrame.SetTitle(u"Advanced Key Settings - Flexible User")
+                userKeySettingsFrame.Show(True)
             else:
                 pass
         else:
