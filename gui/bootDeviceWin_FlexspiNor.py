@@ -125,7 +125,7 @@ class bootDeviceWin_FlexspiNor ( wx.Frame ):
 		self.m_panel_norOpt1 = wx.Panel( self.m_notebook_norOpt1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		gSizer_norOpt1 = wx.GridSizer( 0, 2, 0, 0 )
 
-		self.m_staticText_flashConnection = wx.StaticText( self.m_panel_norOpt1, wx.ID_ANY, u"Flash Connection:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_flashConnection = wx.StaticText( self.m_panel_norOpt1, wx.ID_ANY, u"Flash Connection:", wx.DefaultPosition, wx.Size( 140,-1 ), 0 )
 		self.m_staticText_flashConnection.Wrap( -1 )
 
 		gSizer_norOpt1.Add( self.m_staticText_flashConnection, 0, wx.ALL, 5 )
@@ -135,7 +135,7 @@ class bootDeviceWin_FlexspiNor ( wx.Frame ):
 		self.m_choice_flashConnection.SetSelection( 0 )
 		gSizer_norOpt1.Add( self.m_choice_flashConnection, 0, wx.ALL, 5 )
 
-		self.m_staticText_driveStrength = wx.StaticText( self.m_panel_norOpt1, wx.ID_ANY, u"Drive Strength:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_driveStrength = wx.StaticText( self.m_panel_norOpt1, wx.ID_ANY, u"Drive Strength:", wx.DefaultPosition, wx.Size( 140,-1 ), 0 )
 		self.m_staticText_driveStrength.Wrap( -1 )
 
 		gSizer_norOpt1.Add( self.m_staticText_driveStrength, 0, wx.ALL, 5 )
@@ -143,7 +143,7 @@ class bootDeviceWin_FlexspiNor ( wx.Frame ):
 		self.m_textCtrl_driveStrength = wx.TextCtrl( self.m_panel_norOpt1, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 140,-1 ), 0 )
 		gSizer_norOpt1.Add( self.m_textCtrl_driveStrength, 0, wx.ALL, 5 )
 
-		self.m_staticText_dqsPinmuxGroup = wx.StaticText( self.m_panel_norOpt1, wx.ID_ANY, u"DQS Pinmux Group:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_dqsPinmuxGroup = wx.StaticText( self.m_panel_norOpt1, wx.ID_ANY, u"DQS Pinmux Group:", wx.DefaultPosition, wx.Size( 140,-1 ), 0 )
 		self.m_staticText_dqsPinmuxGroup.Wrap( -1 )
 
 		gSizer_norOpt1.Add( self.m_staticText_dqsPinmuxGroup, 0, wx.ALL, 5 )
@@ -156,17 +156,17 @@ class bootDeviceWin_FlexspiNor ( wx.Frame ):
 
 		gSizer_norOpt1.Add( self.m_choice_dqsPinmuxGroup, 0, wx.ALL, 5 )
 
-		self.m_staticText_pinmuxGroup = wx.StaticText( self.m_panel_norOpt1, wx.ID_ANY, u"Enable Second Pinmux:", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText_pinmuxGroup.Wrap( -1 )
+		self.m_staticText_enableSecondPinmux = wx.StaticText( self.m_panel_norOpt1, wx.ID_ANY, u"Enable Second Pinmux:", wx.DefaultPosition, wx.Size( 140,-1 ), 0 )
+		self.m_staticText_enableSecondPinmux.Wrap( -1 )
 
-		gSizer_norOpt1.Add( self.m_staticText_pinmuxGroup, 0, wx.ALL, 5 )
+		gSizer_norOpt1.Add( self.m_staticText_enableSecondPinmux, 0, wx.ALL, 5 )
 
 		m_choice_enableSecondPinmuxChoices = [ u"No", u"Yes" ]
 		self.m_choice_enableSecondPinmux = wx.Choice( self.m_panel_norOpt1, wx.ID_ANY, wx.DefaultPosition, wx.Size( 140,-1 ), m_choice_enableSecondPinmuxChoices, 0 )
 		self.m_choice_enableSecondPinmux.SetSelection( 0 )
 		gSizer_norOpt1.Add( self.m_choice_enableSecondPinmux, 0, wx.ALL, 5 )
 
-		self.m_staticText_statusOverride = wx.StaticText( self.m_panel_norOpt1, wx.ID_ANY, u"Status Override:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_statusOverride = wx.StaticText( self.m_panel_norOpt1, wx.ID_ANY, u"Status Override:", wx.DefaultPosition, wx.Size( 140,-1 ), 0 )
 		self.m_staticText_statusOverride.Wrap( -1 )
 
 		gSizer_norOpt1.Add( self.m_staticText_statusOverride, 0, wx.ALL, 5 )
@@ -176,7 +176,7 @@ class bootDeviceWin_FlexspiNor ( wx.Frame ):
 		self.m_choice_statusOverride.SetSelection( 0 )
 		gSizer_norOpt1.Add( self.m_choice_statusOverride, 0, wx.ALL, 5 )
 
-		self.m_staticText_dummyCycles = wx.StaticText( self.m_panel_norOpt1, wx.ID_ANY, u"Dummy Cycles:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_dummyCycles = wx.StaticText( self.m_panel_norOpt1, wx.ID_ANY, u"Dummy Cycles:", wx.DefaultPosition, wx.Size( 140,-1 ), 0 )
 		self.m_staticText_dummyCycles.Wrap( -1 )
 
 		gSizer_norOpt1.Add( self.m_staticText_dummyCycles, 0, wx.ALL, 5 )

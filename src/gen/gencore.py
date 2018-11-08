@@ -17,27 +17,27 @@ class secBootGen(infomgr.secBootInfo):
     def __init__(self, parent):
         infomgr.secBootInfo.__init__(self, parent)
 
-        self.serialFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'cert', 'serial')
-        self.keypassFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'cert', 'key_pass.txt')
+        self.serialFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'hab_cert', 'serial')
+        self.keypassFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'hab_cert', 'key_pass.txt')
         self.cstBinFolder = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', uidef.kCstVersion_Invalid, 'mingw32', 'bin')
         self.cstKeysFolder = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', uidef.kCstVersion_Invalid, 'keys')
         self.cstCrtsFolder = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', uidef.kCstVersion_Invalid, 'crts')
         self.hab4PkiTreePath = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', uidef.kCstVersion_Invalid, 'keys')
         self.hab4PkiTreeName = 'hab4_pki_tree.bat'
         self.srktoolPath = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'cst', uidef.kCstVersion_Invalid, 'mingw32', 'bin', 'srktool.exe')
-        self.srkFolder = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'cert')
+        self.srkFolder = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'hab_cert')
         self.srkTableFilename = None
         self.srkFuseFilename = None
         self.crtSrkCaPemFileList = [None] * 4
         self.crtCsfUsrPemFileList = [None] * 4
         self.crtImgUsrPemFileList = [None] * 4
-        self.srkBatFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'cert', 'imx_srk_gen.bat')
+        self.srkBatFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'hab_cert', 'imx_srk_gen.bat')
         self.cstBinToElftosbPath = '../../cst/' + uidef.kCstVersion_Invalid + '/mingw32/bin'
         self.cstCrtsToElftosbPath = '../../cst/' + uidef.kCstVersion_Invalid + '/crts/'
-        self.genCertToElftosbPath = '../../../gen/cert/'
-        self.genCryptoToElftosbPath = '../../../gen/crypto/'
+        self.genCertToElftosbPath = '../../../gen/hab_cert/'
+        self.genCryptoToElftosbPath = '../../../gen/hab_crypto/'
         self.lastCstVersion = uidef.kCstVersion_Invalid
-        self.dekFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'crypto', 'dek.bin')
+        self.dekFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'hab_crypto', 'dek.bin')
         self.dekDataOffset = None
         self.srcAppFilename = None
         self.destAppFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bootable_image', 'ivt_application.bin')

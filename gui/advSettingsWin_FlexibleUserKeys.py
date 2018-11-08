@@ -17,7 +17,7 @@ import wx.xrc
 class advSettingsWin_FlexibleUserKeys ( wx.Frame ):
 
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 493,649 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 493,684 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 
 		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 		self.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
@@ -57,6 +57,16 @@ class advSettingsWin_FlexibleUserKeys ( wx.Frame ):
 		self.m_choice_imageType = wx.Choice( self.m_panel_encryptionOpt, wx.ID_ANY, wx.DefaultPosition, wx.Size( 220,-1 ), m_choice_imageTypeChoices, 0 )
 		self.m_choice_imageType.SetSelection( 1 )
 		gSizer_encryptionOpt.Add( self.m_choice_imageType, 0, wx.ALL, 5 )
+
+		self.m_staticText_xipBaseAddr = wx.StaticText( self.m_panel_encryptionOpt, wx.ID_ANY, u"XIP Base Address:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText_xipBaseAddr.Wrap( -1 )
+
+		gSizer_encryptionOpt.Add( self.m_staticText_xipBaseAddr, 0, wx.ALL, 5 )
+
+		m_choice_xipBaseAddrChoices = [ u"0x60000000" ]
+		self.m_choice_xipBaseAddr = wx.Choice( self.m_panel_encryptionOpt, wx.ID_ANY, wx.DefaultPosition, wx.Size( 220,-1 ), m_choice_xipBaseAddrChoices, 0 )
+		self.m_choice_xipBaseAddr.SetSelection( 0 )
+		gSizer_encryptionOpt.Add( self.m_choice_xipBaseAddr, 0, wx.ALL, 5 )
 
 
 		self.m_panel_encryptionOpt.SetSizer( gSizer_encryptionOpt )

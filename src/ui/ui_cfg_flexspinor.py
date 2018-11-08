@@ -48,6 +48,13 @@ class secBootUiCfgFlexspiNor(bootDeviceWin_FlexspiNor.bootDeviceWin_FlexspiNor):
 
     def _updateOpt1Field ( self, isEnabled ):
         if isEnabled:
+            self.m_staticText_flashConnection.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+            self.m_staticText_driveStrength.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+            self.m_staticText_dqsPinmuxGroup.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+            self.m_staticText_enableSecondPinmux.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+            self.m_staticText_statusOverride.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+            self.m_staticText_dummyCycles.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+
             self.m_choice_flashConnection.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
             self.m_textCtrl_driveStrength.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
             self.m_choice_dqsPinmuxGroup.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
@@ -55,6 +62,13 @@ class secBootUiCfgFlexspiNor(bootDeviceWin_FlexspiNor.bootDeviceWin_FlexspiNor):
             self.m_choice_statusOverride.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
             self.m_choice_dummyCycles.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
         else:
+            self.m_staticText_flashConnection.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
+            self.m_staticText_driveStrength.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
+            self.m_staticText_dqsPinmuxGroup.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
+            self.m_staticText_enableSecondPinmux.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
+            self.m_staticText_statusOverride.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
+            self.m_staticText_dummyCycles.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
+
             self.m_choice_flashConnection.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
             self.m_textCtrl_driveStrength.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
             self.m_choice_dqsPinmuxGroup.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )

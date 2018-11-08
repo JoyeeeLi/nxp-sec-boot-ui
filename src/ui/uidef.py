@@ -36,8 +36,17 @@ kKeyStorageRegion_FlexibleUserKeys = 'Flexible User Keys'
 kAdvancedSettings_Cert      = 1
 kAdvancedSettings_BD        = 2
 kAdvancedSettings_OtpmkKey  = 3
+kAdvancedSettings_UserKeys  = 4
 
 kCstVersion_Invalid = 'x.x.x'
 kCstVersion_v2_3_3  = '2.3.3'
 kCstVersion_v3_0_1  = '3.0.1'
+
+kUserRegionSel_Region0     = 'Region 0'
+kUserRegionSel_Region1     = 'Region 1'
+kUserRegionSel_BothRegions = 'Both Regions'
+
+kUserKeySource_OTPMK  = 'Fuse OTPMK[255:128]'
+kUserKeySource_GP4    = 'Fuse GP4[127:0]'
+kUserKeySource_SW_GP2 = 'Fuse SW-GP2'
 
