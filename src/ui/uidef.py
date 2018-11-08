@@ -47,6 +47,11 @@ kUserRegionSel_Region1     = 'Region 1'
 kUserRegionSel_BothRegions = 'Both Regions'
 
 kUserKeySource_OTPMK  = 'Fuse OTPMK[255:128]'
-kUserKeySource_GP4    = 'Fuse GP4[127:0]'
 kUserKeySource_SW_GP2 = 'Fuse SW-GP2'
+kUserKeySource_GP4    = 'Fuse GP4[127:0]'
 
+kSupportedKeySource_iMXRT102x = [kUserKeySource_OTPMK, kUserKeySource_SW_GP2]
+kSupportedKeySource_iMXRT105x = [kUserKeySource_OTPMK, kUserKeySource_SW_GP2]
+kSupportedKeySource_iMXRT106x = [kUserKeySource_OTPMK, kUserKeySource_SW_GP2, kUserKeySource_GP4]
+
+kMaxFacRegionCount = 3

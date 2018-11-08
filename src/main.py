@@ -157,6 +157,7 @@ class secBootMain(runcore.secBootRun):
             elif self.keyStorageRegion == uidef.kKeyStorageRegion_FlexibleUserKeys:
                 userKeySettingsFrame = ui_settings_flexible_user_keys.secBootUiSettingsFlexibleUserKeys(None)
                 userKeySettingsFrame.SetTitle(u"Advanced Key Settings - Flexible User")
+                userKeySettingsFrame.setNecessaryInfo(self.mcuDevice, self.otpmkData128bits)
                 userKeySettingsFrame.Show(True)
             else:
                 pass

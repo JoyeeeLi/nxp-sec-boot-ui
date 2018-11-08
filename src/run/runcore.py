@@ -66,6 +66,8 @@ class secBootRun(gencore.secBootGen):
         self.flexspiNorSectorSize = None
         self.isFlexspiNorErasedForImage = False
 
+        self.otpmkData128bits = None
+
     def getUsbid( self ):
         # Create the target object.
         tgt = createTarget(self.mcuDevice)
@@ -142,11 +144,17 @@ class secBootRun(gencore.secBootGen):
         except:
             pass
 
-    def getMcuDeviceInfoViaRom( self ):
+    def _readMcuDeviceRegisterUuid( self ):
         self._getDeviceRegisterBySdphost( infodef.kRegisterAddr_UUID1, 'UUID[31:00]')
         self._getDeviceRegisterBySdphost( infodef.kRegisterAddr_UUID2, 'UUID[63:32]')
+
+    def _readMcuDeviceRegisterSrcSmbr( self ):
         self._getDeviceRegisterBySdphost( infodef.kRegisterAddr_SRC_SBMR1, 'SRC->SMBR1')
         self._getDeviceRegisterBySdphost( infodef.kRegisterAddr_SRC_SBMR2, 'SRC->SMBR2')
+
+    def getMcuDeviceInfoViaRom( self ):
+        self._readMcuDeviceRegisterUuid()
+        self._readMcuDeviceRegisterSrcSmbr()
 
     def jumpToFlashloader( self ):
         if self.mcuDevice == uidef.kMcuDevice_iMXRT102x:
@@ -179,7 +187,7 @@ class secBootRun(gencore.secBootGen):
         self.printLog(cmdStr)
         return (status == boot.status.kStatus_Success)
 
-    def _readDeviceFuseByBlhost( self, fuseIndex, fuseName):
+    def _readMcuDeviceFuseByBlhost( self, fuseIndex, fuseName):
         status, results, cmdStr = self.blhost.efuseReadOnce(fuseIndex)
         self.printLog(cmdStr)
         if (status == boot.status.kStatus_Success):
@@ -189,10 +197,28 @@ class secBootRun(gencore.secBootGen):
             self.printDeviceStatus(fuseName + " = --------")
             return None
 
+    def _readMcuDeviceFuseBootCfg( self ):
+        self._readMcuDeviceFuseByBlhost(infodef.kEfuseAddr_BOOT_CFG0, 'Fuse->BOOT_CFG (0x450)')
+        self._readMcuDeviceFuseByBlhost(infodef.kEfuseAddr_BOOT_CFG1, 'Fuse->BOOT_CFG (0x460)')
+        self._readMcuDeviceFuseByBlhost(infodef.kEfuseAddr_BOOT_CFG2, 'Fuse->BOOT_CFG (0x470)')
+
+    def _readMcuDeviceFuseOtpmkDek( self ):
+        otpmk4 = self._readMcuDeviceFuseByBlhost(infodef.kEfuseAddr_OTPMK4, 'Fuse->OTPMK4 (0x540)')
+        otpmk5 = self._readMcuDeviceFuseByBlhost(infodef.kEfuseAddr_OTPMK5, 'Fuse->OTPMK5 (0x550)')
+        otpmk6 = self._readMcuDeviceFuseByBlhost(infodef.kEfuseAddr_OTPMK6, 'Fuse->OTPMK6 (0x560)')
+        otpmk7 = self._readMcuDeviceFuseByBlhost(infodef.kEfuseAddr_OTPMK7, 'Fuse->OTPMK7 (0x570)')
+        if otpmk4 != None and otpmk5 != None and otpmk6 != None and otpmk7 != None:
+            self.otpmkData128bits = ''
+            self.otpmkData128bits += self.getFormattedFuseValue(otpmk4, 'MSB')
+            self.otpmkData128bits += self.getFormattedFuseValue(otpmk5, 'MSB')
+            self.otpmkData128bits += self.getFormattedFuseValue(otpmk6, 'MSB')
+            self.otpmkData128bits += self.getFormattedFuseValue(otpmk7, 'MSB')
+        else:
+            self.otpmkData128bits = None
+
     def getMcuDeviceInfoViaFlashloader( self ):
-        self._readDeviceFuseByBlhost(infodef.kEfuseAddr_BOOT_CFG0, 'Fuse->BOOT_CFG (0x450)')
-        self._readDeviceFuseByBlhost(infodef.kEfuseAddr_BOOT_CFG1, 'Fuse->BOOT_CFG (0x460)')
-        self._readDeviceFuseByBlhost(infodef.kEfuseAddr_BOOT_CFG2, 'Fuse->BOOT_CFG (0x470)')
+        self._readMcuDeviceFuseBootCfg()
+        self._readMcuDeviceFuseOtpmkDek()
 
     def _prepareForBootDeviceOperation ( self ):
         if self.bootDevice == uidef.kBootDevice_FlexspiNor:
@@ -349,17 +375,11 @@ class secBootRun(gencore.secBootGen):
         return True
 
     def _showOtpmkDek( self ):
-        otpmk4 = self._readDeviceFuseByBlhost(infodef.kEfuseAddr_OTPMK4, 'Fuse->OTPMK4 (0x540)')
-        otpmk5 = self._readDeviceFuseByBlhost(infodef.kEfuseAddr_OTPMK5, 'Fuse->OTPMK5 (0x550)')
-        otpmk6 = self._readDeviceFuseByBlhost(infodef.kEfuseAddr_OTPMK6, 'Fuse->OTPMK6 (0x560)')
-        otpmk7 = self._readDeviceFuseByBlhost(infodef.kEfuseAddr_OTPMK7, 'Fuse->OTPMK7 (0x570)')
-        if otpmk4 != None and otpmk5 != None and otpmk6 != None and otpmk7 != None:
+        if self.otpmkData128bits != None:
             self.clearOtpmkDekData()
-            self.printOtpmkDekData(self.getFormattedFuseValue(otpmk4, 'MSB'))
-            self.printOtpmkDekData(self.getFormattedFuseValue(otpmk5, 'MSB'))
+            self.printOtpmkDekData(self.otpmkData128bits[0:16])
             self.printOtpmkDekData("\n")
-            self.printOtpmkDekData(self.getFormattedFuseValue(otpmk6, 'MSB'))
-            self.printOtpmkDekData(self.getFormattedFuseValue(otpmk7, 'MSB'))
+            self.printOtpmkDekData(self.otpmkData128bits[16:32])
 
     def _eraseFlexspiNorForImageLoading( self ):
         imageLen = os.path.getsize(self.destAppFilename)
@@ -414,7 +434,7 @@ class secBootRun(gencore.secBootGen):
     def _isDeviceFuseSrkRegionBlank( self ):
         keyWords = gendef.kSecKeyLengthInBits_SRK / 32
         for i in range(keyWords):
-            srk = self._readDeviceFuseByBlhost(infodef.kEfuseAddr_SRK0 + i, 'Fuse->SRK' + str(i) + ' (' + str(hex(0x580 + i * 0x10)) + ')')
+            srk = self._readMcuDeviceFuseByBlhost(infodef.kEfuseAddr_SRK0 + i, 'Fuse->SRK' + str(i) + ' (' + str(hex(0x580 + i * 0x10)) + ')')
             if srk != None and srk != 0:
                 return False
         return True
