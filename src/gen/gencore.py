@@ -577,9 +577,3 @@ class secBootGen(infomgr.secBootInfo):
         elif userKeyCmdDict['is_boot_image'] == '0':
             pass
 
-            #userKeyCtrlDict['region_sel'] = uidef.kUserRegionSel_BothRegions
-            #userKeyCtrlDict['region0_key_src'] = uidef.kUserKeySource_OTPMK
-            #userKeyCtrlDict['region1_key_src'] = uidef.kUserKeySource_OTPMK
-            #userKeyCmdDict['region0_key'] = '0123456789abcdef0123456789ABCDEF'
-            #userKeyCmdDict['region1_key'] = '0123456789abcdef0123456789ABCDEF'
-

@@ -28,6 +28,16 @@ kEfuseAddr_SRK5 = 0x1D
 kEfuseAddr_SRK6 = 0x1E
 kEfuseAddr_SRK7 = 0x1F
 
+kEfuseAddr_SW_GP2_0 = 0x29
+kEfuseAddr_SW_GP2_1 = 0x2A
+kEfuseAddr_SW_GP2_2 = 0x2B
+kEfuseAddr_SW_GP2_3 = 0x2C
+
+kEfuseAddr_GP4_0 = 0x4C
+kEfuseAddr_GP4_1 = 0x4D
+kEfuseAddr_GP4_2 = 0x4E
+kEfuseAddr_GP4_3 = 0x4F
+
 #----------------SEMC NAND----------------------
 kSemcNandFcbTag_Fingerprint = 0x4E464342  # 'NFCB'
 kSemcNandFcbTag_Semc        = 0x434D4553  # 'SEMC'

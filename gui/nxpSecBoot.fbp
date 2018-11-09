@@ -886,7 +886,7 @@
                                                             <property name="pin_button">1</property>
                                                             <property name="pos"></property>
                                                             <property name="resize">Resizable</property>
-                                                            <property name="selection">0</property>
+                                                            <property name="selection">1</property>
                                                             <property name="show">1</property>
                                                             <property name="size">150,-1</property>
                                                             <property name="style"></property>
@@ -8256,7 +8256,7 @@
                                                                         <event name="OnAux2DClick"></event>
                                                                         <event name="OnAux2Down"></event>
                                                                         <event name="OnAux2Up"></event>
-                                                                        <event name="OnButtonClick"></event>
+                                                                        <event name="OnButtonClick">callbackProgramBeeDek</event>
                                                                         <event name="OnChar"></event>
                                                                         <event name="OnCharHook"></event>
                                                                         <event name="OnEnterWindow"></event>
@@ -24320,7 +24320,7 @@
                                                     <property name="validator_style">wxFILTER_NONE</property>
                                                     <property name="validator_type">wxDefaultValidator</property>
                                                     <property name="validator_variable"></property>
-                                                    <property name="value">0123456789abcdef0123456789ABCDEF</property>
+                                                    <property name="value">0123456789abcdeffedcba9876543210</property>
                                                     <property name="window_extra_style"></property>
                                                     <property name="window_name"></property>
                                                     <property name="window_style"></property>
@@ -24881,7 +24881,7 @@
                                                     <property name="validator_style">wxFILTER_NONE</property>
                                                     <property name="validator_type">wxDefaultValidator</property>
                                                     <property name="validator_variable"></property>
-                                                    <property name="value"></property>
+                                                    <property name="value">0x60001000</property>
                                                     <property name="window_extra_style"></property>
                                                     <property name="window_name"></property>
                                                     <property name="window_style"></property>
@@ -25070,7 +25070,7 @@
                                                     <property name="validator_style">wxFILTER_NONE</property>
                                                     <property name="validator_type">wxDefaultValidator</property>
                                                     <property name="validator_variable"></property>
-                                                    <property name="value"></property>
+                                                    <property name="value">0x2000</property>
                                                     <property name="window_extra_style"></property>
                                                     <property name="window_name"></property>
                                                     <property name="window_style"></property>
@@ -26760,7 +26760,7 @@
                                                     <property name="validator_style">wxFILTER_NONE</property>
                                                     <property name="validator_type">wxDefaultValidator</property>
                                                     <property name="validator_variable"></property>
-                                                    <property name="value">0123456789abcdef0123456789ABCDEF</property>
+                                                    <property name="value">0123456789abcdeffedcba9876543210</property>
                                                     <property name="window_extra_style"></property>
                                                     <property name="window_name"></property>
                                                     <property name="window_style"></property>
@@ -27321,7 +27321,7 @@
                                                     <property name="validator_style">wxFILTER_NONE</property>
                                                     <property name="validator_type">wxDefaultValidator</property>
                                                     <property name="validator_variable"></property>
-                                                    <property name="value"></property>
+                                                    <property name="value">0x60003000</property>
                                                     <property name="window_extra_style"></property>
                                                     <property name="window_name"></property>
                                                     <property name="window_style"></property>
@@ -27510,7 +27510,7 @@
                                                     <property name="validator_style">wxFILTER_NONE</property>
                                                     <property name="validator_type">wxDefaultValidator</property>
                                                     <property name="validator_variable"></property>
-                                                    <property name="value"></property>
+                                                    <property name="value">0xc000</property>
                                                     <property name="window_extra_style"></property>
                                                     <property name="window_name"></property>
                                                     <property name="window_style"></property>

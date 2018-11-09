@@ -20,7 +20,6 @@ class secBootUiSettingsFlexibleUserKeys(advSettingsWin_FlexibleUserKeys.advSetti
         if os.path.isfile(filename):
             dek128Content = ''
             with open(filename, 'rb') as fileObj:
-                var8Value = array.array('c', [chr(0xff)]) * 16
                 var8Value = fileObj.read(16)
                 for i in range(16):
                     dek128Content += str(hex(ord(var8Value[15 - i]) & 0xFF))
@@ -72,7 +71,13 @@ class secBootUiSettingsFlexibleUserKeys(advSettingsWin_FlexibleUserKeys.advSetti
         if regionIndex == 0:
             self.userKeyCmdDict['region0_key'] = self.m_textCtrl_region0UserKeyData.GetLineText(0)
         elif regionIndex == 1:
-            self.userKeyCmdDict['region1_key'] = self.m_textCtrl_region1UserKeyData.GetLineText(0)
+            if self.userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_BothRegions:
+                if self.userKeyCtrlDict['region1_key_src'] == self.userKeyCtrlDict['region0_key_src']:
+                    self.userKeyCmdDict['region1_key'] = self.m_textCtrl_region0UserKeyData.GetLineText(0)
+                else:
+                    self.userKeyCmdDict['region1_key'] = self.m_textCtrl_region1UserKeyData.GetLineText(0)
+            else:
+                self.userKeyCmdDict['region1_key'] = self.m_textCtrl_region1UserKeyData.GetLineText(0)
         else:
             pass
 
@@ -159,6 +164,12 @@ class secBootUiSettingsFlexibleUserKeys(advSettingsWin_FlexibleUserKeys.advSetti
                     self.m_textCtrl_region0UserKeyData.write(self.otpmkDekContent)
             else:
                 self.m_textCtrl_region0UserKeyData.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+            if self.userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_BothRegions:
+                if self.userKeyCtrlDict['region1_key_src'] == self.userKeyCtrlDict['region0_key_src']:
+                    self.m_textCtrl_region1UserKeyData.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
+                    self.m_textCtrl_region1UserKeyData.Clear()
+                else:
+                    self.m_textCtrl_region1UserKeyData.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
         elif regionIndex == 1:
             if self.userKeyCtrlDict['region1_key_src'] == uidef.kUserKeySource_OTPMK:
                 self.m_textCtrl_region1UserKeyData.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
@@ -166,7 +177,14 @@ class secBootUiSettingsFlexibleUserKeys(advSettingsWin_FlexibleUserKeys.advSetti
                 if self.otpmkDekContent != None:
                     self.m_textCtrl_region1UserKeyData.write(self.otpmkDekContent)
             else:
-                self.m_textCtrl_region1UserKeyData.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+                if self.userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_BothRegions:
+                    if self.userKeyCtrlDict['region1_key_src'] == self.userKeyCtrlDict['region0_key_src']:
+                        self.m_textCtrl_region1UserKeyData.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
+                        self.m_textCtrl_region1UserKeyData.Clear()
+                    else:
+                        self.m_textCtrl_region1UserKeyData.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+                else:
+                    self.m_textCtrl_region1UserKeyData.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
         else:
             pass
         self.Refresh()
@@ -399,9 +417,16 @@ class secBootUiSettingsFlexibleUserKeys(advSettingsWin_FlexibleUserKeys.advSetti
             pass
 
     def callbackChangeRegion1KeySource( self, event ):
-        if self.userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_Region1:
+        if self.userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_Region1 or \
+           self.userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_BothRegions:
             self._getKeySource(1)
             self._updateKeySourceInfoField(1)
+
+
+    def callbackChangeRegion1FacCnt( self, event ):
+        if self.userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_Region1:
+            self._getFacCount(1)
+            self._updateRegionRangeInfoField(1)
         elif self.userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_BothRegions:
             region1FacCnt = self.m_choice_region1FacCnt.GetSelection() + 1
             if region1FacCnt + self.userKeyCtrlDict['region0_fac_cnt'] > uidef.kMaxFacRegionCount:
@@ -412,12 +437,6 @@ class secBootUiSettingsFlexibleUserKeys(advSettingsWin_FlexibleUserKeys.advSetti
                 self._updateRegionRangeInfoField(1)
         else:
             pass
-
-    def callbackChangeRegion1FacCnt( self, event ):
-        if self.userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_Region1 or \
-           self.userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_BothRegions:
-            self._getFacCount(1)
-            self._updateRegionRangeInfoField(1)
 
     def callbackOk( self, event ):
         self._getRegionSelection()

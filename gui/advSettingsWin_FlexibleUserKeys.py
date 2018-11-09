@@ -117,7 +117,7 @@ class advSettingsWin_FlexibleUserKeys ( wx.Frame ):
 
 		gSizer_region0Info.Add( self.m_staticText_region0UserKeyData, 0, wx.ALL, 5 )
 
-		self.m_textCtrl_region0UserKeyData = wx.TextCtrl( self.m_panel_region0Info, wx.ID_ANY, u"0123456789abcdef0123456789ABCDEF", wx.DefaultPosition, wx.Size( 210,-1 ), 0 )
+		self.m_textCtrl_region0UserKeyData = wx.TextCtrl( self.m_panel_region0Info, wx.ID_ANY, u"0123456789abcdeffedcba9876543210", wx.DefaultPosition, wx.Size( 210,-1 ), 0 )
 		gSizer_region0Info.Add( self.m_textCtrl_region0UserKeyData, 0, wx.ALL, 5 )
 
 		self.m_staticText_region0AesMode = wx.StaticText( self.m_panel_region0Info, wx.ID_ANY, u"AES Mode:", wx.DefaultPosition, wx.Size( 210,-1 ), 0 )
@@ -148,7 +148,7 @@ class advSettingsWin_FlexibleUserKeys ( wx.Frame ):
 
 		gSizer_region0Info.Add( self.m_staticText_region0Fac0Start, 0, wx.ALL, 5 )
 
-		self.m_textCtrl_region0Fac0Start = wx.TextCtrl( self.m_panel_region0Info, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 210,-1 ), 0 )
+		self.m_textCtrl_region0Fac0Start = wx.TextCtrl( self.m_panel_region0Info, wx.ID_ANY, u"0x60001000", wx.DefaultPosition, wx.Size( 210,-1 ), 0 )
 		gSizer_region0Info.Add( self.m_textCtrl_region0Fac0Start, 0, wx.ALL, 5 )
 
 		self.m_staticText_region0Fac0Length = wx.StaticText( self.m_panel_region0Info, wx.ID_ANY, u"FAC0 Region Length (eg. 0x1000):", wx.DefaultPosition, wx.Size( 210,-1 ), 0 )
@@ -156,7 +156,7 @@ class advSettingsWin_FlexibleUserKeys ( wx.Frame ):
 
 		gSizer_region0Info.Add( self.m_staticText_region0Fac0Length, 0, wx.ALL, 5 )
 
-		self.m_textCtrl_region0Fac0Length = wx.TextCtrl( self.m_panel_region0Info, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 210,-1 ), 0 )
+		self.m_textCtrl_region0Fac0Length = wx.TextCtrl( self.m_panel_region0Info, wx.ID_ANY, u"0x2000", wx.DefaultPosition, wx.Size( 210,-1 ), 0 )
 		gSizer_region0Info.Add( self.m_textCtrl_region0Fac0Length, 0, wx.ALL, 5 )
 
 		self.m_staticText_region0Fac1Start = wx.StaticText( self.m_panel_region0Info, wx.ID_ANY, u"FAC1 Region Start:", wx.DefaultPosition, wx.Size( 210,-1 ), 0 )
@@ -238,7 +238,7 @@ class advSettingsWin_FlexibleUserKeys ( wx.Frame ):
 
 		gSizer_region1Info.Add( self.m_staticText_region1UserKeyData, 0, wx.ALL, 5 )
 
-		self.m_textCtrl_region1UserKeyData = wx.TextCtrl( self.m_panel_region1Info, wx.ID_ANY, u"0123456789abcdef0123456789ABCDEF", wx.DefaultPosition, wx.Size( 210,-1 ), 0 )
+		self.m_textCtrl_region1UserKeyData = wx.TextCtrl( self.m_panel_region1Info, wx.ID_ANY, u"0123456789abcdeffedcba9876543210", wx.DefaultPosition, wx.Size( 210,-1 ), 0 )
 		gSizer_region1Info.Add( self.m_textCtrl_region1UserKeyData, 0, wx.ALL, 5 )
 
 		self.m_staticText_region1AesMode = wx.StaticText( self.m_panel_region1Info, wx.ID_ANY, u"AES Mode:", wx.DefaultPosition, wx.Size( 210,-1 ), 0 )
@@ -266,7 +266,7 @@ class advSettingsWin_FlexibleUserKeys ( wx.Frame ):
 
 		gSizer_region1Info.Add( self.m_staticText_region1Fac0Start, 0, wx.ALL, 5 )
 
-		self.m_textCtrl_region1Fac0Start = wx.TextCtrl( self.m_panel_region1Info, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 210,-1 ), 0 )
+		self.m_textCtrl_region1Fac0Start = wx.TextCtrl( self.m_panel_region1Info, wx.ID_ANY, u"0x60003000", wx.DefaultPosition, wx.Size( 210,-1 ), 0 )
 		gSizer_region1Info.Add( self.m_textCtrl_region1Fac0Start, 0, wx.ALL, 5 )
 
 		self.m_staticText_region1Fac0Length = wx.StaticText( self.m_panel_region1Info, wx.ID_ANY, u"FAC0 Region Length (eg. 0x1000):", wx.DefaultPosition, wx.Size( 210,-1 ), 0 )
@@ -274,7 +274,7 @@ class advSettingsWin_FlexibleUserKeys ( wx.Frame ):
 
 		gSizer_region1Info.Add( self.m_staticText_region1Fac0Length, 0, wx.ALL, 5 )
 
-		self.m_textCtrl_region1Fac0Length = wx.TextCtrl( self.m_panel_region1Info, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 210,-1 ), 0 )
+		self.m_textCtrl_region1Fac0Length = wx.TextCtrl( self.m_panel_region1Info, wx.ID_ANY, u"0xc000", wx.DefaultPosition, wx.Size( 210,-1 ), 0 )
 		gSizer_region1Info.Add( self.m_textCtrl_region1Fac0Length, 0, wx.ALL, 5 )
 
 		self.m_staticText_region1Fac1Start = wx.StaticText( self.m_panel_region1Info, wx.ID_ANY, u"FAC1 Region Start:", wx.DefaultPosition, wx.Size( 210,-1 ), 0 )

@@ -458,6 +458,66 @@ class secBootRun(gencore.secBootGen):
         else:
             self.popupMsgBox('Super Root Keys hasn\'t been generated!')
 
+    def _isDeviceFuseSwGp2RegionBlank( self ):
+        keyWords = gendef.kSecKeyLengthInBits_DEK / 32
+        for i in range(keyWords):
+            dek = self._readMcuDeviceFuseByBlhost(infodef.kEfuseAddr_SW_GP2_0 + i, 'Fuse->SW_GP2_' + str(i) + ' (' + str(hex(0x690 + i * 0x10)) + ')')
+            if dek != None and dek != 0:
+                return False
+        return True
+
+    def _isDeviceFuseGp4RegionBlank( self ):
+        keyWords = gendef.kSecKeyLengthInBits_DEK / 32
+        for i in range(keyWords):
+            dek = self._readMcuDeviceFuseByBlhost(infodef.kEfuseAddr_GP4_0 + i, 'Fuse->GP4_' + str(i) + ' (' + str(hex(0x8C0 + i * 0x10)) + ')')
+            if dek != None and dek != 0:
+                return False
+        return True
+
+    def burnBeeDekData ( self ):
+        needToBurnSwGp2 = False
+        needToBurnGp4 = False
+        swgp2DekFilename = None
+        gp4DekFilename = None
+        userKeyCtrlDict, userKeyCmdDict = uivar.getAdvancedSettings(uidef.kAdvancedSettings_UserKeys)
+        if userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_Region1 or userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_BothRegions:
+            if userKeyCtrlDict['region1_key_src'] == uidef.kUserKeySource_SW_GP2:
+                needToBurnSwGp2 = True
+                swgp2DekFilename = self.beeDek1Filename
+            elif userKeyCtrlDict['region1_key_src'] == uidef.kUserKeySource_GP4:
+                needToBurnGp4 = True
+                gp4DekFilename = self.beeDek1Filename
+            else:
+                pass
+        if userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_Region0 or userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_BothRegions:
+            if userKeyCtrlDict['region0_key_src'] == uidef.kUserKeySource_SW_GP2:
+                needToBurnSwGp2 = True
+                swgp2DekFilename = self.beeDek0Filename
+            elif userKeyCtrlDict['region0_key_src'] == uidef.kUserKeySource_GP4:
+                needToBurnGp4 = True
+                gp4DekFilename = self.beeDek0Filename
+            else:
+                pass
+        keyWords = gendef.kSecKeyLengthInBits_DEK / 32
+        if needToBurnSwGp2:
+            if self._isDeviceFuseSwGp2RegionBlank():
+                for i in range(keyWords):
+                    val32 = self.getVal32FromBinFile(swgp2DekFilename, (i * 4))
+                    self._burnDeviceFuseByBlhost(infodef.kEfuseAddr_SW_GP2_0 + i, val32)
+            else:
+                self.popupMsgBox('Fuse SW_GP2 Region has been burned, it is program-once!')
+        else:
+            pass
+        if needToBurnGp4:
+            if self._isDeviceFuseGp4RegionBlank():
+                for i in range(keyWords):
+                    val32 = self.getVal32FromBinFile(gp4DekFilename, (i * 4))
+                    self._burnDeviceFuseByBlhost(infodef.kEfuseAddr_GP4_0 + i, val32)
+            else:
+                self.popupMsgBox('Fuse GP4 Region has been burned, it is program-once!')
+        else:
+            pass
+
     def flashBootableImage ( self ):
         self._prepareForBootDeviceOperation()
         imageLen = os.path.getsize(self.destAppFilename)

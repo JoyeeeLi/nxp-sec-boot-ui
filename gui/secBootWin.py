@@ -73,7 +73,7 @@ class secBootWin ( wx.Frame ):
 
 		m_choice_mcuDeviceChoices = [ u"i.MXRT105x", u"i.MXRT106x", u"i.MXRT102x" ]
 		self.m_choice_mcuDevice = wx.Choice( self.m_panel_targetSetup, wx.ID_ANY, wx.DefaultPosition, wx.Size( 150,-1 ), m_choice_mcuDeviceChoices, 0 )
-		self.m_choice_mcuDevice.SetSelection( 0 )
+		self.m_choice_mcuDevice.SetSelection( 1 )
 		wSizer_targetSetup.Add( self.m_choice_mcuDevice, 0, wx.ALL, 5 )
 
 		self.m_staticText_bootDevice = wx.StaticText( self.m_panel_targetSetup, wx.ID_ANY, u"Boot Device:", wx.DefaultPosition, wx.Size( 95,-1 ), 0 )
@@ -676,6 +676,7 @@ class secBootWin ( wx.Frame ):
 		self.m_button_advKeySettings.Bind( wx.EVT_BUTTON, self.callbackAdvKeySettings )
 		self.m_button_prepBee.Bind( wx.EVT_BUTTON, self.callbackDoBeeEncryption )
 		self.m_button_progSrk.Bind( wx.EVT_BUTTON, self.callbackProgramSrk )
+		self.m_button_operBee.Bind( wx.EVT_BUTTON, self.callbackProgramBeeDek )
 		self.m_button_flashImage.Bind( wx.EVT_BUTTON, self.callbackFlashImage )
 		self.m_button_progDek.Bind( wx.EVT_BUTTON, self.callbackFlashHabDek )
 		self.m_button_clearLog.Bind( wx.EVT_BUTTON, self.callbackClearLog )
@@ -731,6 +732,9 @@ class secBootWin ( wx.Frame ):
 		event.Skip()
 
 	def callbackProgramSrk( self, event ):
+		event.Skip()
+
+	def callbackProgramBeeDek( self, event ):
 		event.Skip()
 
 	def callbackFlashImage( self, event ):

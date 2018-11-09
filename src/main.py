@@ -187,6 +187,15 @@ class secBootMain(runcore.secBootRun):
         else:
             self.popupMsgBox('No need to burn SRK data when booting unsigned image!')
 
+    def callbackProgramBeeDek( self, event ):
+        if self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.bootDevice == uidef.kBootDevice_FlexspiNor:
+            if self.keyStorageRegion == uidef.kKeyStorageRegion_FlexibleUserKeys:
+                self.burnBeeDekData()
+            else:
+                self.popupMsgBox('No need to burn BEE DEK data as OTPMK key is selected!')
+        else:
+            self.popupMsgBox('BEE DEK Burning is only available when booting BEE encrypted image in FlexSPI NOR device!')
+
     def callbackFlashImage( self, event ):
         if self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.bootDevice != uidef.kBootDevice_FlexspiNor:
             self.popupMsgBox('Action is not available because BEE encryption boot is only designed for FlexSPI NOR device!')
