@@ -40,10 +40,22 @@ class secBootInfo(uicore.secBootUi):
         self.m_textCtrl_habDek128bit.Clear()
 
     def printOtpmkDekData( self, dekStr ):
-        self.m_textCtrl_otpmkDek128bit.write(dekStr)
+        self.m_textCtrl_otpmkDek128bit.write(dekStr + "\n")
 
     def clearOtpmkDekData( self ):
         self.m_textCtrl_otpmkDek128bit.Clear()
+
+    def printGp4DekData( self, dekStr ):
+        self.m_textCtrl_gp4Dek128bit.write(dekStr + "\n")
+
+    def clearGp4DekData( self ):
+        self.m_textCtrl_gp4Dek128bit.Clear()
+
+    def printSwGp2DekData( self, dekStr ):
+        self.m_textCtrl_swgp2Dek128bit.write(dekStr + "\n")
+
+    def clearSwGp2DekData( self ):
+        self.m_textCtrl_swgp2Dek128bit.Clear()
 
     def getReg32FromBinFile( self, filename, offset=0):
         return hex(self.getVal32FromBinFile(filename, offset))
@@ -77,3 +89,33 @@ class secBootInfo(uicore.secBootUi):
             formattedVal32 += halfbyteStr[2]
         return formattedVal32
 
+    def fillVal32IntoBinFile( self, filename, val32):
+        with open(filename, 'ab') as fileObj:
+            byteStr = ''
+            for i in range(4):
+                byteStr = chr((val32 & (0xFF << (i * 8))) >> (i * 8))
+                fileObj.write(byteStr)
+            fileObj.close()
+
+    def getDek128ContentFromBinFile( self, filename ):
+        if os.path.isfile(filename):
+            dek128Content = ''
+            with open(filename, 'rb') as fileObj:
+                var8Value = array.array('c', [chr(0xff)]) * 16
+                var8Value = fileObj.read(16)
+                for i in range(16):
+                    dek128Content += str(hex(ord(var8Value[15 - i]) & 0xFF))
+                fileObj.close()
+            return dek128Content
+        else:
+            return None
+
+    def fillDek128ContentIntoBinFile( self, filename, dekContent ):
+        with open(filename, 'wb') as fileObj:
+            halfbyteStr = ''
+            for i in range(16):
+                locEnd = 32 - i * 2
+                locStart = locEnd - 2
+                halfbyteStr = chr(int(dekContent[locStart:locEnd], 16) & 0xFF)
+                fileObj.write(halfbyteStr)
+            fileObj.close()

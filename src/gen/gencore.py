@@ -37,15 +37,20 @@ class secBootGen(infomgr.secBootInfo):
         self.genCertToElftosbPath = '../../../gen/hab_cert/'
         self.genCryptoToElftosbPath = '../../../gen/hab_crypto/'
         self.lastCstVersion = uidef.kCstVersion_Invalid
-        self.dekFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'hab_crypto', 'dek.bin')
-        self.dekDataOffset = None
+        self.habDekFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'hab_crypto', 'hab_dek.bin')
+        self.habDekDataOffset = None
         self.srcAppFilename = None
         self.destAppFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bootable_image', 'ivt_application.bin')
         self.destAppNoPaddingFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bootable_image', 'ivt_application_nopadding.bin')
-        self.bdFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bd_file', 'imx_secure_boot.bd')
+        self.bdFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bd_file', 'imx_image_gen.bd')
         self.elftosbPath = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'elftosb', 'win', 'elftosb.exe')
-        self.bdBatFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bd_file', 'imx_secure_boot.bat')
+        self.bdBatFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bd_file', 'imx_image_gen.bat')
         self.updateAllCstPathToCorrectVersion()
+        self.imageEncPath = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'image_enc', 'win', 'image_enc.exe')
+        self.beeDek0Filename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bee_crypto', 'bee_dek0.bin')
+        self.beeDek1Filename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bee_crypto', 'bee_dek1.bin')
+        self.encBatFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bee_crypto', 'imx_image_enc.bat')
+        self.otpmkDekFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bee_crypto', 'otpmk_dek.bin')
 
     def _copyCstBinToElftosbFolder( self ):
         shutil.copy(self.cstBinFolder + '\\cst.exe', os.path.split(self.elftosbPath)[0])
@@ -351,7 +356,7 @@ class secBootGen(infomgr.secBootInfo):
                 bdContent += "}\n"
             elif self.secureBootType == uidef.kSecureBootType_HabCrypto:
                 bdContent += "section (SEC_CSF_INSTALL_SECRET_KEY;\n"
-                bdContent += "    SecretKey_Name=\"" + self.genCryptoToElftosbPath + os.path.split(self.dekFilename)[1] + "\",\n"
+                bdContent += "    SecretKey_Name=\"" + self.genCryptoToElftosbPath + os.path.split(self.habDekFilename)[1] + "\",\n"
                 bdContent += "    SecretKey_Length=128,\n"
                 bdContent += "    SecretKey_VerifyIndex=0,\n"
                 bdContent += "    SecretKey_TargetIndex=0)\n"
@@ -411,7 +416,29 @@ class secBootGen(infomgr.secBootInfo):
             return False
         return self._updateBdfileContent(imageStartAddr, imageEntryAddr)
 
+    def _adjustDestAppFilenameForBd( self ):
+        srcAppName = os.path.splitext(os.path.split(self.srcAppFilename)[1])[0]
+        destAppPath, destAppFile = os.path.split(self.destAppFilename)
+        destAppName, destAppType = os.path.splitext(destAppFile)
+        destAppName ='ivt_' + srcAppName
+        if self.secureBootType == uidef.kSecureBootType_Development:
+            destAppName += '_unsigned'
+        elif self.secureBootType == uidef.kSecureBootType_HabAuth:
+            destAppName += '_signed'
+        elif self.secureBootType == uidef.kSecureBootType_HabCrypto:
+            destAppName += '_signed_hab_encrypted'
+        elif self.secureBootType == uidef.kSecureBootType_BeeCrypto:
+            if self.isCertEnabledForBee:
+                destAppName += '_signed'
+            else:
+                destAppName += '_unsigned'
+        else:
+            pass
+        self.destAppFilename = os.path.join(destAppPath, destAppName + destAppType)
+        self.destAppNoPaddingFilename = os.path.join(destAppPath, destAppName + '_nopadding' + destAppType)
+
     def _updateBdBatfileContent( self ):
+        self._adjustDestAppFilenameForBd()
         batContent = self.elftosbPath
         batContent += " -f imx -V -c " + self.bdFilename + ' -o ' + self.destAppFilename + ' ' + self.srcAppFilename
         with open(self.bdBatFilename, 'wb') as fileObj:
@@ -435,11 +462,11 @@ class secBootGen(infomgr.secBootInfo):
             loc2 = output.find(info2)
             if loc1 != -1 and loc1 < loc2:
                 loc1 += len(info1)
-                self.dekDataOffset = int(output[loc1:loc2], 16)
+                self.habDekDataOffset = int(output[loc1:loc2], 16)
             else:
-                self.dekDataOffset = None
+                self.habDekDataOffset = None
         else:
-            self.dekDataOffset = None
+            self.habDekDataOffset = None
             self.popupMsgBox('Bootable image is not generated successfully!')
 
     def genBootableImage( self ):
@@ -452,10 +479,107 @@ class secBootGen(infomgr.secBootInfo):
         self._parseBootableImageGenerationResult(commandOutput)
 
     def showHabDekIfApplicable( self ):
-        self.clearHabDekData()
-        if self.secureBootType == uidef.kSecureBootType_HabCrypto and self.dekDataOffset != None:
+        if self.secureBootType == uidef.kSecureBootType_HabCrypto and self.habDekDataOffset != None:
+            if os.path.isfile(self.habDekFilename):
+                self.clearHabDekData()
+                keyWords = gendef.kSecKeyLengthInBits_DEK / 32
+                for i in range(keyWords):
+                    val32 = self.getVal32FromBinFile(self.habDekFilename, (i * 4))
+                    self.printHabDekData(str(hex(val32)))
+
+    def _changeDestAppNoPaddingFilenameForBee( self ):
+        destAppNoPaddingPath, destAppNoPaddingFile = os.path.split(self.destAppNoPaddingFilename)
+        destAppNoPaddingName, destAppNoPaddingType = os.path.splitext(destAppNoPaddingFile)
+        destAppNoPaddingName += '_bee_encrypted'
+        self.destAppNoPaddingFilename = os.path.join(destAppNoPaddingPath, destAppNoPaddingName + destAppNoPaddingType)
+
+    def _genBeeDekFile( self, regionIndex, keyContent ):
+        if regionIndex == 0:
+            #print 'beeDek0Filename content: ' + keyContent
+            self.fillDek128ContentIntoBinFile(self.beeDek0Filename, keyContent)
+        elif regionIndex == 1:
+            #print 'beeDek1Filename content: ' + keyContent
+            self.fillDek128ContentIntoBinFile(self.beeDek1Filename, keyContent)
+        else:
+            pass
+
+    def _showBeeDekForGp4( self, dekFilename ):
+        if os.path.isfile(dekFilename):
+            self.clearGp4DekData()
             keyWords = gendef.kSecKeyLengthInBits_DEK / 32
             for i in range(keyWords):
-                val32 = self.getVal32FromBinFile(self.dekFilename, (i * 4))
-                self.printHabDekData(str(hex(val32)))
+                val32 = self.getVal32FromBinFile(dekFilename, (i * 4))
+                self.printGp4DekData(str(hex(val32)))
+
+    def _showBeeDekForSwGp2( self, dekFilename ):
+        if os.path.isfile(dekFilename):
+            self.clearSwGp2DekData()
+            keyWords = gendef.kSecKeyLengthInBits_DEK / 32
+            for i in range(keyWords):
+                val32 = self.getVal32FromBinFile(dekFilename, (i * 4))
+                self.printSwGp2DekData(str(hex(val32)))
+
+    def _genBeeDekFilesAndShow( self, userKeyCtrlDict, userKeyCmdDict ):
+        if userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_Region0 or userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_BothRegions:
+            self._genBeeDekFile(0, userKeyCmdDict['region0_key'])
+            if userKeyCtrlDict['region0_key_src'] == uidef.kUserKeySource_SW_GP2:
+                self._showBeeDekForSwGp2(self.beeDek0Filename)
+            elif userKeyCtrlDict['region0_key_src'] == uidef.kUserKeySource_GP4:
+                self._showBeeDekForGp4(self.beeDek0Filename)
+            else:
+                pass
+        if userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_Region1 or userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_BothRegions:
+            self._genBeeDekFile(1, userKeyCmdDict['region1_key'])
+            if userKeyCtrlDict['region1_key_src'] == uidef.kUserKeySource_SW_GP2:
+                self._showBeeDekForSwGp2(self.beeDek1Filename)
+            elif userKeyCtrlDict['region1_key_src'] == uidef.kUserKeySource_GP4:
+                self._showBeeDekForGp4(self.beeDek1Filename)
+            else:
+                pass
+
+    def _updateEncBatfileContent( self, userKeyCtrlDict, userKeyCmdDict, originalAppFilename ):
+        batContent = self.imageEncPath
+        batContent += " ifile=" + originalAppFilename
+        batContent += " ofile=" + self.destAppNoPaddingFilename
+        batContent += " base_addr=" + userKeyCmdDict['base_addr']
+        if userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_Region0 or userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_BothRegions:
+            if userKeyCtrlDict['region0_key_src'] == uidef.kUserKeySource_OTPMK:
+                userKeyCmdDict['region0_key'] = self.getDek128ContentFromBinFile(self.otpmkDekFilename)
+            batContent += " region0_key=" + userKeyCmdDict['region0_key']
+            batContent += " region0_arg=" + userKeyCmdDict['region0_arg']
+            batContent += " region0_lock=" + userKeyCmdDict['region0_lock']
+        if userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_Region1 or userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_BothRegions:
+            if userKeyCtrlDict['region1_key_src'] == uidef.kUserKeySource_OTPMK:
+                userKeyCmdDict['region1_key'] = self.getDek128ContentFromBinFile(self.otpmkDekFilename)
+            batContent += " region1_key=" + userKeyCmdDict['region1_key']
+            batContent += " region1_arg=" + userKeyCmdDict['region1_arg']
+            batContent += " region1_lock=" + userKeyCmdDict['region1_lock']
+        batContent += " use_zero_key=" + userKeyCmdDict['use_zero_key']
+        batContent += " is_boot_image=" + userKeyCmdDict['is_boot_image']
+        with open(self.encBatFilename, 'wb') as fileObj:
+            fileObj.write(batContent)
+            fileObj.close()
+
+    def _encrypteBootableImage( self ):
+        os.chdir(os.path.split(self.imageEncPath)[0])
+        process = subprocess.Popen(self.encBatFilename, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        commandOutput = process.communicate()[0]
+        print commandOutput
+
+    def encrypteImageUsingFlexibleUserKeys( self ):
+        userKeyCtrlDict, userKeyCmdDict = uivar.getAdvancedSettings(uidef.kAdvancedSettings_UserKeys)
+        if userKeyCmdDict['is_boot_image'] == '1':
+            originalAppFilename = self.destAppNoPaddingFilename
+            self._changeDestAppNoPaddingFilenameForBee()
+            self._updateEncBatfileContent(userKeyCtrlDict, userKeyCmdDict, originalAppFilename)
+            self._encrypteBootableImage()
+            self._genBeeDekFilesAndShow(userKeyCtrlDict, userKeyCmdDict)
+        elif userKeyCmdDict['is_boot_image'] == '0':
+            pass
+
+            #userKeyCtrlDict['region_sel'] = uidef.kUserRegionSel_BothRegions
+            #userKeyCtrlDict['region0_key_src'] = uidef.kUserKeySource_OTPMK
+            #userKeyCtrlDict['region1_key_src'] = uidef.kUserKeySource_OTPMK
+            #userKeyCmdDict['region0_key'] = '0123456789abcdef0123456789ABCDEF'
+            #userKeyCmdDict['region1_key'] = '0123456789abcdef0123456789ABCDEF'
 

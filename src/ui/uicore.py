@@ -153,7 +153,6 @@ class secBootUi(secBootWin.secBootWin):
         self.m_panel_prepBee1_beeKeyRegion.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
         self.m_panel_prepBee2_showOtpmkDek.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
         self.m_panel_prepBee3_advKeySettings.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
-        self.m_panel_prepBee4_beeCryptoAlgo.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
         self.m_panel_operBee1_beeKeyInfo.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
         self.m_panel_operBee2_showGp4Dek.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
         self.m_panel_operBee3_showSwgp2Dek.SetBackgroundColour( uidef.kBootSeqColor_Invalid )
@@ -227,7 +226,6 @@ class secBootUi(secBootWin.secBootWin):
         self._resetKeyStorageRegionColor()
         self.m_panel_prepBee1_beeKeyRegion.SetBackgroundColour( uidef.kBootSeqColor_Active )
         self.m_panel_prepBee3_advKeySettings.SetBackgroundColour( uidef.kBootSeqColor_Active )
-        self.m_panel_prepBee4_beeCryptoAlgo.SetBackgroundColour( uidef.kBootSeqColor_Active )
         if self.keyStorageRegion == uidef.kKeyStorageRegion_FixedOtpmkKey:
             self.m_panel_prepBee2_showOtpmkDek.SetBackgroundColour( uidef.kBootSeqColor_Active )
             self.m_button_prepBee.SetLabel('Prepare For Encryption')

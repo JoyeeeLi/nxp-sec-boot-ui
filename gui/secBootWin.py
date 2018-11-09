@@ -391,7 +391,7 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_prepBee2_showOtpmkDek = wx.Panel( self.m_panel_prepBee, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		sbSizer_showOtpmkDek = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_prepBee2_showOtpmkDek, wx.ID_ANY, u"Pre-burned DEK in OTPMK" ), wx.VERTICAL )
 
-		self.m_textCtrl_otpmkDek128bit = wx.TextCtrl( sbSizer_showOtpmkDek.GetStaticBox(), wx.ID_ANY, u"0123456789abcdef\nfedcba987654321", wx.DefaultPosition, wx.Size( 145,40 ), wx.TE_MULTILINE )
+		self.m_textCtrl_otpmkDek128bit = wx.TextCtrl( sbSizer_showOtpmkDek.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 100,70 ), wx.TE_MULTILINE )
 		self.m_textCtrl_otpmkDek128bit.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
 
 		sbSizer_showOtpmkDek.Add( self.m_textCtrl_otpmkDek128bit, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
@@ -403,7 +403,12 @@ class secBootWin ( wx.Frame ):
 		bSizer_prepBee.Add( self.m_panel_prepBee2_showOtpmkDek, 1, wx.EXPAND |wx.ALL, 5 )
 
 		self.m_panel_prepBee3_advKeySettings = wx.Panel( self.m_panel_prepBee, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		sbSizer_advKeySettings = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_prepBee3_advKeySettings, wx.ID_ANY, wx.EmptyString ), wx.VERTICAL )
+		sbSizer_advKeySettings = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_prepBee3_advKeySettings, wx.ID_ANY, u"BEE Encryption Settings:" ), wx.VERTICAL )
+
+		m_choice_beeCryptoAlgoChoices = [ u"AES-128" ]
+		self.m_choice_beeCryptoAlgo = wx.Choice( sbSizer_advKeySettings.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.Size( 80,-1 ), m_choice_beeCryptoAlgoChoices, 0 )
+		self.m_choice_beeCryptoAlgo.SetSelection( 0 )
+		sbSizer_advKeySettings.Add( self.m_choice_beeCryptoAlgo, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
 		self.m_button_advKeySettings = wx.Button( sbSizer_advKeySettings.GetStaticBox(), wx.ID_ANY, u"Advanced Key Settings", wx.DefaultPosition, wx.DefaultSize, 0 )
 		sbSizer_advKeySettings.Add( self.m_button_advKeySettings, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
@@ -413,20 +418,6 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_prepBee3_advKeySettings.Layout()
 		sbSizer_advKeySettings.Fit( self.m_panel_prepBee3_advKeySettings )
 		bSizer_prepBee.Add( self.m_panel_prepBee3_advKeySettings, 1, wx.EXPAND |wx.ALL, 5 )
-
-		self.m_panel_prepBee4_beeCryptoAlgo = wx.Panel( self.m_panel_prepBee, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		sbSizer_beeCryptoAlgo = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_prepBee4_beeCryptoAlgo, wx.ID_ANY, u"BEE Encryption Algorithm:" ), wx.VERTICAL )
-
-		m_choice_beeCryptoAlgoChoices = [ u"AES-128" ]
-		self.m_choice_beeCryptoAlgo = wx.Choice( sbSizer_beeCryptoAlgo.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.Size( 80,-1 ), m_choice_beeCryptoAlgoChoices, 0 )
-		self.m_choice_beeCryptoAlgo.SetSelection( 0 )
-		sbSizer_beeCryptoAlgo.Add( self.m_choice_beeCryptoAlgo, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-
-
-		self.m_panel_prepBee4_beeCryptoAlgo.SetSizer( sbSizer_beeCryptoAlgo )
-		self.m_panel_prepBee4_beeCryptoAlgo.Layout()
-		sbSizer_beeCryptoAlgo.Fit( self.m_panel_prepBee4_beeCryptoAlgo )
-		bSizer_prepBee.Add( self.m_panel_prepBee4_beeCryptoAlgo, 1, wx.EXPAND |wx.ALL, 5 )
 
 		self.m_button_prepBee = wx.Button( self.m_panel_prepBee, wx.ID_ANY, u"Prepare For Encryption", wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer_prepBee.Add( self.m_button_prepBee, 0, wx.ALIGN_CENTER|wx.ALL, 5 )

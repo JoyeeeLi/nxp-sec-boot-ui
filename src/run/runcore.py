@@ -66,8 +66,6 @@ class secBootRun(gencore.secBootGen):
         self.flexspiNorSectorSize = None
         self.isFlexspiNorErasedForImage = False
 
-        self.otpmkData128bits = None
-
     def getUsbid( self ):
         # Create the target object.
         tgt = createTarget(self.mcuDevice)
@@ -202,19 +200,23 @@ class secBootRun(gencore.secBootGen):
         self._readMcuDeviceFuseByBlhost(infodef.kEfuseAddr_BOOT_CFG1, 'Fuse->BOOT_CFG (0x460)')
         self._readMcuDeviceFuseByBlhost(infodef.kEfuseAddr_BOOT_CFG2, 'Fuse->BOOT_CFG (0x470)')
 
+    def _genOtpmkDekFile( self, otpmk4, otpmk5, otpmk6, otpmk7 ):
+        try:
+            os.remove(self.otpmkDekFilename)
+        except:
+            pass
+        self.fillVal32IntoBinFile(self.otpmkDekFilename, otpmk4)
+        self.fillVal32IntoBinFile(self.otpmkDekFilename, otpmk5)
+        self.fillVal32IntoBinFile(self.otpmkDekFilename, otpmk6)
+        self.fillVal32IntoBinFile(self.otpmkDekFilename, otpmk7)
+
     def _readMcuDeviceFuseOtpmkDek( self ):
         otpmk4 = self._readMcuDeviceFuseByBlhost(infodef.kEfuseAddr_OTPMK4, 'Fuse->OTPMK4 (0x540)')
         otpmk5 = self._readMcuDeviceFuseByBlhost(infodef.kEfuseAddr_OTPMK5, 'Fuse->OTPMK5 (0x550)')
         otpmk6 = self._readMcuDeviceFuseByBlhost(infodef.kEfuseAddr_OTPMK6, 'Fuse->OTPMK6 (0x560)')
         otpmk7 = self._readMcuDeviceFuseByBlhost(infodef.kEfuseAddr_OTPMK7, 'Fuse->OTPMK7 (0x570)')
         if otpmk4 != None and otpmk5 != None and otpmk6 != None and otpmk7 != None:
-            self.otpmkData128bits = ''
-            self.otpmkData128bits += self.getFormattedFuseValue(otpmk4, 'MSB')
-            self.otpmkData128bits += self.getFormattedFuseValue(otpmk5, 'MSB')
-            self.otpmkData128bits += self.getFormattedFuseValue(otpmk6, 'MSB')
-            self.otpmkData128bits += self.getFormattedFuseValue(otpmk7, 'MSB')
-        else:
-            self.otpmkData128bits = None
+            self._genOtpmkDekFile(otpmk4, otpmk5, otpmk6, otpmk7)
 
     def getMcuDeviceInfoViaFlashloader( self ):
         self._readMcuDeviceFuseBootCfg()
@@ -375,11 +377,12 @@ class secBootRun(gencore.secBootGen):
         return True
 
     def _showOtpmkDek( self ):
-        if self.otpmkData128bits != None:
+        if os.path.isfile(self.otpmkDekFilename):
             self.clearOtpmkDekData()
-            self.printOtpmkDekData(self.otpmkData128bits[0:16])
-            self.printOtpmkDekData("\n")
-            self.printOtpmkDekData(self.otpmkData128bits[16:32])
+            keyWords = gendef.kSecKeyLengthInBits_DEK / 32
+            for i in range(keyWords):
+                val32 = self.getVal32FromBinFile(self.otpmkDekFilename, (i * 4))
+                self.printOtpmkDekData(str(hex(val32)))
 
     def _eraseFlexspiNorForImageLoading( self ):
         imageLen = os.path.getsize(self.destAppFilename)
@@ -484,7 +487,7 @@ class secBootRun(gencore.secBootGen):
             pass
 
     def flashHabDekToGenerateKeyBlob ( self ):
-        if os.path.isfile(self.dekFilename) and self.dekDataOffset != None:
+        if os.path.isfile(self.dekFilename) and self.habDekDataOffset != None:
             self._prepareForBootDeviceOperation()
             imageLen = os.path.getsize(self.destAppFilename)
             imageCopies = 0x1
@@ -522,7 +525,7 @@ class secBootRun(gencore.secBootGen):
             self.printLog(cmdStr)
             if status != boot.status.kStatus_Success:
                 return False
-            status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_LoadKeyBlobContext + 8, 0x4, self.dekDataOffset)
+            status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_LoadKeyBlobContext + 8, 0x4, self.habDekDataOffset)
             self.printLog(cmdStr)
             if status != boot.status.kStatus_Success:
                 return False
@@ -547,7 +550,7 @@ class secBootRun(gencore.secBootGen):
                 else:
                     pass
                 alignedErasedSize = misc.align_up(imageLen, eraseUnit)
-                needToBeErasedSize = misc.align_up(self.dekDataOffset + rundef.kKeyBlobMaxSize, eraseUnit)
+                needToBeErasedSize = misc.align_up(self.habDekDataOffset + rundef.kKeyBlobMaxSize, eraseUnit)
                 if alignedErasedSize < needToBeErasedSize:
                     memEraseLen = needToBeErasedSize - alignedErasedSize
                     alignedMemEraseAddr = imageLoadAddr + alignedErasedSize

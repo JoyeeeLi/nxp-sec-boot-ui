@@ -16,9 +16,22 @@ class secBootUiSettingsFlexibleUserKeys(advSettingsWin_FlexibleUserKeys.advSetti
         self.userKeyCmdDict = userKeyCmdDict
         #self._recoverLastSettings()
 
-    def setNecessaryInfo( self, mcuDevice, otpmkData ):
+    def _getDek128ContentFromBinFile( self, filename ):
+        if os.path.isfile(filename):
+            dek128Content = ''
+            with open(filename, 'rb') as fileObj:
+                var8Value = array.array('c', [chr(0xff)]) * 16
+                var8Value = fileObj.read(16)
+                for i in range(16):
+                    dek128Content += str(hex(ord(var8Value[15 - i]) & 0xFF))
+                fileObj.close()
+            return dek128Content
+        else:
+            return None
+
+    def setNecessaryInfo( self, mcuDevice, otpmkFilename ):
         self.mcuDevice = mcuDevice
-        self.otpmkData = otpmkData
+        self.otpmkDekContent = self._getDek128ContentFromBinFile(otpmkFilename)
         keySource = None
         if self.mcuDevice == uidef.kMcuDevice_iMXRT102x:
             keySource = uidef.kSupportedKeySource_iMXRT102x
@@ -142,16 +155,16 @@ class secBootUiSettingsFlexibleUserKeys(advSettingsWin_FlexibleUserKeys.advSetti
             if self.userKeyCtrlDict['region0_key_src'] == uidef.kUserKeySource_OTPMK:
                 self.m_textCtrl_region0UserKeyData.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
                 self.m_textCtrl_region0UserKeyData.Clear()
-                if self.otpmkData != None:
-                    self.m_textCtrl_region0UserKeyData.write(self.otpmkData)
+                if self.otpmkDekContent != None:
+                    self.m_textCtrl_region0UserKeyData.write(self.otpmkDekContent)
             else:
                 self.m_textCtrl_region0UserKeyData.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
         elif regionIndex == 1:
             if self.userKeyCtrlDict['region1_key_src'] == uidef.kUserKeySource_OTPMK:
                 self.m_textCtrl_region1UserKeyData.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
                 self.m_textCtrl_region1UserKeyData.Clear()
-                if self.otpmkData != None:
-                    self.m_textCtrl_region1UserKeyData.write(self.otpmkData)
+                if self.otpmkDekContent != None:
+                    self.m_textCtrl_region1UserKeyData.write(self.otpmkDekContent)
             else:
                 self.m_textCtrl_region1UserKeyData.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
         else:
