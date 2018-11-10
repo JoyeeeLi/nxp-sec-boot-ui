@@ -25,7 +25,7 @@ class secBootInfo(uicore.secBootUi):
     def clearLog( self ):
         self.m_textCtrl_log.Clear()
 
-    def increaseGauge( self ):
+    def increaseGauge( self, evt ):
         print '-----------------Increase Gauge-------------------------'
         global isGaugeWorking
         global s_curGauge
@@ -44,7 +44,6 @@ class secBootInfo(uicore.secBootUi):
         s_curGauge = 30
         s_maxGauge = self.m_gauge_action.GetRange()
         self.m_gauge_action.SetValue(s_curGauge)
-        #self.increaseGauge()
 
     def deinitGauge( self ):
         global isGaugeWorking
@@ -127,6 +126,9 @@ class secBootInfo(uicore.secBootUi):
             halfbyteStr = str(hex((fuseValue & (0xF << loc))>> loc))
             formattedVal32 += halfbyteStr[2]
         return formattedVal32
+
+    def getFormattedHexValue( self, val32 ):
+        return ('0x' + self.getFormattedFuseValue(val32))
 
     def fillVal32IntoBinFile( self, filename, val32):
         with open(filename, 'ab') as fileObj:

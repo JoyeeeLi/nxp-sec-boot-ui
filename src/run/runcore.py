@@ -407,7 +407,7 @@ class secBootRun(gencore.secBootGen):
             keyWords = gendef.kSecKeyLengthInBits_DEK / 32
             for i in range(keyWords):
                 val32 = self.getVal32FromBinFile(self.otpmkDekFilename, (i * 4))
-                self.printOtpmkDekData(str(hex(val32)))
+                self.printOtpmkDekData(self.getFormattedHexValue(val32))
 
     def _eraseFlexspiNorForImageLoading( self ):
         imageLen = os.path.getsize(self.destAppFilename)

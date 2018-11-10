@@ -174,7 +174,7 @@ class secBootGen(infomgr.secBootInfo):
         keyWords = gendef.kSecKeyLengthInBits_SRK / 32
         for i in range(keyWords):
             val32 = self.getVal32FromBinFile(self.srkFuseFilename, (i * 4))
-            self.printSrkData(str(hex(val32)))
+            self.printSrkData(self.getFormattedHexValue(val32))
 
     def _getImageInfo( self ):
         startAddress = None
@@ -485,7 +485,7 @@ class secBootGen(infomgr.secBootInfo):
                 keyWords = gendef.kSecKeyLengthInBits_DEK / 32
                 for i in range(keyWords):
                     val32 = self.getVal32FromBinFile(self.habDekFilename, (i * 4))
-                    self.printHabDekData(str(hex(val32)))
+                    self.printHabDekData(self.getFormattedHexValue(val32))
 
     def _changeDestAppNoPaddingFilenameForBee( self ):
         destAppNoPaddingPath, destAppNoPaddingFile = os.path.split(self.destAppNoPaddingFilename)
@@ -509,7 +509,7 @@ class secBootGen(infomgr.secBootInfo):
             keyWords = gendef.kSecKeyLengthInBits_DEK / 32
             for i in range(keyWords):
                 val32 = self.getVal32FromBinFile(dekFilename, (i * 4))
-                self.printGp4DekData(str(hex(val32)))
+                self.printGp4DekData(self.getFormattedHexValue(val32))
 
     def _showBeeDekForSwGp2( self, dekFilename ):
         if os.path.isfile(dekFilename):
@@ -517,7 +517,7 @@ class secBootGen(infomgr.secBootInfo):
             keyWords = gendef.kSecKeyLengthInBits_DEK / 32
             for i in range(keyWords):
                 val32 = self.getVal32FromBinFile(dekFilename, (i * 4))
-                self.printSwGp2DekData(str(hex(val32)))
+                self.printSwGp2DekData(self.getFormattedHexValue(val32))
 
     def _genBeeDekFilesAndShow( self, userKeyCtrlDict, userKeyCmdDict ):
         if userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_Region0 or userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_BothRegions:

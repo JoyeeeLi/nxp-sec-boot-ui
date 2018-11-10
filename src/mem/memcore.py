@@ -9,12 +9,19 @@ from run import rundef
 from ui import uidef
 from ui import uivar
 
+s_visibleAsciiStart = ' '
+s_visibleAsciiEnd = '~'
+
 class secBootMem(fusecore.secBootFuse):
 
     def __init__(self, parent):
         fusecore.secBootFuse.__init__(self, parent)
 
     def readProgrammedMemoryAndShow( self ):
+        if not os.path.isfile(self.destAppFilename):
+            self.popupMsgBox('You should program your image first!')
+            return
+
         memLen = 0
         imageLen = os.path.getsize(self.destAppFilename)
         if self.bootDevice == uidef.kBootDevice_SemcNand:
@@ -43,29 +50,36 @@ class secBootMem(fusecore.secBootFuse):
         with open(memFilepath, 'rb') as fileObj:
             while memLeft > 0:
                 memContent = ''
-                contentToShow = '0x' + self.getFormattedFuseValue(addr) + '    '
+                contentToShow = self.getFormattedHexValue(addr) + '    '
                 if memLeft > 16:
                     memContent = fileObj.read(16)
                 else:
                     memContent = fileObj.read(memLeft)
                 memLeft -= len(memContent)
                 addr += len(memContent)
+                visibleContent = ''
                 for i in range(16):
                     if i < len(memContent):
                         halfbyteStr = str(hex((ord(memContent[i]) & 0xF0)>> 4))
                         contentToShow += halfbyteStr[2]
                         halfbyteStr = str(hex((ord(memContent[i]) & 0x0F)>> 0))
                         contentToShow += halfbyteStr[2] + ' '
+                        if memContent[i] >= s_visibleAsciiStart and \
+                           memContent[i] <= s_visibleAsciiEnd:
+                            visibleContent += memContent[i]
+                        else:
+                            visibleContent += '.'
                     else:
                         contentToShow += '-- '
-                #contentToShow += '        ' + memContent
+                        visibleContent += '-'
+                contentToShow += '        ' + visibleContent
                 self.printMem(contentToShow)
             fileObj.close()
 
-        #try:
-        #    os.remove(memFilepath)
-        #except:
-        #    pass
-        #return True
+        try:
+            os.remove(memFilepath)
+        except:
+            pass
+
 
 

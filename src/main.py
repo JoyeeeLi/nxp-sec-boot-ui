@@ -21,10 +21,10 @@ class secBootMain(memcore.secBootMem):
 
     def _startGaugeTimer( self ):
         self.initGauge()
-        self.gaugeTimer.Start(500) # ms
+        #self.gaugeTimer.Start(500) # ms
 
     def _stopGaugeTimer( self ):
-        self.gaugeTimer.Stop()
+        #self.gaugeTimer.Stop()
         self.deinitGauge()
 
     def callbackSetMcuSeries( self, event ):
