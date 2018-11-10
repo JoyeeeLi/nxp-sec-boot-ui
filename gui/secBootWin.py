@@ -1313,6 +1313,37 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_fuseUtil.Layout()
 		wSizer_fuseUtil.Fit( self.m_panel_fuseUtil )
 		self.m_notebook_imageSeq.AddPage( self.m_panel_fuseUtil, u"eFuse Operation Utility", False )
+		self.m_panel_memView = wx.Panel( self.m_notebook_imageSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.m_panel_memView.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+
+		wSizer_memView = wx.WrapSizer( wx.HORIZONTAL, wx.WRAPSIZER_DEFAULT_FLAGS )
+
+		self.m_textCtrl_bootDeviceMem = wx.TextCtrl( self.m_panel_memView, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 740,370 ), wx.TE_MULTILINE )
+		self.m_textCtrl_bootDeviceMem.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, wx.EmptyString ) )
+
+		wSizer_memView.Add( self.m_textCtrl_bootDeviceMem, 0, wx.ALL, 5 )
+
+		self.m_staticText_null0MemView = wx.StaticText( self.m_panel_memView, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 240,-1 ), 0 )
+		self.m_staticText_null0MemView.Wrap( -1 )
+
+		wSizer_memView.Add( self.m_staticText_null0MemView, 0, wx.ALL, 5 )
+
+		self.m_button_viewMem = wx.Button( self.m_panel_memView, wx.ID_ANY, u"View", wx.DefaultPosition, wx.DefaultSize, 0 )
+		wSizer_memView.Add( self.m_button_viewMem, 0, wx.ALL, 5 )
+
+		self.m_staticText_null1MemView = wx.StaticText( self.m_panel_memView, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 50,-1 ), 0 )
+		self.m_staticText_null1MemView.Wrap( -1 )
+
+		wSizer_memView.Add( self.m_staticText_null1MemView, 0, wx.ALL, 5 )
+
+		self.m_button_clearMem = wx.Button( self.m_panel_memView, wx.ID_ANY, u"Clear", wx.DefaultPosition, wx.DefaultSize, 0 )
+		wSizer_memView.Add( self.m_button_clearMem, 0, wx.ALL, 5 )
+
+
+		self.m_panel_memView.SetSizer( wSizer_memView )
+		self.m_panel_memView.Layout()
+		wSizer_memView.Fit( self.m_panel_memView )
+		self.m_notebook_imageSeq.AddPage( self.m_panel_memView, u"Boot Device Memory", False )
 
 		bSizer_boot.Add( self.m_notebook_imageSeq, 1, wx.EXPAND |wx.ALL, 5 )
 
@@ -1397,6 +1428,8 @@ class secBootWin ( wx.Frame ):
 		self.m_button_progDek.Bind( wx.EVT_BUTTON, self.callbackFlashHabDek )
 		self.m_button_scan.Bind( wx.EVT_BUTTON, self.callbackScanFuse )
 		self.m_button_burn.Bind( wx.EVT_BUTTON, self.callbackBurnFuse )
+		self.m_button_viewMem.Bind( wx.EVT_BUTTON, self.callbackViewMem )
+		self.m_button_clearMem.Bind( wx.EVT_BUTTON, self.callbackClearMem )
 		self.m_button_clearLog.Bind( wx.EVT_BUTTON, self.callbackClearLog )
 
 	def __del__( self ):
@@ -1465,6 +1498,12 @@ class secBootWin ( wx.Frame ):
 		event.Skip()
 
 	def callbackBurnFuse( self, event ):
+		event.Skip()
+
+	def callbackViewMem( self, event ):
+		event.Skip()
+
+	def callbackClearMem( self, event ):
 		event.Skip()
 
 	def callbackClearLog( self, event ):

@@ -3,7 +3,7 @@ import wx
 import sys
 import os
 import time
-from fuse import fusecore
+from mem import memcore
 from ui import uidef
 from ui import ui_cfg_semcnand
 from ui import ui_cfg_flexspinor
@@ -11,10 +11,10 @@ from ui import ui_settings_cert
 from ui import ui_settings_fixed_otpmk_key
 from ui import ui_settings_flexible_user_keys
 
-class secBootMain(fusecore.secBootFuse):
+class secBootMain(memcore.secBootMem):
 
     def __init__(self, parent):
-        fusecore.secBootFuse.__init__(self, parent)
+        memcore.secBootMem.__init__(self, parent)
         self.connectStage = uidef.kConnectStage_Rom
         self.gaugeTimer = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.increaseGauge, self.gaugeTimer)
@@ -245,7 +245,7 @@ class secBootMain(fusecore.secBootFuse):
             self.scanAllFuseRegions()
             self._stopGaugeTimer()
         else:
-            self.popupMsgBox('Please first connect to Flashloader!')
+            self.popupMsgBox('Please connect to Flashloader first!')
 
     def callbackBurnFuse( self, event ):
         if self.connectStage == uidef.kConnectStage_ExternalMemory or \
@@ -254,7 +254,16 @@ class secBootMain(fusecore.secBootFuse):
             self.burnAllFuseRegions()
             self._stopGaugeTimer()
         else:
-            self.popupMsgBox('Please first connect to Flashloader!')
+            self.popupMsgBox('Please connect to Flashloader first!')
+
+    def callbackViewMem( self, event ):
+        if self.connectStage == uidef.kConnectStage_Reset:
+            self.readProgrammedMemoryAndShow()
+        else:
+            self.popupMsgBox('Please configure boot device first!')
+
+    def callbackClearMem( self, event ):
+        self.clearMem()
 
     def callbackClearLog( self, event ):
         self.clearLog()

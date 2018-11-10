@@ -90,6 +90,12 @@ class secBootInfo(uicore.secBootUi):
     def clearSwGp2DekData( self ):
         self.m_textCtrl_swgp2Dek128bit.Clear()
 
+    def printMem( self , memStr ):
+        self.m_textCtrl_bootDeviceMem.write(memStr + "\n")
+
+    def clearMem( self ):
+        self.m_textCtrl_bootDeviceMem.Clear()
+
     def getReg32FromBinFile( self, filename, offset=0):
         return hex(self.getVal32FromBinFile(filename, offset))
 
