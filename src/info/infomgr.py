@@ -6,6 +6,10 @@ import array
 sys.path.append(os.path.abspath(".."))
 from ui import uicore
 
+s_isGaugeWorking = False
+s_curGauge = 0
+s_maxGauge = 0
+
 class secBootInfo(uicore.secBootUi):
 
     def __init__(self, parent):
@@ -20,6 +24,35 @@ class secBootInfo(uicore.secBootUi):
 
     def clearLog( self ):
         self.m_textCtrl_log.Clear()
+
+    def increaseGauge( self ):
+        print '-----------------Increase Gauge-------------------------'
+        global isGaugeWorking
+        global s_curGauge
+        global s_maxGauge
+        if s_isGaugeWorking:
+            if s_curGauge < (s_maxGauge - 10):
+                self.m_gauge_action.SetValue(s_curGauge)
+                s_curGauge += 1
+                #wx.CallLater(100, self.increaseGauge)
+
+    def initGauge( self ):
+        global isGaugeWorking
+        global s_curGauge
+        global s_maxGauge
+        s_isGaugeWorking = True
+        s_curGauge = 30
+        s_maxGauge = self.m_gauge_action.GetRange()
+        self.m_gauge_action.SetValue(s_curGauge)
+        #self.increaseGauge()
+
+    def deinitGauge( self ):
+        global isGaugeWorking
+        global s_curGauge
+        global s_maxGauge
+        isGaugeWorking = False
+        s_curGauge = s_maxGauge
+        self.m_gauge_action.SetValue(s_maxGauge)
 
     def printDeviceStatus( self, statusStr ):
         self.m_textCtrl_deviceStatus.write(statusStr + "\n")

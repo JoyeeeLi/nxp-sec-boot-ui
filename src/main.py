@@ -16,6 +16,16 @@ class secBootMain(fusecore.secBootFuse):
     def __init__(self, parent):
         fusecore.secBootFuse.__init__(self, parent)
         self.connectStage = uidef.kConnectStage_Rom
+        self.gaugeTimer = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.increaseGauge, self.gaugeTimer)
+
+    def _startGaugeTimer( self ):
+        self.initGauge()
+        self.gaugeTimer.Start(500) # ms
+
+    def _stopGaugeTimer( self ):
+        self.gaugeTimer.Stop()
+        self.deinitGauge()
 
     def callbackSetMcuSeries( self, event ):
         self.setTargetSetupValue()
@@ -49,6 +59,7 @@ class secBootMain(fusecore.secBootFuse):
         self.setPortSetupValue(self.connectStage, usbIdList)
 
     def callbackConnectToDevice( self, event ):
+        self._startGaugeTimer()
         self.printLog("'Connect to xxx' button is clicked")
         connectSteps = uidef.kConnectStep_Normal
         self.getOneStepConnectMode()
@@ -97,6 +108,7 @@ class secBootMain(fusecore.secBootFuse):
             else:
                 pass
             connectSteps -= 1
+        self._stopGaugeTimer()
 
     def callbackSetSecureBootType( self, event ):
         self.setSecureBootSeqColor()
@@ -122,12 +134,14 @@ class secBootMain(fusecore.secBootFuse):
             if self.secureBootType == uidef.kSecureBootType_BeeCrypto and (not self.isCertEnabledForBee):
                 self.popupMsgBox('Certificate is not enabled for BEE, You can enable it then try again!')
             else:
+                self._startGaugeTimer()
                 self.printLog("'Generate Certificate' button is clicked")
                 self.updateAllCstPathToCorrectVersion()
                 if self.createSerialAndKeypassfile():
                     self.genCertificate()
                     self.genSuperRootKeys()
                     self.showSuperRootKeys()
+                self._stopGaugeTimer()
         else:
             self.popupMsgBox('No need to generate certificate when booting unsigned image!')
 
@@ -135,10 +149,12 @@ class secBootMain(fusecore.secBootFuse):
         if self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.bootDevice != uidef.kBootDevice_FlexspiNor:
             self.popupMsgBox('Action is not available because BEE encryption boot is only designed for FlexSPI NOR device!')
         else:
+            self._startGaugeTimer()
             self.printLog("'Generate Bootable Image' button is clicked")
             if self.createMatchedBdfile():
                 self.genBootableImage()
                 self.showHabDekIfApplicable()
+            self._stopGaugeTimer()
 
     def callbackSetCertForBee( self, event ):
         if self.secureBootType == uidef.kSecureBootType_BeeCrypto:
@@ -166,12 +182,14 @@ class secBootMain(fusecore.secBootFuse):
 
     def callbackDoBeeEncryption( self, event ):
         if self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.bootDevice == uidef.kBootDevice_FlexspiNor:
+            self._startGaugeTimer()
             if self.keyStorageRegion == uidef.kKeyStorageRegion_FixedOtpmkKey:
                 self.prepareForFixedOtpmkEncryption()
             elif self.keyStorageRegion == uidef.kKeyStorageRegion_FlexibleUserKeys:
                 self.encrypteImageUsingFlexibleUserKeys()
             else:
                 pass
+            self._stopGaugeTimer()
         else:
             self.popupMsgBox('BEE encryption is only available when booting BEE encrypted image in FlexSPI NOR device!')
 
@@ -182,15 +200,19 @@ class secBootMain(fusecore.secBootFuse):
             if self.secureBootType == uidef.kSecureBootType_BeeCrypto and (not self.isCertEnabledForBee):
                 self.popupMsgBox('Certificate is not enabled for BEE, You can enable it then try again!')
             else:
+                self._startGaugeTimer()
                 self.printLog("'Load SRK data' button is clicked")
                 self.burnSrkData()
+                self._stopGaugeTimer()
         else:
             self.popupMsgBox('No need to burn SRK data when booting unsigned image!')
 
     def callbackProgramBeeDek( self, event ):
         if self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.bootDevice == uidef.kBootDevice_FlexspiNor:
             if self.keyStorageRegion == uidef.kKeyStorageRegion_FlexibleUserKeys:
+                self._startGaugeTimer()
                 self.burnBeeDekData()
+                self._stopGaugeTimer()
             else:
                 self.popupMsgBox('No need to burn BEE DEK data as OTPMK key is selected!')
         else:
@@ -200,29 +222,37 @@ class secBootMain(fusecore.secBootFuse):
         if self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.bootDevice != uidef.kBootDevice_FlexspiNor:
             self.popupMsgBox('Action is not available because BEE encryption boot is only designed for FlexSPI NOR device!')
         else:
+            self._startGaugeTimer()
             self.printLog("'Load Bootable Image' button is clicked")
             self.flashBootableImage()
+            self._stopGaugeTimer()
 
     def callbackFlashHabDek( self, event ):
         if self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.bootDevice != uidef.kBootDevice_FlexspiNor:
             self.popupMsgBox('Action is not available because BEE encryption boot is only designed for FlexSPI NOR device!')
         elif self.secureBootType == uidef.kSecureBootType_HabCrypto:
+            self._startGaugeTimer()
             self.printLog("'Load KeyBlob Data' button is clicked")
             self.flashHabDekToGenerateKeyBlob()
+            self._stopGaugeTimer()
         else:
             self.popupMsgBox('KeyBlob loading is only available when booting HAB encrypted image!')
 
     def callbackScanFuse( self, event ):
         if self.connectStage == uidef.kConnectStage_ExternalMemory or \
            self.connectStage == uidef.kConnectStage_Reset:
+            self._startGaugeTimer()
             self.scanAllFuseRegions()
+            self._stopGaugeTimer()
         else:
             self.popupMsgBox('Please first connect to Flashloader!')
 
     def callbackBurnFuse( self, event ):
         if self.connectStage == uidef.kConnectStage_ExternalMemory or \
            self.connectStage == uidef.kConnectStage_Reset:
+            self._startGaugeTimer()
             self.burnAllFuseRegions()
+            self._stopGaugeTimer()
         else:
             self.popupMsgBox('Please first connect to Flashloader!')
 
@@ -233,7 +263,7 @@ if __name__ == '__main__':
     app = wx.App()
 
     main_win = secBootMain(None)
-    main_win.SetTitle(u"nxpSecBoot v0.4.0")
+    main_win.SetTitle(u"nxpSecBoot v0.5.0")
     main_win.Show()
 
     app.MainLoop()
