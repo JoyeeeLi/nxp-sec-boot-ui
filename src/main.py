@@ -3,7 +3,7 @@ import wx
 import sys
 import os
 import time
-from run import runcore
+from fuse import fusecore
 from ui import uidef
 from ui import ui_cfg_semcnand
 from ui import ui_cfg_flexspinor
@@ -11,10 +11,10 @@ from ui import ui_settings_cert
 from ui import ui_settings_fixed_otpmk_key
 from ui import ui_settings_flexible_user_keys
 
-class secBootMain(runcore.secBootRun):
+class secBootMain(fusecore.secBootFuse):
 
     def __init__(self, parent):
-        runcore.secBootRun.__init__(self, parent)
+        fusecore.secBootFuse.__init__(self, parent)
         self.connectStage = uidef.kConnectStage_Rom
 
     def callbackSetMcuSeries( self, event ):
@@ -211,6 +211,20 @@ class secBootMain(runcore.secBootRun):
             self.flashHabDekToGenerateKeyBlob()
         else:
             self.popupMsgBox('KeyBlob loading is only available when booting HAB encrypted image!')
+
+    def callbackScanFuse( self, event ):
+        if self.connectStage == uidef.kConnectStage_ExternalMemory or \
+           self.connectStage == uidef.kConnectStage_Reset:
+            self.scanAllFuseRegions()
+        else:
+            self.popupMsgBox('Please first connect to Flashloader!')
+
+    def callbackBurnFuse( self, event ):
+        if self.connectStage == uidef.kConnectStage_ExternalMemory or \
+           self.connectStage == uidef.kConnectStage_Reset:
+            self.burnAllFuseRegions()
+        else:
+            self.popupMsgBox('Please first connect to Flashloader!')
 
     def callbackClearLog( self, event ):
         self.clearLog()

@@ -7,6 +7,7 @@ sys.path.append(os.path.abspath(".."))
 from gen import gencore
 from gen import gendef
 from info import infodef
+from fuse import fusedef
 from ui import uidef
 from ui import uivar
 from boot import bltest
@@ -143,14 +144,15 @@ class secBootRun(gencore.secBootGen):
             pass
 
     def _readMcuDeviceRegisterUuid( self ):
-        self._getDeviceRegisterBySdphost( infodef.kRegisterAddr_UUID1, 'UUID[31:00]')
-        self._getDeviceRegisterBySdphost( infodef.kRegisterAddr_UUID2, 'UUID[63:32]')
+        self._getDeviceRegisterBySdphost( infodef.kRegisterAddr_UUID1, 'OCOTP->B0W1 UUID[31:00]')
+        self._getDeviceRegisterBySdphost( infodef.kRegisterAddr_UUID2, 'OCOTP->B0W2 UUID[63:32]')
 
     def _readMcuDeviceRegisterSrcSmbr( self ):
         self._getDeviceRegisterBySdphost( infodef.kRegisterAddr_SRC_SBMR1, 'SRC->SMBR1')
         self._getDeviceRegisterBySdphost( infodef.kRegisterAddr_SRC_SBMR2, 'SRC->SMBR2')
 
     def getMcuDeviceInfoViaRom( self ):
+        self.printDeviceStatus("--------MCU device Register----------")
         self._readMcuDeviceRegisterUuid()
         self._readMcuDeviceRegisterSrcSmbr()
 
@@ -185,20 +187,21 @@ class secBootRun(gencore.secBootGen):
         self.printLog(cmdStr)
         return (status == boot.status.kStatus_Success)
 
-    def _readMcuDeviceFuseByBlhost( self, fuseIndex, fuseName):
+    def readMcuDeviceFuseByBlhost( self, fuseIndex, fuseName, needToShow=True):
         status, results, cmdStr = self.blhost.efuseReadOnce(fuseIndex)
         self.printLog(cmdStr)
         if (status == boot.status.kStatus_Success):
-            self.printDeviceStatus(fuseName + " = " + str(hex(results[1])))
+            if needToShow:
+                self.printDeviceStatus(fuseName + " = " + str(hex(results[1])))
             return results[1]
         else:
             self.printDeviceStatus(fuseName + " = --------")
             return None
 
     def _readMcuDeviceFuseBootCfg( self ):
-        self._readMcuDeviceFuseByBlhost(infodef.kEfuseAddr_BOOT_CFG0, 'Fuse->BOOT_CFG (0x450)')
-        self._readMcuDeviceFuseByBlhost(infodef.kEfuseAddr_BOOT_CFG1, 'Fuse->BOOT_CFG (0x460)')
-        self._readMcuDeviceFuseByBlhost(infodef.kEfuseAddr_BOOT_CFG2, 'Fuse->BOOT_CFG (0x470)')
+        self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_BOOT_CFG0, '(0x450) BOOT_CFG')
+        self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_BOOT_CFG1, '(0x460) BOOT_CFG')
+        self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_BOOT_CFG2, '(0x470) BOOT_CFG')
 
     def _genOtpmkDekFile( self, otpmk4, otpmk5, otpmk6, otpmk7 ):
         try:
@@ -211,16 +214,36 @@ class secBootRun(gencore.secBootGen):
         self.fillVal32IntoBinFile(self.otpmkDekFilename, otpmk7)
 
     def _readMcuDeviceFuseOtpmkDek( self ):
-        otpmk4 = self._readMcuDeviceFuseByBlhost(infodef.kEfuseAddr_OTPMK4, 'Fuse->OTPMK4 (0x540)')
-        otpmk5 = self._readMcuDeviceFuseByBlhost(infodef.kEfuseAddr_OTPMK5, 'Fuse->OTPMK5 (0x550)')
-        otpmk6 = self._readMcuDeviceFuseByBlhost(infodef.kEfuseAddr_OTPMK6, 'Fuse->OTPMK6 (0x560)')
-        otpmk7 = self._readMcuDeviceFuseByBlhost(infodef.kEfuseAddr_OTPMK7, 'Fuse->OTPMK7 (0x570)')
+        otpmk0 = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_OTPMK4, '(0x500) OTPMK0')
+        otpmk1 = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_OTPMK5, '(0x510) OTPMK1')
+        otpmk2 = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_OTPMK6, '(0x520) OTPMK2')
+        otpmk3 = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_OTPMK7, '(0x530) OTPMK3')
+
+        otpmk4 = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_OTPMK4, '(0x540) OTPMK4')
+        otpmk5 = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_OTPMK5, '(0x550) OTPMK5')
+        otpmk6 = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_OTPMK6, '(0x560) OTPMK6')
+        otpmk7 = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_OTPMK7, '(0x570) OTPMK7')
         if otpmk4 != None and otpmk5 != None and otpmk6 != None and otpmk7 != None:
             self._genOtpmkDekFile(otpmk4, otpmk5, otpmk6, otpmk7)
 
+    def _readMcuDeviceFuseSrk( self ):
+        self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_SRK0, '(0x580) SRK0')
+        self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_SRK1, '(0x590) SRK1')
+        self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_SRK2, '(0x5A0) SRK2')
+        self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_SRK3, '(0x5B0) SRK3')
+
+    def _readMcuDeviceFuseSwGp2( self ):
+        self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_SW_GP2_0, '(0x690) SW_GP2_0')
+        self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_SW_GP2_1, '(0x6A0) SW_GP2_1')
+        self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_SW_GP2_2, '(0x6B0) SW_GP2_2')
+        self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_SW_GP2_3, '(0x6C0) SW_GP2_3')
+
     def getMcuDeviceInfoViaFlashloader( self ):
+        self.printDeviceStatus("--------MCU device eFusemap--------")
         self._readMcuDeviceFuseBootCfg()
         self._readMcuDeviceFuseOtpmkDek()
+        self._readMcuDeviceFuseSrk()
+        self._readMcuDeviceFuseSwGp2()
 
     def _prepareForBootDeviceOperation ( self ):
         if self.bootDevice == uidef.kBootDevice_FlexspiNor:
@@ -262,17 +285,17 @@ class secBootRun(gencore.secBootGen):
             pagesInBlock = self.getVal32FromBinFile(filepath, infodef.kSemcNandFcbOffset_PagesInBlock)
             blocksInPlane = self.getVal32FromBinFile(filepath, infodef.kSemcNandFcbOffset_BlocksInPlane)
             planesInDevice = self.getVal32FromBinFile(filepath, infodef.kSemcNandFcbOffset_PlanesInDevice)
-            self.printDeviceStatus("pageByteSize   = " + str(hex(pageByteSize)))
-            self.printDeviceStatus("pagesInBlock   = " + str(hex(pagesInBlock)))
-            self.printDeviceStatus("blocksInPlane  = " + str(hex(blocksInPlane)))
-            self.printDeviceStatus("planesInDevice = " + str(hex(planesInDevice)))
+            self.printDeviceStatus("Page Size (bytes) = " + str(hex(pageByteSize)))
+            self.printDeviceStatus("Pages In Block    = " + str(hex(pagesInBlock)))
+            self.printDeviceStatus("Blocks In Plane   = " + str(hex(blocksInPlane)))
+            self.printDeviceStatus("Planes In Device  = " + str(hex(planesInDevice)))
             self.semcNandImageCopies = firmwareCopies
             self.semcNandBlockSize = pageByteSize * pagesInBlock
         else:
-            self.printDeviceStatus("pageByteSize   = --------")
-            self.printDeviceStatus("pagesInBlock   = --------")
-            self.printDeviceStatus("blocksInPlane  = --------")
-            self.printDeviceStatus("planesInDevice = --------")
+            self.printDeviceStatus("Page Size (bytes) = --------")
+            self.printDeviceStatus("Pages In Block    = --------")
+            self.printDeviceStatus("Blocks In Plane   = --------")
+            self.printDeviceStatus("Planes In Device  = --------")
             return False
         try:
             os.remove(filepath)
@@ -292,14 +315,14 @@ class secBootRun(gencore.secBootGen):
             pageByteSize = self.getVal32FromBinFile(filepath, infodef.kFlexspiNorCfgOffset_PageByteSize)
             sectorByteSize = self.getVal32FromBinFile(filepath, infodef.kFlexspiNorCfgOffset_SectorByteSize)
             blockByteSize = self.getVal32FromBinFile(filepath, infodef.kFlexspiNorCfgOffset_BlockByteSize)
-            self.printDeviceStatus("pageSizeInByte   = " + str(hex(pageByteSize)))
-            self.printDeviceStatus("sectorSizeInByte = " + str(hex(sectorByteSize)))
-            self.printDeviceStatus("blockSizeInByte  = " + str(hex(blockByteSize)))
+            self.printDeviceStatus("Page Size (bytes)   = " + str(hex(pageByteSize)))
+            self.printDeviceStatus("Sector Size (bytes) = " + str(hex(sectorByteSize)))
+            self.printDeviceStatus("Block Size (bytes)  = " + str(hex(blockByteSize)))
             self.flexspiNorSectorSize = sectorByteSize
         else:
-            self.printDeviceStatus("pageSizeInByte   = --------")
-            self.printDeviceStatus("sectorSizeInByte = --------")
-            self.printDeviceStatus("blockSizeInByte  = --------")
+            self.printDeviceStatus("Page Size (bytes)   = --------")
+            self.printDeviceStatus("Sector Size (bytes) = --------")
+            self.printDeviceStatus("Block Size (bytes)  = --------")
             return False
         try:
             os.remove(filepath)
@@ -309,8 +332,10 @@ class secBootRun(gencore.secBootGen):
 
     def getBootDeviceInfoViaFlashloader ( self ):
         if self.bootDevice == uidef.kBootDevice_SemcNand:
+            self.printDeviceStatus("--------SEMC NAND memory--------")
             self._getSemcNandDeviceInfo()
         elif self.bootDevice == uidef.kBootDevice_FlexspiNor:
+            self.printDeviceStatus("--------FlexSPI NOR memory--------")
             self._getFlexspiNorDeviceInfo()
         else:
             pass
@@ -437,12 +462,12 @@ class secBootRun(gencore.secBootGen):
     def _isDeviceFuseSrkRegionBlank( self ):
         keyWords = gendef.kSecKeyLengthInBits_SRK / 32
         for i in range(keyWords):
-            srk = self._readMcuDeviceFuseByBlhost(infodef.kEfuseAddr_SRK0 + i, 'Fuse->SRK' + str(i) + ' (' + str(hex(0x580 + i * 0x10)) + ')')
+            srk = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_SRK0 + i, '(' + str(hex(0x580 + i * 0x10)) + ') ' + 'SRK' + str(i), False)
             if srk != None and srk != 0:
                 return False
         return True
 
-    def _burnDeviceFuseByBlhost( self, fuseIndex, fuseValue):
+    def burnMcuDeviceFuseByBlhost( self, fuseIndex, fuseValue):
         status, results, cmdStr = self.blhost.efuseProgramOnce(fuseIndex, self.getFormattedFuseValue(fuseValue))
         self.printLog(cmdStr)
 
@@ -452,7 +477,7 @@ class secBootRun(gencore.secBootGen):
                 keyWords = gendef.kSecKeyLengthInBits_SRK / 32
                 for i in range(keyWords):
                     val32 = self.getVal32FromBinFile(self.srkFuseFilename, (i * 4))
-                    self._burnDeviceFuseByBlhost(infodef.kEfuseAddr_SRK0 + i, val32)
+                    self.burnMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_SRK0 + i, val32)
             else:
                 self.popupMsgBox('Fuse SRK Region has been burned, it is program-once!')
         else:
@@ -461,7 +486,7 @@ class secBootRun(gencore.secBootGen):
     def _isDeviceFuseSwGp2RegionBlank( self ):
         keyWords = gendef.kSecKeyLengthInBits_DEK / 32
         for i in range(keyWords):
-            dek = self._readMcuDeviceFuseByBlhost(infodef.kEfuseAddr_SW_GP2_0 + i, 'Fuse->SW_GP2_' + str(i) + ' (' + str(hex(0x690 + i * 0x10)) + ')')
+            dek = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_SW_GP2_0 + i, '(' + str(hex(0x690 + i * 0x10)) + ') ' + 'SW_GP2_' + str(i), False)
             if dek != None and dek != 0:
                 return False
         return True
@@ -469,7 +494,7 @@ class secBootRun(gencore.secBootGen):
     def _isDeviceFuseGp4RegionBlank( self ):
         keyWords = gendef.kSecKeyLengthInBits_DEK / 32
         for i in range(keyWords):
-            dek = self._readMcuDeviceFuseByBlhost(infodef.kEfuseAddr_GP4_0 + i, 'Fuse->GP4_' + str(i) + ' (' + str(hex(0x8C0 + i * 0x10)) + ')')
+            dek = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_GP4_0 + i, '(' + str(hex(0x8C0 + i * 0x10)) + ') ' + 'GP4_' + str(i))
             if dek != None and dek != 0:
                 return False
         return True
@@ -503,7 +528,7 @@ class secBootRun(gencore.secBootGen):
             if self._isDeviceFuseSwGp2RegionBlank():
                 for i in range(keyWords):
                     val32 = self.getVal32FromBinFile(swgp2DekFilename, (i * 4))
-                    self._burnDeviceFuseByBlhost(infodef.kEfuseAddr_SW_GP2_0 + i, val32)
+                    self.burnMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_SW_GP2_0 + i, val32)
             else:
                 self.popupMsgBox('Fuse SW_GP2 Region has been burned, it is program-once!')
         else:
@@ -512,7 +537,7 @@ class secBootRun(gencore.secBootGen):
             if self._isDeviceFuseGp4RegionBlank():
                 for i in range(keyWords):
                     val32 = self.getVal32FromBinFile(gp4DekFilename, (i * 4))
-                    self._burnDeviceFuseByBlhost(infodef.kEfuseAddr_GP4_0 + i, val32)
+                    self.burnMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_GP4_0 + i, val32)
             else:
                 self.popupMsgBox('Fuse GP4 Region has been burned, it is program-once!')
         else:

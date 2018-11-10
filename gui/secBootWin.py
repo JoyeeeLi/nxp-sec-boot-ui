@@ -17,7 +17,7 @@ import wx.xrc
 class secBootWin ( wx.Frame ):
 
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"nxpSecBoot", pos = wx.DefaultPosition, size = wx.Size( 960,730 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"nxpSecBoot", pos = wx.DefaultPosition, size = wx.Size( 1078,760 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 
 		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 		self.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
@@ -35,7 +35,7 @@ class secBootWin ( wx.Frame ):
 
 		wSizer_logo = wx.WrapSizer( wx.HORIZONTAL, wx.WRAPSIZER_DEFAULT_FLAGS )
 
-		self.m_staticText_null1Logo = wx.StaticText( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 830,-1 ), 0 )
+		self.m_staticText_null1Logo = wx.StaticText( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 950,-1 ), 0 )
 		self.m_staticText_null1Logo.Wrap( -1 )
 
 		wSizer_logo.Add( self.m_staticText_null1Logo, 0, wx.ALL, 5 )
@@ -50,7 +50,7 @@ class secBootWin ( wx.Frame ):
 
 		bSizer_setup = wx.BoxSizer( wx.VERTICAL )
 
-		self.m_notebook_targetSetup = wx.Notebook( self, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,100 ), 0 )
+		self.m_notebook_targetSetup = wx.Notebook( self, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,-1 ), 0 )
 		self.m_panel_targetSetup = wx.Panel( self.m_notebook_targetSetup, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		self.m_panel_targetSetup.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
 
@@ -183,7 +183,7 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_deviceStatus = wx.Panel( self.m_notebook_deviceStatus, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer_deviceStatus = wx.BoxSizer( wx.VERTICAL )
 
-		self.m_textCtrl_deviceStatus = wx.TextCtrl( self.m_panel_deviceStatus, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 250,140 ), wx.TE_MULTILINE )
+		self.m_textCtrl_deviceStatus = wx.TextCtrl( self.m_panel_deviceStatus, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 250,200 ), wx.TE_MULTILINE )
 		bSizer_deviceStatus.Add( self.m_textCtrl_deviceStatus, 0, wx.ALL, 5 )
 
 
@@ -201,7 +201,7 @@ class secBootWin ( wx.Frame ):
 
 		wSizer_bootType = wx.WrapSizer( wx.HORIZONTAL, wx.WRAPSIZER_DEFAULT_FLAGS )
 
-		self.m_staticText_null1BootType = wx.StaticText( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 295,-1 ), 0 )
+		self.m_staticText_null1BootType = wx.StaticText( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 415,-1 ), 0 )
 		self.m_staticText_null1BootType.Wrap( -1 )
 
 		wSizer_bootType.Add( self.m_staticText_null1BootType, 0, wx.ALL, 5 )
@@ -219,7 +219,7 @@ class secBootWin ( wx.Frame ):
 
 		bSizer_boot.Add( wSizer_bootType, 1, wx.EXPAND, 5 )
 
-		self.m_notebook_imageSeq = wx.Notebook( self, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,400 ), 0 )
+		self.m_notebook_imageSeq = wx.Notebook( self, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,450 ), 0 )
 		self.m_notebook_imageSeq.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
 
 		self.m_panel_genSeq = wx.Panel( self.m_notebook_imageSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
@@ -285,7 +285,7 @@ class secBootWin ( wx.Frame ):
 		sbSizer_certFmt.Fit( self.m_panel_doAuth2_certFmt )
 		bSizer_doAuth.Add( self.m_panel_doAuth2_certFmt, 1, wx.EXPAND |wx.ALL, 5 )
 
-		self.m_button_genCert = wx.Button( self.m_panel_doAuth, wx.ID_ANY, u"Generate Certificate,SRK", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_button_genCert = wx.Button( self.m_panel_doAuth, wx.ID_ANY, u"Generate Certificate,SRK", wx.DefaultPosition, wx.Size( 195,-1 ), 0 )
 		bSizer_doAuth.Add( self.m_button_genCert, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
 
@@ -307,7 +307,7 @@ class secBootWin ( wx.Frame ):
 
 		sbSizer_browseApp.Add( self.m_staticText_appPath, 0, wx.ALL, 5 )
 
-		self.m_filePicker_appPath = wx.FilePickerCtrl( sbSizer_browseApp.GetStaticBox(), wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.*", wx.DefaultPosition, wx.Size( 230,-1 ), wx.FLP_DEFAULT_STYLE )
+		self.m_filePicker_appPath = wx.FilePickerCtrl( sbSizer_browseApp.GetStaticBox(), wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.*", wx.DefaultPosition, wx.Size( 280,-1 ), wx.FLP_DEFAULT_STYLE )
 		sbSizer_browseApp.Add( self.m_filePicker_appPath, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
 		self.m_staticText_bdPath = wx.StaticText( sbSizer_browseApp.GetStaticBox(), wx.ID_ANY, u"Matched BD File:", wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -315,7 +315,7 @@ class secBootWin ( wx.Frame ):
 
 		sbSizer_browseApp.Add( self.m_staticText_bdPath, 0, wx.ALL, 5 )
 
-		self.m_textCtrl_bdPath = wx.TextCtrl( sbSizer_browseApp.GetStaticBox(), wx.ID_ANY, u"example.bd", wx.DefaultPosition, wx.Size( 230,-1 ), 0 )
+		self.m_textCtrl_bdPath = wx.TextCtrl( sbSizer_browseApp.GetStaticBox(), wx.ID_ANY, u"example.bd", wx.DefaultPosition, wx.Size( 280,-1 ), 0 )
 		self.m_textCtrl_bdPath.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
 
 		sbSizer_browseApp.Add( self.m_textCtrl_bdPath, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
@@ -391,7 +391,7 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_prepBee2_showOtpmkDek = wx.Panel( self.m_panel_prepBee, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		sbSizer_showOtpmkDek = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_prepBee2_showOtpmkDek, wx.ID_ANY, u"Pre-burned DEK in OTPMK" ), wx.VERTICAL )
 
-		self.m_textCtrl_otpmkDek128bit = wx.TextCtrl( sbSizer_showOtpmkDek.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 100,70 ), wx.TE_MULTILINE )
+		self.m_textCtrl_otpmkDek128bit = wx.TextCtrl( sbSizer_showOtpmkDek.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 100,79 ), wx.TE_MULTILINE )
 		self.m_textCtrl_otpmkDek128bit.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
 
 		sbSizer_showOtpmkDek.Add( self.m_textCtrl_otpmkDek128bit, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
@@ -410,7 +410,7 @@ class secBootWin ( wx.Frame ):
 		self.m_choice_beeCryptoAlgo.SetSelection( 0 )
 		sbSizer_advKeySettings.Add( self.m_choice_beeCryptoAlgo, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
-		self.m_button_advKeySettings = wx.Button( sbSizer_advKeySettings.GetStaticBox(), wx.ID_ANY, u"Advanced Key Settings", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_button_advKeySettings = wx.Button( sbSizer_advKeySettings.GetStaticBox(), wx.ID_ANY, u"Advanced Key Settings", wx.DefaultPosition, wx.Size( -1,-1 ), 0 )
 		sbSizer_advKeySettings.Add( self.m_button_advKeySettings, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
 
@@ -419,7 +419,7 @@ class secBootWin ( wx.Frame ):
 		sbSizer_advKeySettings.Fit( self.m_panel_prepBee3_advKeySettings )
 		bSizer_prepBee.Add( self.m_panel_prepBee3_advKeySettings, 1, wx.EXPAND |wx.ALL, 5 )
 
-		self.m_button_prepBee = wx.Button( self.m_panel_prepBee, wx.ID_ANY, u"Prepare For Encryption", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_button_prepBee = wx.Button( self.m_panel_prepBee, wx.ID_ANY, u"Prepare For Encryption", wx.DefaultPosition, wx.Size( 195,-1 ), 0 )
 		bSizer_prepBee.Add( self.m_button_prepBee, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
 
@@ -444,7 +444,7 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_progSrk1_showSrk = wx.Panel( self.m_panel_progSrk, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		sbSizer_showSrk = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_progSrk1_showSrk, wx.ID_ANY, u"Step 2:" ), wx.VERTICAL )
 
-		self.m_staticText_srk256bit = wx.StaticText( sbSizer_showSrk.GetStaticBox(), wx.ID_ANY, u"Burn below SRK data (256bits) into Fuse SRK0-7 Region:", wx.DefaultPosition, wx.Size( 110,60 ), 0 )
+		self.m_staticText_srk256bit = wx.StaticText( sbSizer_showSrk.GetStaticBox(), wx.ID_ANY, u"Burn below SRK data (256bits) into Fuse SRK0-7 Region:", wx.DefaultPosition, wx.Size( 120,60 ), 0 )
 		self.m_staticText_srk256bit.Wrap( -1 )
 
 		sbSizer_showSrk.Add( self.m_staticText_srk256bit, 0, wx.ALL, 5 )
@@ -489,7 +489,7 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_operBee2_showGp4Dek = wx.Panel( self.m_panel_operBee, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		sbSizer_showGp4Dek = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_operBee2_showGp4Dek, wx.ID_ANY, u"Fuse GP4 Region:" ), wx.VERTICAL )
 
-		self.m_textCtrl_gp4Dek128bit = wx.TextCtrl( sbSizer_showGp4Dek.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 100,70 ), wx.TE_MULTILINE )
+		self.m_textCtrl_gp4Dek128bit = wx.TextCtrl( sbSizer_showGp4Dek.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 100,79 ), wx.TE_MULTILINE )
 		self.m_textCtrl_gp4Dek128bit.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
 
 		sbSizer_showGp4Dek.Add( self.m_textCtrl_gp4Dek128bit, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
@@ -503,7 +503,7 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_operBee3_showSwgp2Dek = wx.Panel( self.m_panel_operBee, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		sbSizer_showSwgp2Dek = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_operBee3_showSwgp2Dek, wx.ID_ANY, u"Fuse SW_GP2 Region:" ), wx.VERTICAL )
 
-		self.m_textCtrl_swgp2Dek128bit = wx.TextCtrl( sbSizer_showSwgp2Dek.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 100,70 ), wx.TE_MULTILINE )
+		self.m_textCtrl_swgp2Dek128bit = wx.TextCtrl( sbSizer_showSwgp2Dek.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 100,79 ), wx.TE_MULTILINE )
 		self.m_textCtrl_swgp2Dek128bit.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
 
 		sbSizer_showSwgp2Dek.Add( self.m_textCtrl_swgp2Dek128bit, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
@@ -533,7 +533,7 @@ class secBootWin ( wx.Frame ):
 
 		sbSizer_showImage = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_flashImage1_showImage, wx.ID_ANY, u"Step 6:" ), wx.VERTICAL )
 
-		self.m_staticText_showImage = wx.StaticText( sbSizer_showImage.GetStaticBox(), wx.ID_ANY, u"Program final bootable image to flash:", wx.DefaultPosition, wx.Size( 140,50 ), 0 )
+		self.m_staticText_showImage = wx.StaticText( sbSizer_showImage.GetStaticBox(), wx.ID_ANY, u"Program final bootable image to flash:", wx.DefaultPosition, wx.Size( 220,50 ), 0 )
 		self.m_staticText_showImage.Wrap( -1 )
 
 		sbSizer_showImage.Add( self.m_staticText_showImage, 0, wx.ALL, 5 )
@@ -562,12 +562,12 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_progDek1_showHabDek = wx.Panel( self.m_panel_progDek, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		sbSizer_showHabDek = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_progDek1_showHabDek, wx.ID_ANY, u"Step 7:" ), wx.VERTICAL )
 
-		self.m_staticText_habDek128bit = wx.StaticText( sbSizer_showHabDek.GetStaticBox(), wx.ID_ANY, u"Use below DEK data (128bits) to generate keyblob and program it to flash for HAB:", wx.DefaultPosition, wx.Size( 100,80 ), 0 )
+		self.m_staticText_habDek128bit = wx.StaticText( sbSizer_showHabDek.GetStaticBox(), wx.ID_ANY, u"Use below DEK data (128bits) to generate keyblob and program it to flash for HAB:", wx.DefaultPosition, wx.Size( 120,80 ), 0 )
 		self.m_staticText_habDek128bit.Wrap( -1 )
 
 		sbSizer_showHabDek.Add( self.m_staticText_habDek128bit, 0, wx.ALL, 5 )
 
-		self.m_textCtrl_habDek128bit = wx.TextCtrl( sbSizer_showHabDek.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 100,70 ), wx.TE_MULTILINE )
+		self.m_textCtrl_habDek128bit = wx.TextCtrl( sbSizer_showHabDek.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 100,79 ), wx.TE_MULTILINE )
 		self.m_textCtrl_habDek128bit.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
 
 		sbSizer_showHabDek.Add( self.m_textCtrl_habDek128bit, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
@@ -592,6 +592,727 @@ class secBootWin ( wx.Frame ):
 		self.m_panel_loadSeq.Layout()
 		wSizer_loadSeq.Fit( self.m_panel_loadSeq )
 		self.m_notebook_imageSeq.AddPage( self.m_panel_loadSeq, u"Image Loading Sequence", False )
+		self.m_panel_fuseUtil = wx.Panel( self.m_notebook_imageSeq, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.m_panel_fuseUtil.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+
+		wSizer_fuseUtil = wx.WrapSizer( wx.HORIZONTAL, wx.WRAPSIZER_DEFAULT_FLAGS )
+
+		bSizer_fuseGroupTxt0 = wx.BoxSizer( wx.VERTICAL )
+
+		self.m_staticText_fuse400 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x400:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse400.Wrap( -1 )
+
+		bSizer_fuseGroupTxt0.Add( self.m_staticText_fuse400, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse410 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x410:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse410.Wrap( -1 )
+
+		bSizer_fuseGroupTxt0.Add( self.m_staticText_fuse410, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse420 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x420:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse420.Wrap( -1 )
+
+		bSizer_fuseGroupTxt0.Add( self.m_staticText_fuse420, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse430 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x430:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse430.Wrap( -1 )
+
+		bSizer_fuseGroupTxt0.Add( self.m_staticText_fuse430, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse440 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x440:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse440.Wrap( -1 )
+
+		bSizer_fuseGroupTxt0.Add( self.m_staticText_fuse440, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse450 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x450:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse450.Wrap( -1 )
+
+		bSizer_fuseGroupTxt0.Add( self.m_staticText_fuse450, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse460 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x460:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse460.Wrap( -1 )
+
+		bSizer_fuseGroupTxt0.Add( self.m_staticText_fuse460, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse470 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x470:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse470.Wrap( -1 )
+
+		bSizer_fuseGroupTxt0.Add( self.m_staticText_fuse470, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse480 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x480:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse480.Wrap( -1 )
+
+		bSizer_fuseGroupTxt0.Add( self.m_staticText_fuse480, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse490 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x490:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse490.Wrap( -1 )
+
+		bSizer_fuseGroupTxt0.Add( self.m_staticText_fuse490, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse4a0 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x4a0:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse4a0.Wrap( -1 )
+
+		bSizer_fuseGroupTxt0.Add( self.m_staticText_fuse4a0, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse4b0 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x4b0:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse4b0.Wrap( -1 )
+
+		bSizer_fuseGroupTxt0.Add( self.m_staticText_fuse4b0, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse4c0 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x4c0:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse4c0.Wrap( -1 )
+
+		bSizer_fuseGroupTxt0.Add( self.m_staticText_fuse4c0, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse4d0 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x4d0:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse4d0.Wrap( -1 )
+
+		bSizer_fuseGroupTxt0.Add( self.m_staticText_fuse4d0, 0, wx.ALL, 5 )
+
+
+		wSizer_fuseUtil.Add( bSizer_fuseGroupTxt0, 1, wx.EXPAND, 5 )
+
+		bSizer_fuseGroupCtrl0 = wx.BoxSizer( wx.VERTICAL )
+
+		self.m_textCtrl_fuse400 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl0.Add( self.m_textCtrl_fuse400, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse410 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl0.Add( self.m_textCtrl_fuse410, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse420 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl0.Add( self.m_textCtrl_fuse420, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse430 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl0.Add( self.m_textCtrl_fuse430, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse440 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl0.Add( self.m_textCtrl_fuse440, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse450 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl0.Add( self.m_textCtrl_fuse450, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse460 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl0.Add( self.m_textCtrl_fuse460, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse470 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl0.Add( self.m_textCtrl_fuse470, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse480 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl0.Add( self.m_textCtrl_fuse480, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse490 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl0.Add( self.m_textCtrl_fuse490, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse4a0 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl0.Add( self.m_textCtrl_fuse4a0, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse4b0 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl0.Add( self.m_textCtrl_fuse4b0, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse4c0 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl0.Add( self.m_textCtrl_fuse4c0, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse4d0 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl0.Add( self.m_textCtrl_fuse4d0, 0, wx.ALL, 5 )
+
+
+		wSizer_fuseUtil.Add( bSizer_fuseGroupCtrl0, 1, wx.EXPAND, 5 )
+
+		bSizer_fuseGroupTxt1 = wx.BoxSizer( wx.VERTICAL )
+
+		self.m_staticText_fuse4e0 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x4e0:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse4e0.Wrap( -1 )
+
+		bSizer_fuseGroupTxt1.Add( self.m_staticText_fuse4e0, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse4f0 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x4f0:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse4f0.Wrap( -1 )
+
+		bSizer_fuseGroupTxt1.Add( self.m_staticText_fuse4f0, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse500 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x500:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse500.Wrap( -1 )
+
+		bSizer_fuseGroupTxt1.Add( self.m_staticText_fuse500, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse510 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x510:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse510.Wrap( -1 )
+
+		bSizer_fuseGroupTxt1.Add( self.m_staticText_fuse510, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse520 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x520:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse520.Wrap( -1 )
+
+		bSizer_fuseGroupTxt1.Add( self.m_staticText_fuse520, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse530 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x530:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse530.Wrap( -1 )
+
+		bSizer_fuseGroupTxt1.Add( self.m_staticText_fuse530, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse540 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x540:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse540.Wrap( -1 )
+
+		bSizer_fuseGroupTxt1.Add( self.m_staticText_fuse540, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse550 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x550:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse550.Wrap( -1 )
+
+		bSizer_fuseGroupTxt1.Add( self.m_staticText_fuse550, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse560 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x560:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse560.Wrap( -1 )
+
+		bSizer_fuseGroupTxt1.Add( self.m_staticText_fuse560, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse570 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x570:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse570.Wrap( -1 )
+
+		bSizer_fuseGroupTxt1.Add( self.m_staticText_fuse570, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse580 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x580:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse580.Wrap( -1 )
+
+		bSizer_fuseGroupTxt1.Add( self.m_staticText_fuse580, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse590 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x590:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse590.Wrap( -1 )
+
+		bSizer_fuseGroupTxt1.Add( self.m_staticText_fuse590, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse5a0 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x5a0:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse5a0.Wrap( -1 )
+
+		bSizer_fuseGroupTxt1.Add( self.m_staticText_fuse5a0, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse5b0 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x5b0:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse5b0.Wrap( -1 )
+
+		bSizer_fuseGroupTxt1.Add( self.m_staticText_fuse5b0, 0, wx.ALL, 5 )
+
+
+		wSizer_fuseUtil.Add( bSizer_fuseGroupTxt1, 1, wx.EXPAND, 5 )
+
+		bSizer_fuseGroupCtrl1 = wx.BoxSizer( wx.VERTICAL )
+
+		self.m_textCtrl_fuse4e0 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl1.Add( self.m_textCtrl_fuse4e0, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse4f0 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl1.Add( self.m_textCtrl_fuse4f0, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse500 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl1.Add( self.m_textCtrl_fuse500, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse510 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl1.Add( self.m_textCtrl_fuse510, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse520 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl1.Add( self.m_textCtrl_fuse520, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse530 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl1.Add( self.m_textCtrl_fuse530, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse540 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl1.Add( self.m_textCtrl_fuse540, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse550 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl1.Add( self.m_textCtrl_fuse550, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse560 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl1.Add( self.m_textCtrl_fuse560, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse570 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl1.Add( self.m_textCtrl_fuse570, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse580 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl1.Add( self.m_textCtrl_fuse580, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse590 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl1.Add( self.m_textCtrl_fuse590, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse5a0 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl1.Add( self.m_textCtrl_fuse5a0, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse5b0 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl1.Add( self.m_textCtrl_fuse5b0, 0, wx.ALL, 5 )
+
+
+		wSizer_fuseUtil.Add( bSizer_fuseGroupCtrl1, 1, wx.EXPAND, 5 )
+
+		bSizer_fuseGroupTxt2 = wx.BoxSizer( wx.VERTICAL )
+
+		self.m_staticText_fuse5c0 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x5c0:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse5c0.Wrap( -1 )
+
+		bSizer_fuseGroupTxt2.Add( self.m_staticText_fuse5c0, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse5d0 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x5d0:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse5d0.Wrap( -1 )
+
+		bSizer_fuseGroupTxt2.Add( self.m_staticText_fuse5d0, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse5e0 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x5e0:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse5e0.Wrap( -1 )
+
+		bSizer_fuseGroupTxt2.Add( self.m_staticText_fuse5e0, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse5f0 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x5f0:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse5f0.Wrap( -1 )
+
+		bSizer_fuseGroupTxt2.Add( self.m_staticText_fuse5f0, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse600 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x600:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse600.Wrap( -1 )
+
+		bSizer_fuseGroupTxt2.Add( self.m_staticText_fuse600, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse610 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x610:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse610.Wrap( -1 )
+
+		bSizer_fuseGroupTxt2.Add( self.m_staticText_fuse610, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse620 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x620:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse620.Wrap( -1 )
+
+		bSizer_fuseGroupTxt2.Add( self.m_staticText_fuse620, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse630 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x630:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse630.Wrap( -1 )
+
+		bSizer_fuseGroupTxt2.Add( self.m_staticText_fuse630, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse640 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x640:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse640.Wrap( -1 )
+
+		bSizer_fuseGroupTxt2.Add( self.m_staticText_fuse640, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse650 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x650:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse650.Wrap( -1 )
+
+		bSizer_fuseGroupTxt2.Add( self.m_staticText_fuse650, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse660 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x660:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse660.Wrap( -1 )
+
+		bSizer_fuseGroupTxt2.Add( self.m_staticText_fuse660, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse670 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x670:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse670.Wrap( -1 )
+
+		bSizer_fuseGroupTxt2.Add( self.m_staticText_fuse670, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse680 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x680:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse680.Wrap( -1 )
+
+		bSizer_fuseGroupTxt2.Add( self.m_staticText_fuse680, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse690 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x690:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse690.Wrap( -1 )
+
+		bSizer_fuseGroupTxt2.Add( self.m_staticText_fuse690, 0, wx.ALL, 5 )
+
+
+		wSizer_fuseUtil.Add( bSizer_fuseGroupTxt2, 1, wx.EXPAND, 5 )
+
+		bSizer_fuseGroupCtrl2 = wx.BoxSizer( wx.VERTICAL )
+
+		self.m_textCtrl_fuse5c0 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl2.Add( self.m_textCtrl_fuse5c0, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse5d0 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl2.Add( self.m_textCtrl_fuse5d0, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse5e0 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl2.Add( self.m_textCtrl_fuse5e0, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse5f0 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl2.Add( self.m_textCtrl_fuse5f0, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse600 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl2.Add( self.m_textCtrl_fuse600, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse610 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl2.Add( self.m_textCtrl_fuse610, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse620 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl2.Add( self.m_textCtrl_fuse620, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse630 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl2.Add( self.m_textCtrl_fuse630, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse640 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl2.Add( self.m_textCtrl_fuse640, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse650 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl2.Add( self.m_textCtrl_fuse650, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse660 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl2.Add( self.m_textCtrl_fuse660, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse670 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl2.Add( self.m_textCtrl_fuse670, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse680 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl2.Add( self.m_textCtrl_fuse680, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse690 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl2.Add( self.m_textCtrl_fuse690, 0, wx.ALL, 5 )
+
+
+		wSizer_fuseUtil.Add( bSizer_fuseGroupCtrl2, 1, wx.EXPAND, 5 )
+
+		bSizer_fuseGroupTxt3 = wx.BoxSizer( wx.VERTICAL )
+
+		self.m_staticText_fuse6a0 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x6a0:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse6a0.Wrap( -1 )
+
+		bSizer_fuseGroupTxt3.Add( self.m_staticText_fuse6a0, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse6b0 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x6b0:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse6b0.Wrap( -1 )
+
+		bSizer_fuseGroupTxt3.Add( self.m_staticText_fuse6b0, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse6c0 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x6c0:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse6c0.Wrap( -1 )
+
+		bSizer_fuseGroupTxt3.Add( self.m_staticText_fuse6c0, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse6d0 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x6d0:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse6d0.Wrap( -1 )
+
+		bSizer_fuseGroupTxt3.Add( self.m_staticText_fuse6d0, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse6e0 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x6e0:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse6e0.Wrap( -1 )
+
+		bSizer_fuseGroupTxt3.Add( self.m_staticText_fuse6e0, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse6f0 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x6f0:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse6f0.Wrap( -1 )
+
+		bSizer_fuseGroupTxt3.Add( self.m_staticText_fuse6f0, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse700 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x700:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse700.Wrap( -1 )
+
+		bSizer_fuseGroupTxt3.Add( self.m_staticText_fuse700, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse710 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x710:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse710.Wrap( -1 )
+
+		bSizer_fuseGroupTxt3.Add( self.m_staticText_fuse710, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse720 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x720:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse720.Wrap( -1 )
+
+		bSizer_fuseGroupTxt3.Add( self.m_staticText_fuse720, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse730 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x730:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse730.Wrap( -1 )
+
+		bSizer_fuseGroupTxt3.Add( self.m_staticText_fuse730, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse740 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x740:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse740.Wrap( -1 )
+
+		bSizer_fuseGroupTxt3.Add( self.m_staticText_fuse740, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse750 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x750:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse750.Wrap( -1 )
+
+		bSizer_fuseGroupTxt3.Add( self.m_staticText_fuse750, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse760 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x760:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse760.Wrap( -1 )
+
+		bSizer_fuseGroupTxt3.Add( self.m_staticText_fuse760, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse770 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x770:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse770.Wrap( -1 )
+
+		bSizer_fuseGroupTxt3.Add( self.m_staticText_fuse770, 0, wx.ALL, 5 )
+
+
+		wSizer_fuseUtil.Add( bSizer_fuseGroupTxt3, 1, wx.EXPAND, 5 )
+
+		bSizer_fuseGroupCtrl3 = wx.BoxSizer( wx.VERTICAL )
+
+		self.m_textCtrl_fuse6a0 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl3.Add( self.m_textCtrl_fuse6a0, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse6b0 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl3.Add( self.m_textCtrl_fuse6b0, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse6c0 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl3.Add( self.m_textCtrl_fuse6c0, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse6d0 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl3.Add( self.m_textCtrl_fuse6d0, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse6e0 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl3.Add( self.m_textCtrl_fuse6e0, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse6f0 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl3.Add( self.m_textCtrl_fuse6f0, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse700 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl3.Add( self.m_textCtrl_fuse700, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse710 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl3.Add( self.m_textCtrl_fuse710, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse720 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl3.Add( self.m_textCtrl_fuse720, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse730 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl3.Add( self.m_textCtrl_fuse730, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse740 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl3.Add( self.m_textCtrl_fuse740, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse750 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl3.Add( self.m_textCtrl_fuse750, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse760 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl3.Add( self.m_textCtrl_fuse760, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse770 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl3.Add( self.m_textCtrl_fuse770, 0, wx.ALL, 5 )
+
+
+		wSizer_fuseUtil.Add( bSizer_fuseGroupCtrl3, 1, wx.EXPAND, 5 )
+
+		bSizer_fuseGroupTxt4 = wx.BoxSizer( wx.VERTICAL )
+
+		self.m_staticText_fuse780 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x780:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse780.Wrap( -1 )
+
+		bSizer_fuseGroupTxt4.Add( self.m_staticText_fuse780, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse790 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x790:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse790.Wrap( -1 )
+
+		bSizer_fuseGroupTxt4.Add( self.m_staticText_fuse790, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse7a0 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x7a0:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse7a0.Wrap( -1 )
+
+		bSizer_fuseGroupTxt4.Add( self.m_staticText_fuse7a0, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse7b0 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x7b0:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse7b0.Wrap( -1 )
+
+		bSizer_fuseGroupTxt4.Add( self.m_staticText_fuse7b0, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse7c0 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x7c0:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse7c0.Wrap( -1 )
+
+		bSizer_fuseGroupTxt4.Add( self.m_staticText_fuse7c0, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse7d0 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x7d0:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse7d0.Wrap( -1 )
+
+		bSizer_fuseGroupTxt4.Add( self.m_staticText_fuse7d0, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse7e0 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x7e0:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse7e0.Wrap( -1 )
+
+		bSizer_fuseGroupTxt4.Add( self.m_staticText_fuse7e0, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse7f0 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x7f0:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse7f0.Wrap( -1 )
+
+		bSizer_fuseGroupTxt4.Add( self.m_staticText_fuse7f0, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse800 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x800:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse800.Wrap( -1 )
+
+		bSizer_fuseGroupTxt4.Add( self.m_staticText_fuse800, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse810 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x810:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse810.Wrap( -1 )
+
+		bSizer_fuseGroupTxt4.Add( self.m_staticText_fuse810, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse820 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x820:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse820.Wrap( -1 )
+
+		bSizer_fuseGroupTxt4.Add( self.m_staticText_fuse820, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse830 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x830:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse830.Wrap( -1 )
+
+		bSizer_fuseGroupTxt4.Add( self.m_staticText_fuse830, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse840 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x840:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse840.Wrap( -1 )
+
+		bSizer_fuseGroupTxt4.Add( self.m_staticText_fuse840, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse850 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x850:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse850.Wrap( -1 )
+
+		bSizer_fuseGroupTxt4.Add( self.m_staticText_fuse850, 0, wx.ALL, 5 )
+
+
+		wSizer_fuseUtil.Add( bSizer_fuseGroupTxt4, 1, wx.EXPAND, 5 )
+
+		bSizer_fuseGroupCtrl4 = wx.BoxSizer( wx.VERTICAL )
+
+		self.m_textCtrl_fuse780 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl4.Add( self.m_textCtrl_fuse780, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse790 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl4.Add( self.m_textCtrl_fuse790, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse7a0 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl4.Add( self.m_textCtrl_fuse7a0, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse7b0 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl4.Add( self.m_textCtrl_fuse7b0, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse7c0 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl4.Add( self.m_textCtrl_fuse7c0, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse7d0 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl4.Add( self.m_textCtrl_fuse7d0, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse7e0 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl4.Add( self.m_textCtrl_fuse7e0, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse7f0 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl4.Add( self.m_textCtrl_fuse7f0, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse800 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl4.Add( self.m_textCtrl_fuse800, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse810 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl4.Add( self.m_textCtrl_fuse810, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse820 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl4.Add( self.m_textCtrl_fuse820, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse830 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl4.Add( self.m_textCtrl_fuse830, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse840 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl4.Add( self.m_textCtrl_fuse840, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse850 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl4.Add( self.m_textCtrl_fuse850, 0, wx.ALL, 5 )
+
+
+		wSizer_fuseUtil.Add( bSizer_fuseGroupCtrl4, 1, wx.EXPAND, 5 )
+
+		bSizer_fuseGroupTxt5 = wx.BoxSizer( wx.VERTICAL )
+
+		self.m_staticText_fuse860 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x860:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse860.Wrap( -1 )
+
+		bSizer_fuseGroupTxt5.Add( self.m_staticText_fuse860, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse870 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x870:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse870.Wrap( -1 )
+
+		bSizer_fuseGroupTxt5.Add( self.m_staticText_fuse870, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse880 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x880:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse880.Wrap( -1 )
+
+		bSizer_fuseGroupTxt5.Add( self.m_staticText_fuse880, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse890 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x890:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse890.Wrap( -1 )
+
+		bSizer_fuseGroupTxt5.Add( self.m_staticText_fuse890, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse8a0 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x8a0:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse8a0.Wrap( -1 )
+
+		bSizer_fuseGroupTxt5.Add( self.m_staticText_fuse8a0, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse8b0 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x8b0:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse8b0.Wrap( -1 )
+
+		bSizer_fuseGroupTxt5.Add( self.m_staticText_fuse8b0, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse8c0 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x8c0:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse8c0.Wrap( -1 )
+
+		bSizer_fuseGroupTxt5.Add( self.m_staticText_fuse8c0, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse8d0 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x8d0:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse8d0.Wrap( -1 )
+
+		bSizer_fuseGroupTxt5.Add( self.m_staticText_fuse8d0, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse8e0 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x8e0:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse8e0.Wrap( -1 )
+
+		bSizer_fuseGroupTxt5.Add( self.m_staticText_fuse8e0, 0, wx.ALL, 5 )
+
+		self.m_staticText_fuse8f0 = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, u"0x8f0:", wx.DefaultPosition, wx.Size( 31,20 ), 0 )
+		self.m_staticText_fuse8f0.Wrap( -1 )
+
+		bSizer_fuseGroupTxt5.Add( self.m_staticText_fuse8f0, 0, wx.ALL, 5 )
+
+
+		wSizer_fuseUtil.Add( bSizer_fuseGroupTxt5, 1, wx.EXPAND, 5 )
+
+		bSizer_fuseGroupCtrl5 = wx.BoxSizer( wx.VERTICAL )
+
+		self.m_textCtrl_fuse860 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl5.Add( self.m_textCtrl_fuse860, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse870 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl5.Add( self.m_textCtrl_fuse870, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse880 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl5.Add( self.m_textCtrl_fuse880, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse890 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl5.Add( self.m_textCtrl_fuse890, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse8a0 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl5.Add( self.m_textCtrl_fuse8a0, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse8b0 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl5.Add( self.m_textCtrl_fuse8b0, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse8c0 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl5.Add( self.m_textCtrl_fuse8c0, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse8d0 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl5.Add( self.m_textCtrl_fuse8d0, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse8e0 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl5.Add( self.m_textCtrl_fuse8e0, 0, wx.ALL, 5 )
+
+		self.m_textCtrl_fuse8f0 = wx.TextCtrl( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 75,20 ), 0 )
+		bSizer_fuseGroupCtrl5.Add( self.m_textCtrl_fuse8f0, 0, wx.ALL, 5 )
+
+		self.m_staticText_null0Fuse = wx.StaticText( self.m_panel_fuseUtil, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 31,15 ), 0 )
+		self.m_staticText_null0Fuse.Wrap( -1 )
+
+		bSizer_fuseGroupCtrl5.Add( self.m_staticText_null0Fuse, 0, wx.ALL, 5 )
+
+		self.m_button_scan = wx.Button( self.m_panel_fuseUtil, wx.ID_ANY, u"Scan", wx.DefaultPosition, wx.Size( 75,-1 ), 0 )
+		bSizer_fuseGroupCtrl5.Add( self.m_button_scan, 0, wx.ALL, 5 )
+
+		self.m_button_burn = wx.Button( self.m_panel_fuseUtil, wx.ID_ANY, u"Burn", wx.DefaultPosition, wx.Size( 75,-1 ), 0 )
+		bSizer_fuseGroupCtrl5.Add( self.m_button_burn, 0, wx.ALL, 5 )
+
+
+		wSizer_fuseUtil.Add( bSizer_fuseGroupCtrl5, 1, wx.EXPAND, 5 )
+
+
+		self.m_panel_fuseUtil.SetSizer( wSizer_fuseUtil )
+		self.m_panel_fuseUtil.Layout()
+		wSizer_fuseUtil.Fit( self.m_panel_fuseUtil )
+		self.m_notebook_imageSeq.AddPage( self.m_panel_fuseUtil, u"eFuse Operation Utility", False )
 
 		bSizer_boot.Add( self.m_notebook_imageSeq, 1, wx.EXPAND |wx.ALL, 5 )
 
@@ -603,18 +1324,13 @@ class secBootWin ( wx.Frame ):
 
 		bSizer_showLog = wx.BoxSizer( wx.VERTICAL )
 
-		self.m_textCtrl_log = wx.TextCtrl( self.m_panel_log, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 530,85 ), wx.TE_MULTILINE )
+		self.m_textCtrl_log = wx.TextCtrl( self.m_panel_log, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 650,68 ), wx.TE_MULTILINE )
 		bSizer_showLog.Add( self.m_textCtrl_log, 0, wx.ALL, 5 )
 
 
 		wSizer_log.Add( bSizer_showLog, 1, wx.EXPAND, 5 )
 
 		bSizer_logAction = wx.BoxSizer( wx.VERTICAL )
-
-		self.m_staticText_null1LogAction = wx.StaticText( self.m_panel_log, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( -1,3 ), 0 )
-		self.m_staticText_null1LogAction.Wrap( -1 )
-
-		bSizer_logAction.Add( self.m_staticText_null1LogAction, 0, wx.ALL, 5 )
 
 		self.m_button_clearLog = wx.Button( self.m_panel_log, wx.ID_ANY, u"Clear", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_button_clearLog.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
@@ -631,7 +1347,7 @@ class secBootWin ( wx.Frame ):
 
 		bSizer_actionGauge = wx.BoxSizer( wx.VERTICAL )
 
-		self.m_gauge_action = wx.Gauge( self.m_panel_log, wx.ID_ANY, 100, wx.DefaultPosition, wx.Size( 630,-1 ), wx.GA_HORIZONTAL )
+		self.m_gauge_action = wx.Gauge( self.m_panel_log, wx.ID_ANY, 100, wx.DefaultPosition, wx.Size( 750,-1 ), wx.GA_HORIZONTAL )
 		self.m_gauge_action.SetValue( 100 )
 		bSizer_actionGauge.Add( self.m_gauge_action, 0, wx.ALL, 5 )
 
@@ -679,6 +1395,8 @@ class secBootWin ( wx.Frame ):
 		self.m_button_operBee.Bind( wx.EVT_BUTTON, self.callbackProgramBeeDek )
 		self.m_button_flashImage.Bind( wx.EVT_BUTTON, self.callbackFlashImage )
 		self.m_button_progDek.Bind( wx.EVT_BUTTON, self.callbackFlashHabDek )
+		self.m_button_scan.Bind( wx.EVT_BUTTON, self.callbackScanFuse )
+		self.m_button_burn.Bind( wx.EVT_BUTTON, self.callbackBurnFuse )
 		self.m_button_clearLog.Bind( wx.EVT_BUTTON, self.callbackClearLog )
 
 	def __del__( self ):
@@ -741,6 +1459,12 @@ class secBootWin ( wx.Frame ):
 		event.Skip()
 
 	def callbackFlashHabDek( self, event ):
+		event.Skip()
+
+	def callbackScanFuse( self, event ):
+		event.Skip()
+
+	def callbackBurnFuse( self, event ):
 		event.Skip()
 
 	def callbackClearLog( self, event ):
