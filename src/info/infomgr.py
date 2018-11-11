@@ -145,7 +145,11 @@ class secBootInfo(uicore.secBootUi):
                 var8Value = array.array('c', [chr(0xff)]) * 16
                 var8Value = fileObj.read(16)
                 for i in range(16):
-                    dek128Content += str(hex(ord(var8Value[15 - i]) & 0xFF))
+                    temp = str(hex(ord(var8Value[15 - i]) & 0xFF))
+                    if len(temp) >= 4 and temp[0:2] == '0x':
+                        dek128Content += temp[2:4]
+                    else:
+                        return None
                 fileObj.close()
             return dek128Content
         else:

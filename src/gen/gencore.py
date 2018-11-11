@@ -383,20 +383,28 @@ class secBootGen(infomgr.secBootInfo):
 
         return True
 
+    def _tryToReuseExistingCert( self ):
+        self._setSrkFilenames()
+        self._getCrtSrkCaPemFilenames()
+        self._getCrtCsfImgUsrPemFilenames()
+
     def _isCertificateGenerated( self ):
         if self.secureBootType == uidef.kSecureBootType_HabAuth or \
            self.secureBootType == uidef.kSecureBootType_HabCrypto or \
            (self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.isCertEnabledForBee):
-            if ((self.srkTableFilename != None) and \
-                (self.srkFuseFilename != None) and \
-                (self.crtSrkCaPemFileList[0] != None) and \
-                (self.crtCsfUsrPemFileList[0] != None) and \
-                (self.crtImgUsrPemFileList[0] != None)):
-                return  (os.path.isfile(self.srkTableFilename) and \
-                         os.path.isfile(self.srkFuseFilename) and \
-                         os.path.isfile(self.crtSrkCaPemFileList[0]) and \
-                         os.path.isfile(self.crtCsfUsrPemFileList[0]) and \
-                         os.path.isfile(self.crtImgUsrPemFileList[0]))
+            if ((self.srkTableFilename == None) or \
+                (self.srkFuseFilename == None) or \
+                (self.crtSrkCaPemFileList[0] == None) or \
+                (self.crtCsfUsrPemFileList[0] == None) or \
+                (self.crtImgUsrPemFileList[0] == None)):
+                self._tryToReuseExistingCert()
+            if (os.path.isfile(self.srkTableFilename) and \
+                os.path.isfile(self.srkFuseFilename) and \
+                os.path.isfile(self.crtSrkCaPemFileList[0]) and \
+                os.path.isfile(self.crtCsfUsrPemFileList[0]) and \
+                os.path.isfile(self.crtImgUsrPemFileList[0])):
+                self.showSuperRootKeys()
+                return True
             else:
                 return False
         elif self.secureBootType == uidef.kSecureBootType_Development or \

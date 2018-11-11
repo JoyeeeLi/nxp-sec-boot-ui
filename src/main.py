@@ -1,6 +1,9 @@
 #! /usr/bin/env python
+# -*- coding: UTF-8 -*-
 import wx
 import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 import os
 import time
 from mem import memcore
@@ -80,6 +83,7 @@ class secBootMain(memcore.secBootMem):
                         self.updateConnectStatus('red')
                 else:
                     self.updateConnectStatus('red')
+                    self.popupMsgBox('Make sure that you have put MCU in Serial Downloader mode (BMOD[1:0] pins = 2\'b01)!')
             elif self.connectStage == uidef.kConnectStage_Flashloader:
                 self.connectToDevice(self.connectStage)
                 # A new USB device is being enumerated, we need to delay some time here
@@ -186,7 +190,10 @@ class secBootMain(memcore.secBootMem):
         if self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.bootDevice == uidef.kBootDevice_FlexspiNor:
             self._startGaugeTimer()
             if self.keyStorageRegion == uidef.kKeyStorageRegion_FixedOtpmkKey:
-                self.prepareForFixedOtpmkEncryption()
+                if self.connectStage == uidef.kConnectStage_Reset:
+                    self.prepareForFixedOtpmkEncryption()
+                else:
+                    self.popupMsgBox('Please configure boot device via Flashloader first!')
             elif self.keyStorageRegion == uidef.kKeyStorageRegion_FlexibleUserKeys:
                 self.encrypteImageUsingFlexibleUserKeys()
             else:
@@ -202,19 +209,27 @@ class secBootMain(memcore.secBootMem):
             if self.secureBootType == uidef.kSecureBootType_BeeCrypto and (not self.isCertEnabledForBee):
                 self.popupMsgBox('Certificate is not enabled for BEE, You can enable it then try again!')
             else:
-                self._startGaugeTimer()
-                self.printLog("'Load SRK data' button is clicked")
-                self.burnSrkData()
-                self._stopGaugeTimer()
+                if self.connectStage == uidef.kConnectStage_ExternalMemory or \
+                   self.connectStage == uidef.kConnectStage_Reset:
+                    self._startGaugeTimer()
+                    self.printLog("'Load SRK data' button is clicked")
+                    self.burnSrkData()
+                    self._stopGaugeTimer()
+                else:
+                    self.popupMsgBox('Please connect to Flashloader first!')
         else:
             self.popupMsgBox('No need to burn SRK data when booting unsigned image!')
 
     def callbackProgramBeeDek( self, event ):
         if self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.bootDevice == uidef.kBootDevice_FlexspiNor:
             if self.keyStorageRegion == uidef.kKeyStorageRegion_FlexibleUserKeys:
-                self._startGaugeTimer()
-                self.burnBeeDekData()
-                self._stopGaugeTimer()
+                if self.connectStage == uidef.kConnectStage_ExternalMemory or \
+                   self.connectStage == uidef.kConnectStage_Reset:
+                    self._startGaugeTimer()
+                    self.burnBeeDekData()
+                    self._stopGaugeTimer()
+                else:
+                    self.popupMsgBox('Please connect to Flashloader first!')
             else:
                 self.popupMsgBox('No need to burn BEE DEK data as OTPMK key is selected!')
         else:
@@ -224,21 +239,27 @@ class secBootMain(memcore.secBootMem):
         if self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.bootDevice != uidef.kBootDevice_FlexspiNor:
             self.popupMsgBox('Action is not available because BEE encryption boot is only designed for FlexSPI NOR device!')
         else:
-            self._startGaugeTimer()
-            self.printLog("'Load Bootable Image' button is clicked")
-            self.flashBootableImage()
-            self.burnBeeKeySelIfApplicable()
-            self._stopGaugeTimer()
+            if self.connectStage == uidef.kConnectStage_Reset:
+                self._startGaugeTimer()
+                self.printLog("'Load Bootable Image' button is clicked")
+                self.flashBootableImage()
+                self.burnBeeKeySelIfApplicable()
+                self._stopGaugeTimer()
+            else:
+                self.popupMsgBox('Please configure boot device via Flashloader first!')
 
     def callbackFlashHabDek( self, event ):
         if self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.bootDevice != uidef.kBootDevice_FlexspiNor:
             self.popupMsgBox('Action is not available because BEE encryption boot is only designed for FlexSPI NOR device!')
         elif self.secureBootType == uidef.kSecureBootType_HabCrypto:
-            self._startGaugeTimer()
-            self.printLog("'Load KeyBlob Data' button is clicked")
-            self.flashHabDekToGenerateKeyBlob()
-            self.enableHab()
-            self._stopGaugeTimer()
+            if self.connectStage == uidef.kConnectStage_Reset:
+                self._startGaugeTimer()
+                self.printLog("'Load KeyBlob Data' button is clicked")
+                self.flashHabDekToGenerateKeyBlob()
+                self.enableHab()
+                self._stopGaugeTimer()
+            else:
+                self.popupMsgBox('Please configure boot device via Flashloader first!')
         else:
             self.popupMsgBox('KeyBlob loading is only available when booting HAB encrypted image!')
 
@@ -264,7 +285,7 @@ class secBootMain(memcore.secBootMem):
         if self.connectStage == uidef.kConnectStage_Reset:
             self.readProgrammedMemoryAndShow()
         else:
-            self.popupMsgBox('Please configure boot device first!')
+            self.popupMsgBox('Please configure boot device via Flashloader first!')
 
     def callbackClearMem( self, event ):
         self.clearMem()
@@ -272,11 +293,24 @@ class secBootMain(memcore.secBootMem):
     def callbackClearLog( self, event ):
         self.clearLog()
 
+    def callbackShowHomePage( self, event ):
+        msgText = (('https://github.com/JayHeng/nxp-sec-boot-ui.git \n'))
+        wx.MessageBox(msgText, "Home Page", wx.OK | wx.ICON_INFORMATION)
+
+    def callbackShowAboutAuthor( self, event ):
+        author = "Author:  衡杰Jay \n"
+        blog = "Blog:      痞子衡嵌入式 https://www.cnblogs.com/henjay724/ \n"
+        msgText = ((author.encode('utf-8')) +
+                   ('Email:     jie.heng@nxp.com \n') +
+                   ('Email:     hengjie1989@foxmail.com \n') +
+                   (blog.encode('utf-8')))
+        wx.MessageBox(msgText, "About Author", wx.OK | wx.ICON_INFORMATION)
+
 if __name__ == '__main__':
     app = wx.App()
 
     main_win = secBootMain(None)
-    main_win.SetTitle(u"nxpSecBoot v0.5.0")
+    main_win.SetTitle(u"nxpSecBoot v0.6.0")
     main_win.Show()
 
     app.MainLoop()

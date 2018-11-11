@@ -24,8 +24,11 @@ class secBootWin ( wx.Frame ):
 
 		self.m_menubar = wx.MenuBar( 0 )
 		self.m_menu_help = wx.Menu()
-		self.m_menu_about = wx.Menu()
-		self.m_menu_help.AppendSubMenu( self.m_menu_about, u"About" )
+		self.m_menuItem_homePage = wx.MenuItem( self.m_menu_help, wx.ID_ANY, u"Home Page", wx.EmptyString, wx.ITEM_NORMAL )
+		self.m_menu_help.Append( self.m_menuItem_homePage )
+
+		self.m_menuIte_aboutAuthor = wx.MenuItem( self.m_menu_help, wx.ID_ANY, u"About Author", wx.EmptyString, wx.ITEM_NORMAL )
+		self.m_menu_help.Append( self.m_menuIte_aboutAuthor )
 
 		self.m_menubar.Append( self.m_menu_help, u"Help" )
 
@@ -1408,6 +1411,8 @@ class secBootWin ( wx.Frame ):
 		self.Centre( wx.BOTH )
 
 		# Connect Events
+		self.Bind( wx.EVT_MENU, self.callbackShowHomePage, id = self.m_menuItem_homePage.GetId() )
+		self.Bind( wx.EVT_MENU, self.callbackShowAboutAuthor, id = self.m_menuIte_aboutAuthor.GetId() )
 		self.m_choice_mcuSeries.Bind( wx.EVT_CHOICE, self.callbackSetMcuSeries )
 		self.m_choice_mcuDevice.Bind( wx.EVT_CHOICE, self.callbackSetMcuDevice )
 		self.m_choice_bootDevice.Bind( wx.EVT_CHOICE, self.callbackSetBootDevice )
@@ -1438,6 +1443,12 @@ class secBootWin ( wx.Frame ):
 
 
 	# Virtual event handlers, overide them in your derived class
+	def callbackShowHomePage( self, event ):
+		event.Skip()
+
+	def callbackShowAboutAuthor( self, event ):
+		event.Skip()
+
 	def callbackSetMcuSeries( self, event ):
 		event.Skip()
 

@@ -197,7 +197,10 @@ class secBootUi(secBootWin.secBootWin):
                 self.m_panel_genImage3_enableCertForBee.SetBackgroundColour( uidef.kBootSeqColor_Active )
                 self.setKeyStorageRegionColor()
                 self.m_panel_flashImage1_showImage.SetBackgroundColour( uidef.kBootSeqColor_Active )
-                self.m_button_genImage.SetLabel('Generate (Signed) Bootable Image')
+                if self.isCertEnabledForBee:
+                    self.m_button_genImage.SetLabel('Generate Signed Bootable Image')
+                else:
+                    self.m_button_genImage.SetLabel('Generate Unsigned Bootable Image')
                 self.m_button_flashImage.SetLabel('Load Image, Burn BEE_KEYx_SEL')
             else:
                 self._resetSecureBootSeqColor()

@@ -202,7 +202,8 @@ class secBootRun(gencore.secBootGen):
                 self.printDeviceStatus(fuseName + " = " + str(hex(results[1])))
             return results[1]
         else:
-            self.printDeviceStatus(fuseName + " = --------")
+            if needToShow:
+                self.printDeviceStatus(fuseName + " = --------")
             return None
 
     def _readMcuDeviceFuseTester( self ):
@@ -244,6 +245,10 @@ class secBootRun(gencore.secBootGen):
         self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_SRK1, '(0x590) SRK1')
         self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_SRK2, '(0x5A0) SRK2')
         self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_SRK3, '(0x5B0) SRK3')
+        self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_SRK4, '(0x5C0) SRK4')
+        self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_SRK5, '(0x5D0) SRK5')
+        self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_SRK6, '(0x5E0) SRK6')
+        self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_SRK7, '(0x5F0) SRK7')
 
     def _readMcuDeviceFuseSwGp2( self ):
         self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_SW_GP2_0, '(0x690) SW_GP2_0')
@@ -277,7 +282,7 @@ class secBootRun(gencore.secBootGen):
     def getMcuDeviceBtFuseSel( self ):
         btFuseSel = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseLocation_BtFuseSel, '', False)
         if btFuseSel != None:
-            self.mcuDeviceBtFuseSel = (((btFuseSel & fusedef.kEfuseMask_BtFuseSel) >> fusedef.kEfuseShift_BtFuseSel) << 1)
+            self.mcuDeviceBtFuseSel = ((btFuseSel & fusedef.kEfuseMask_BtFuseSel) >> fusedef.kEfuseShift_BtFuseSel)
             if self.mcuDeviceBtFuseSel == 0:
                 self.printDeviceStatus('BT_FUSE_SEL = 1\'b0')
                 self.printDeviceStatus('  When BMOD[1:0] = 2\'b00 (Boot From Fuses), It means there is no application in boot device, MCU will enter serial downloader mode directly')
@@ -481,7 +486,7 @@ class secBootRun(gencore.secBootGen):
             otpmkKeyOpt = (otpmkKeyOpt & 0xFFF0FFFF) | (0x1 << 16)
             encryptedRegionCnt = 1
             otpmkEncryptedRegionStart[0] = rundef.kBootDeviceMemBase_FlexspiNor + gendef.kIvtOffset_NOR
-            otpmkEncryptedRegionLength[0] = os.path.getsize(self.destAppFilename) - gendef.kIvtOffset_NOR
+            otpmkEncryptedRegionLength[0] = misc.align_up(os.path.getsize(self.destAppFilename), gendef.kSecFacRegionAlignedUnit) - gendef.kIvtOffset_NOR
         else:
             pass
         status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_LoadPrdbOpt, 0x4, otpmkKeyOpt)
@@ -606,6 +611,10 @@ class secBootRun(gencore.secBootGen):
         elif self.bootDevice == uidef.kBootDevice_FlexspiNor:
             if not self.isFlexspiNorErasedForImage:
                 self._eraseFlexspiNorForImageLoading()
+                if self.secureBootType == uidef.kSecureBootType_Development or \
+                   self.secureBootType == uidef.kSecureBootType_HabAuth or \
+                   (self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.keyStorageRegion == uidef.kKeyStorageRegion_FlexibleUserKeys):
+                    self._programFlexspiNorConfigBlock()
             imageLoadAddr = self.bootDeviceMemBase + infodef.kFlexspiNorCfgInfo_Length
             status, results, cmdStr = self.blhost.writeMemory(imageLoadAddr, self.destAppNoPaddingFilename, self.bootDeviceMemId)
             self.printLog(cmdStr)
@@ -626,25 +635,36 @@ class secBootRun(gencore.secBootGen):
         if self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.bootDevice == uidef.kBootDevice_FlexspiNor:
             setBeeKey0Sel = None
             setBeeKey1Sel = None
-            userKeyCtrlDict, userKeyCmdDict = uivar.getAdvancedSettings(uidef.kAdvancedSettings_UserKeys)
-            if userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_Region0 or userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_BothRegions:
-                if userKeyCtrlDict['region0_key_src'] == uidef.kUserKeySource_OTPMK:
+            if self.keyStorageRegion == uidef.kKeyStorageRegion_FixedOtpmkKey:
+                otpmkKeyOpt, otpmkEncryptedRegionStart, otpmkEncryptedRegionLength = uivar.getAdvancedSettings(uidef.kAdvancedSettings_OtpmkKey)
+                encryptedRegionCnt = (otpmkKeyOpt & 0x000F0000) >> 16
+                # One PRDB means one BEE_KEY, no matter how many FAC regions it has
+                if encryptedRegionCnt >= 0:
                     setBeeKey0Sel = fusedef.kBeeKeySel_FromOtpmk
-                elif userKeyCtrlDict['region0_key_src'] == uidef.kUserKeySource_SW_GP2:
-                    setBeeKey0Sel = fusedef.kBeeKeySel_FromSwGp2
-                elif userKeyCtrlDict['region0_key_src'] == uidef.kUserKeySource_GP4:
-                    setBeeKey0Sel = fusedef.kBeeKeySel_FromGp4
-                else:
-                    pass
-            if userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_Region1 or userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_BothRegions:
-                if userKeyCtrlDict['region0_key_src'] == uidef.kUserKeySource_OTPMK:
-                    setBeeKey1Sel = fusedef.kBeeKeySel_FromOtpmk
-                elif userKeyCtrlDict['region1_key_src'] == uidef.kUserKeySource_SW_GP2:
-                    setBeeKey1Sel = fusedef.kBeeKeySel_FromSwGp2
-                elif userKeyCtrlDict['region1_key_src'] == uidef.kUserKeySource_GP4:
-                    setBeeKey1Sel = fusedef.kBeeKeySel_FromGp4
-                else:
-                    pass
+                #if encryptedRegionCnt > 1:
+                #    setBeeKey1Sel = fusedef.kBeeKeySel_FromOtpmk
+            elif self.keyStorageRegion == uidef.kKeyStorageRegion_FlexibleUserKeys:
+                userKeyCtrlDict, userKeyCmdDict = uivar.getAdvancedSettings(uidef.kAdvancedSettings_UserKeys)
+                if userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_Region0 or userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_BothRegions:
+                    if userKeyCtrlDict['region0_key_src'] == uidef.kUserKeySource_OTPMK:
+                        setBeeKey0Sel = fusedef.kBeeKeySel_FromOtpmk
+                    elif userKeyCtrlDict['region0_key_src'] == uidef.kUserKeySource_SW_GP2:
+                        setBeeKey0Sel = fusedef.kBeeKeySel_FromSwGp2
+                    elif userKeyCtrlDict['region0_key_src'] == uidef.kUserKeySource_GP4:
+                        setBeeKey0Sel = fusedef.kBeeKeySel_FromGp4
+                    else:
+                        pass
+                if userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_Region1 or userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_BothRegions:
+                    if userKeyCtrlDict['region0_key_src'] == uidef.kUserKeySource_OTPMK:
+                        setBeeKey1Sel = fusedef.kBeeKeySel_FromOtpmk
+                    elif userKeyCtrlDict['region1_key_src'] == uidef.kUserKeySource_SW_GP2:
+                        setBeeKey1Sel = fusedef.kBeeKeySel_FromSwGp2
+                    elif userKeyCtrlDict['region1_key_src'] == uidef.kUserKeySource_GP4:
+                        setBeeKey1Sel = fusedef.kBeeKeySel_FromGp4
+                    else:
+                        pass
+            else:
+                pass
             getBeeKeySel = self._getMcuDeviceBeeKeySel()
             if getBeeKeySel != None:
                 if setBeeKey0Sel != None:
@@ -738,6 +758,8 @@ class secBootRun(gencore.secBootGen):
                 self.printLog(cmdStr)
                 if status != boot.status.kStatus_Success:
                     return False
+            if self.bootDevice == uidef.kBootDevice_FlexspiNor:
+                self._programFlexspiNorConfigBlock()
         else:
             self.popupMsgBox('Dek file hasn\'t been generated!')
 
@@ -745,8 +767,9 @@ class secBootRun(gencore.secBootGen):
         if self.mcuDeviceHabStatus != fusedef.kHabStatus_Closed0 and \
            self.mcuDeviceHabStatus != fusedef.kHabStatus_Closed1:
             secConfig1 = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseLocation_SecConfig1, '', False)
-            secConfig1 = secConfig1 | fusedef.kEfuseMask_SecConfig1
-            self.burnMcuDeviceFuseByBlhost(fusedef.kEfuseLocation_SecConfig1, secConfig1)
+            if secConfig1 != None:
+                secConfig1 = secConfig1 | fusedef.kEfuseMask_SecConfig1
+                self.burnMcuDeviceFuseByBlhost(fusedef.kEfuseLocation_SecConfig1, secConfig1)
 
     def resetMcuDevice( self ):
         status, results, cmdStr = self.blhost.reset()
