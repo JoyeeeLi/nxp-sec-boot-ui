@@ -2,8 +2,14 @@ import sys, os
 
 kMaxEfuseWords  = 80
 
+##################################################
+
 kEfuseIndex_START  = 0x0
 
+kEfuseIndex_TESTER0  = 0x1
+kEfuseIndex_TESTER1  = 0x2
+kEfuseIndex_TESTER2  = 0x3
+kEfuseIndex_TESTER3  = 0x4
 
 kEfuseIndex_BOOT_CFG0  = 0x5
 kEfuseIndex_BOOT_CFG1  = 0x6
@@ -36,4 +42,35 @@ kEfuseIndex_GP4_0 = 0x4C
 kEfuseIndex_GP4_1 = 0x4D
 kEfuseIndex_GP4_2 = 0x4E
 kEfuseIndex_GP4_3 = 0x4F
+
+##################################################
+
+kEfuseMask_SecConfig0 = 0x00000002
+kEfuseMask_SecConfig1 = 0x00000002
+kEfuseShift_SecConfig0 = 1
+kEfuseShift_SecConfig1 = 1
+kEfuseLocation_SecConfig0 = kEfuseIndex_TESTER3
+kEfuseLocation_SecConfig1 = kEfuseIndex_BOOT_CFG1
+
+kEfuseMask_BtFuseSel = 0x00000010
+kEfuseShift_BtFuseSel = 4
+kEfuseLocation_BtFuseSel = kEfuseIndex_BOOT_CFG1
+
+kEfuseMask_BeeKey0Sel = 0x00003000
+kEfuseMask_BeeKey1Sel = 0x0000C000
+kEfuseShift_BeeKey0Sel = 12
+kEfuseShift_BeeKey1Sel = 14
+kEfuseLocation_BeeKeySel = kEfuseIndex_BOOT_CFG1
+
+##################################################
+
+kHabStatus_FAB     = 0x0
+kHabStatus_Open    = 0x1
+kHabStatus_Closed0 = 0x2
+kHabStatus_Closed1 = 0x3
+
+kBeeKeySel_FromReg   = 0x0
+kBeeKeySel_FromGp4   = 0x1
+kBeeKeySel_FromOtpmk = 0x2
+kBeeKeySel_FromSwGp2 = 0x3
 

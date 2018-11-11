@@ -6,6 +6,15 @@ kRegisterAddr_UUID2  = 0x401F4420
 kRegisterAddr_SRC_SBMR1  = 0x400F8004
 kRegisterAddr_SRC_SBMR2  = 0x400F801C
 
+kRegisterMask_Bmod = 0x03000000
+kRegisterShift_Bmod = 24
+
+kRegisterMask_BtFuseSel = 0x00000010
+kRegisterShift_SecConfig = 4
+
+kRegisterMask_SecConfig = 0x00000003
+kRegisterShift_SecConfig = 0
+
 #----------------SEMC NAND----------------------
 kSemcNandFcbTag_Fingerprint = 0x4E464342  # 'NFCB'
 kSemcNandFcbTag_Semc        = 0x434D4553  # 'SEMC'

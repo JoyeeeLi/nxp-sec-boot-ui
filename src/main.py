@@ -87,6 +87,8 @@ class secBootMain(memcore.secBootMem):
                     time.sleep(5)
                 if self.pingFlashloader():
                     self.getMcuDeviceInfoViaFlashloader()
+                    self.getMcuDeviceHabStatus()
+                    self.getMcuDeviceBtFuseSel()
                     self.updateConnectStatus('green')
                     self.connectStage = uidef.kConnectStage_ExternalMemory
                 else:
@@ -225,6 +227,7 @@ class secBootMain(memcore.secBootMem):
             self._startGaugeTimer()
             self.printLog("'Load Bootable Image' button is clicked")
             self.flashBootableImage()
+            self.burnBeeKeySelIfApplicable()
             self._stopGaugeTimer()
 
     def callbackFlashHabDek( self, event ):
@@ -234,6 +237,7 @@ class secBootMain(memcore.secBootMem):
             self._startGaugeTimer()
             self.printLog("'Load KeyBlob Data' button is clicked")
             self.flashHabDekToGenerateKeyBlob()
+            self.enableHab()
             self._stopGaugeTimer()
         else:
             self.popupMsgBox('KeyBlob loading is only available when booting HAB encrypted image!')

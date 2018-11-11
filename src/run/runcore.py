@@ -67,6 +67,11 @@ class secBootRun(gencore.secBootGen):
         self.flexspiNorSectorSize = None
         self.isFlexspiNorErasedForImage = False
 
+        self.mcuDeviceHabStatus = None
+        self.mcuDeviceBtFuseSel = None
+        self.mcuDeviceBeeKey0Sel = None
+        self.mcuDeviceBeeKey1Sel = None
+
     def getUsbid( self ):
         # Create the target object.
         tgt = createTarget(self.mcuDevice)
@@ -136,8 +141,10 @@ class secBootRun(gencore.secBootGen):
         if (status == boot.status.kSDP_Status_HabEnabled or status == boot.status.kSDP_Status_HabDisabled):
             regVal = self.getReg32FromBinFile(filepath)
             self.printDeviceStatus(regName + " = " + str(regVal))
+            return regVal
         else:
             self.printDeviceStatus(regName + " = --------")
+            return None
         try:
             os.remove(filepath)
         except:
@@ -198,10 +205,16 @@ class secBootRun(gencore.secBootGen):
             self.printDeviceStatus(fuseName + " = --------")
             return None
 
+    def _readMcuDeviceFuseTester( self ):
+        self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_TESTER0, '(0x410) TESTER0')
+        self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_TESTER1, '(0x420) TESTER1')
+        self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_TESTER2, '(0x430) TESTER2')
+        self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_TESTER3, '(0x440) TESTER3')
+
     def _readMcuDeviceFuseBootCfg( self ):
-        self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_BOOT_CFG0, '(0x450) BOOT_CFG')
-        self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_BOOT_CFG1, '(0x460) BOOT_CFG')
-        self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_BOOT_CFG2, '(0x470) BOOT_CFG')
+        self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_BOOT_CFG0, '(0x450) BOOT_CFG0')
+        self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_BOOT_CFG1, '(0x460) BOOT_CFG1')
+        self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_BOOT_CFG2, '(0x470) BOOT_CFG2')
 
     def _genOtpmkDekFile( self, otpmk4, otpmk5, otpmk6, otpmk7 ):
         try:
@@ -240,10 +253,41 @@ class secBootRun(gencore.secBootGen):
 
     def getMcuDeviceInfoViaFlashloader( self ):
         self.printDeviceStatus("--------MCU device eFusemap--------")
+        self._readMcuDeviceFuseTester()
         self._readMcuDeviceFuseBootCfg()
         self._readMcuDeviceFuseOtpmkDek()
         self._readMcuDeviceFuseSrk()
         self._readMcuDeviceFuseSwGp2()
+
+    def getMcuDeviceHabStatus( self ):
+        secConfig0 = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseLocation_SecConfig0, '', False)
+        secConfig1 = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseLocation_SecConfig1, '', False)
+        if secConfig0 != None and secConfig1 != None:
+            self.mcuDeviceHabStatus = (((secConfig1 & fusedef.kEfuseMask_SecConfig1) >> fusedef.kEfuseShift_SecConfig1) << 1) | \
+                                       ((secConfig0 & fusedef.kEfuseMask_SecConfig0) >> fusedef.kEfuseShift_SecConfig0)
+            if self.mcuDeviceHabStatus == fusedef.kHabStatus_FAB:
+                self.printDeviceStatus('HAB status = FAB')
+            elif self.mcuDeviceHabStatus == fusedef.kHabStatus_Open:
+                self.printDeviceStatus('HAB status = Open')
+            elif self.mcuDeviceHabStatus == fusedef.kHabStatus_Closed0 or self.mcuDeviceHabStatus == fusedef.kHabStatus_Closed1:
+                self.printDeviceStatus('HAB status = Closed')
+            else:
+                pass
+
+    def getMcuDeviceBtFuseSel( self ):
+        btFuseSel = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseLocation_BtFuseSel, '', False)
+        if btFuseSel != None:
+            self.mcuDeviceBtFuseSel = (((btFuseSel & fusedef.kEfuseMask_BtFuseSel) >> fusedef.kEfuseShift_BtFuseSel) << 1)
+            if self.mcuDeviceBtFuseSel == 0:
+                self.printDeviceStatus('BT_FUSE_SEL = 1\'b0')
+                self.printDeviceStatus('  When BMOD[1:0] = 2\'b00 (Boot From Fuses), It means there is no application in boot device, MCU will enter serial downloader mode directly')
+                self.printDeviceStatus('  When BMOD[1:0] = 2\'b10 (Internal Boot), It means MCU will boot application according to both BOOT_CFGx pins and Fuse BOOT_CFGx')
+            elif self.mcuDeviceBtFuseSel == 1:
+                self.printDeviceStatus('BT_FUSE_SEL = 1\'b1')
+                self.printDeviceStatus('  When BMOD[1:0] = 2\'b00 (Boot From Fuses), It means there is application in boot device, MCU will boot application according to Fuse BOOT_CFGx')
+                self.printDeviceStatus('  When BMOD[1:0] = 2\'b10 (Internal Boot), It means MCU will boot application according to Fuse BOOT_CFGx only')
+            else:
+                pass
 
     def _prepareForBootDeviceOperation ( self ):
         if self.bootDevice == uidef.kBootDevice_FlexspiNor:
@@ -571,8 +615,54 @@ class secBootRun(gencore.secBootGen):
         else:
             pass
 
+    def _getMcuDeviceBeeKeySel( self ):
+        beeKeySel = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseLocation_BeeKeySel, '', False)
+        if beeKeySel != None:
+            self.mcuDeviceBeeKey0Sel = ((beeKeySel & fusedef.kEfuseMask_BeeKey0Sel) >> fusedef.kEfuseShift_BeeKey0Sel)
+            self.mcuDeviceBeeKey1Sel = ((beeKeySel & fusedef.kEfuseMask_BeeKey1Sel) >> fusedef.kEfuseShift_BeeKey1Sel)
+        return beeKeySel
+
+    def burnBeeKeySelIfApplicable( self ):
+        if self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.bootDevice == uidef.kBootDevice_FlexspiNor:
+            setBeeKey0Sel = None
+            setBeeKey1Sel = None
+            userKeyCtrlDict, userKeyCmdDict = uivar.getAdvancedSettings(uidef.kAdvancedSettings_UserKeys)
+            if userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_Region0 or userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_BothRegions:
+                if userKeyCtrlDict['region0_key_src'] == uidef.kUserKeySource_OTPMK:
+                    setBeeKey0Sel = fusedef.kBeeKeySel_FromOtpmk
+                elif userKeyCtrlDict['region0_key_src'] == uidef.kUserKeySource_SW_GP2:
+                    setBeeKey0Sel = fusedef.kBeeKeySel_FromSwGp2
+                elif userKeyCtrlDict['region0_key_src'] == uidef.kUserKeySource_GP4:
+                    setBeeKey0Sel = fusedef.kBeeKeySel_FromGp4
+                else:
+                    pass
+            if userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_Region1 or userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_BothRegions:
+                if userKeyCtrlDict['region0_key_src'] == uidef.kUserKeySource_OTPMK:
+                    setBeeKey1Sel = fusedef.kBeeKeySel_FromOtpmk
+                elif userKeyCtrlDict['region1_key_src'] == uidef.kUserKeySource_SW_GP2:
+                    setBeeKey1Sel = fusedef.kBeeKeySel_FromSwGp2
+                elif userKeyCtrlDict['region1_key_src'] == uidef.kUserKeySource_GP4:
+                    setBeeKey1Sel = fusedef.kBeeKeySel_FromGp4
+                else:
+                    pass
+            getBeeKeySel = self._getMcuDeviceBeeKeySel()
+            if getBeeKeySel != None:
+                if setBeeKey0Sel != None:
+                    getBeeKeySel = getBeeKeySel | (setBeeKey0Sel << fusedef.kEfuseShift_BeeKey0Sel)
+                    if ((getBeeKeySel & fusedef.kEfuseMask_BeeKey0Sel) >> fusedef.kEfuseShift_BeeKey0Sel) != setBeeKey0Sel:
+                        self.popupMsgBox('Fuse BOOT_CFG1[5:4] BEE_KEY0_SEL has been burned, it is program-once!')
+                        return
+                if setBeeKey1Sel != None:
+                    getBeeKeySel = getBeeKeySel | (setBeeKey1Sel << fusedef.kEfuseShift_BeeKey1Sel)
+                    if ((getBeeKeySel & fusedef.kEfuseMask_BeeKey1Sel) >> fusedef.kEfuseShift_BeeKey1Sel) != setBeeKey1Sel:
+                        self.popupMsgBox('Fuse BOOT_CFG1[7:6] BEE_KEY1_SEL has been burned, it is program-once!')
+                        return
+                self.burnMcuDeviceFuseByBlhost(fusedef.kEfuseLocation_BeeKeySel, getBeeKeySel)
+        else:
+            pass
+
     def flashHabDekToGenerateKeyBlob ( self ):
-        if os.path.isfile(self.dekFilename) and self.habDekDataOffset != None:
+        if os.path.isfile(self.habDekFilename) and self.habDekDataOffset != None:
             self._prepareForBootDeviceOperation()
             imageLen = os.path.getsize(self.destAppFilename)
             imageCopies = 0x1
@@ -598,7 +688,7 @@ class secBootRun(gencore.secBootGen):
             #----------------------------------------------------------------------------
             keyBlobContextOpt = 0xb0300000
             keyBlobDataOpt = 0xb1000000
-            status, results, cmdStr = self.blhost.writeMemory(rundef.kRamFreeSpaceStart_LoadDekData, self.dekFilename)
+            status, results, cmdStr = self.blhost.writeMemory(rundef.kRamFreeSpaceStart_LoadDekData, self.habDekFilename)
             self.printLog(cmdStr)
             if status != boot.status.kStatus_Success:
                 return False
@@ -650,6 +740,13 @@ class secBootRun(gencore.secBootGen):
                     return False
         else:
             self.popupMsgBox('Dek file hasn\'t been generated!')
+
+    def enableHab( self ):
+        if self.mcuDeviceHabStatus != fusedef.kHabStatus_Closed0 and \
+           self.mcuDeviceHabStatus != fusedef.kHabStatus_Closed1:
+            secConfig1 = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseLocation_SecConfig1, '', False)
+            secConfig1 = secConfig1 | fusedef.kEfuseMask_SecConfig1
+            self.burnMcuDeviceFuseByBlhost(fusedef.kEfuseLocation_SecConfig1, secConfig1)
 
     def resetMcuDevice( self ):
         status, results, cmdStr = self.blhost.reset()

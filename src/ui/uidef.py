@@ -25,7 +25,7 @@ kBootDevice_UsdhcSd     = 'uSDHC SD'
 kBootDevice_UsdhcMmc    = 'uSDHC MMC/eMMC'
 kBootDevice_LpspiNor    = 'LPSPI NOR,EEPROM'
 
-kSecureBootType_Development = 'Unsigned (XIP) image Boot'
+kSecureBootType_Development = 'Unsigned (XIP) Image Boot'
 kSecureBootType_HabAuth     = 'Signed (XIP) Image Boot'
 kSecureBootType_HabCrypto   = 'HAB Signed Encrypted Image Boot'
 kSecureBootType_BeeCrypto   = 'BEE (Signed) Encrypted XIP Image Boot'

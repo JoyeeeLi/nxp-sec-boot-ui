@@ -211,7 +211,7 @@ class secBootWin ( wx.Frame ):
 
 		wSizer_bootType.Add( self.m_staticText_secureBootType, 0, wx.ALL, 5 )
 
-		m_choice_secureBootTypeChoices = [ u"Unsigned (XIP) image Boot", u"Signed (XIP) Image Boot", u"HAB Signed Encrypted Image Boot", u"BEE (Signed) Encrypted XIP Image Boot" ]
+		m_choice_secureBootTypeChoices = [ u"Unsigned (XIP) Image Boot", u"Signed (XIP) Image Boot", u"HAB Signed Encrypted Image Boot", u"BEE (Signed) Encrypted XIP Image Boot" ]
 		self.m_choice_secureBootType = wx.Choice( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, m_choice_secureBootTypeChoices, 0 )
 		self.m_choice_secureBootType.SetSelection( 0 )
 		wSizer_bootType.Add( self.m_choice_secureBootType, 0, wx.ALL, 5 )
@@ -533,7 +533,7 @@ class secBootWin ( wx.Frame ):
 
 		sbSizer_showImage = wx.StaticBoxSizer( wx.StaticBox( self.m_panel_flashImage1_showImage, wx.ID_ANY, u"Step 6:" ), wx.VERTICAL )
 
-		self.m_staticText_showImage = wx.StaticText( sbSizer_showImage.GetStaticBox(), wx.ID_ANY, u"Program final bootable image to flash:", wx.DefaultPosition, wx.Size( 220,50 ), 0 )
+		self.m_staticText_showImage = wx.StaticText( sbSizer_showImage.GetStaticBox(), wx.ID_ANY, u"Program final bootable image to flash:", wx.DefaultPosition, wx.Size( 180,50 ), 0 )
 		self.m_staticText_showImage.Wrap( -1 )
 
 		sbSizer_showImage.Add( self.m_staticText_showImage, 0, wx.ALL, 5 )
@@ -547,7 +547,7 @@ class secBootWin ( wx.Frame ):
 		sbSizer_showImage.Fit( self.m_panel_flashImage1_showImage )
 		bSizer_flashImage.Add( self.m_panel_flashImage1_showImage, 1, wx.EXPAND |wx.ALL, 5 )
 
-		self.m_button_flashImage = wx.Button( self.m_panel_flashImage, wx.ID_ANY, u"Load Generated Image", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_button_flashImage = wx.Button( self.m_panel_flashImage, wx.ID_ANY, u"Load Image", wx.DefaultPosition, wx.Size( 185,-1 ), 0 )
 		bSizer_flashImage.Add( self.m_button_flashImage, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
 
@@ -578,7 +578,7 @@ class secBootWin ( wx.Frame ):
 		sbSizer_showHabDek.Fit( self.m_panel_progDek1_showHabDek )
 		bSizer_progDek.Add( self.m_panel_progDek1_showHabDek, 1, wx.EXPAND |wx.ALL, 5 )
 
-		self.m_button_progDek = wx.Button( self.m_panel_progDek, wx.ID_ANY, u"Load KeyBlob Data", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_button_progDek = wx.Button( self.m_panel_progDek, wx.ID_ANY, u"Load KeyBlob Data, Enable HAB", wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer_progDek.Add( self.m_button_progDek, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
 

@@ -171,6 +171,7 @@ class secBootUi(secBootWin.secBootWin):
             self.m_panel_genImage1_browseApp.SetBackgroundColour( uidef.kBootSeqColor_Active )
             self.m_panel_flashImage1_showImage.SetBackgroundColour( uidef.kBootSeqColor_Active )
             self.m_button_genImage.SetLabel('Generate Unsigned Bootable Image')
+            self.m_button_flashImage.SetLabel('Load Unsigned Image')
         elif self.secureBootType == uidef.kSecureBootType_HabAuth:
             self.m_panel_doAuth1_certInput.SetBackgroundColour( uidef.kBootSeqColor_Active )
             self.m_panel_doAuth2_certFmt.SetBackgroundColour( uidef.kBootSeqColor_Active )
@@ -178,6 +179,7 @@ class secBootUi(secBootWin.secBootWin):
             self.m_panel_progSrk1_showSrk.SetBackgroundColour( uidef.kBootSeqColor_Active )
             self.m_panel_flashImage1_showImage.SetBackgroundColour( uidef.kBootSeqColor_Active )
             self.m_button_genImage.SetLabel('Generate Signed Bootable Image')
+            self.m_button_flashImage.SetLabel('Load Signed Image')
         elif self.secureBootType == uidef.kSecureBootType_HabCrypto:
             self.m_panel_doAuth1_certInput.SetBackgroundColour( uidef.kBootSeqColor_Active )
             self.m_panel_doAuth2_certFmt.SetBackgroundColour( uidef.kBootSeqColor_Active )
@@ -187,6 +189,7 @@ class secBootUi(secBootWin.secBootWin):
             self.m_panel_flashImage1_showImage.SetBackgroundColour( uidef.kBootSeqColor_Active )
             self.m_panel_progDek1_showHabDek.SetBackgroundColour( uidef.kBootSeqColor_Active )
             self.m_button_genImage.SetLabel('Generate Encrypted Bootable Image,DEK')
+            self.m_button_flashImage.SetLabel('Load HAB Encrypted Image')
         elif self.secureBootType == uidef.kSecureBootType_BeeCrypto:
             if self.bootDevice == uidef.kBootDevice_FlexspiNor:
                 self.setBeeCertColor()
@@ -195,6 +198,7 @@ class secBootUi(secBootWin.secBootWin):
                 self.setKeyStorageRegionColor()
                 self.m_panel_flashImage1_showImage.SetBackgroundColour( uidef.kBootSeqColor_Active )
                 self.m_button_genImage.SetLabel('Generate (Signed) Bootable Image')
+                self.m_button_flashImage.SetLabel('Load Image, Burn BEE_KEYx_SEL')
             else:
                 self._resetSecureBootSeqColor()
         else:
