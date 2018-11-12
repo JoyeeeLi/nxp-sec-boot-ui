@@ -51,6 +51,8 @@ class secBootGen(infomgr.secBootInfo):
         self.beeDek1Filename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bee_crypto', 'bee_dek1.bin')
         self.encBatFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bee_crypto', 'imx_image_enc.bat')
         self.otpmkDekFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bee_crypto', 'otpmk_dek.bin')
+        self.destEncAppFilename = None
+        self.destEncAppNoCfgBlockFilename = None
 
     def _copyCstBinToElftosbFolder( self ):
         shutil.copy(self.cstBinFolder + '\\cst.exe', os.path.split(self.elftosbPath)[0])
@@ -495,11 +497,11 @@ class secBootGen(infomgr.secBootInfo):
                     val32 = self.getVal32FromBinFile(self.habDekFilename, (i * 4))
                     self.printHabDekData(self.getFormattedHexValue(val32))
 
-    def _changeDestAppNoPaddingFilenameForBee( self ):
-        destAppNoPaddingPath, destAppNoPaddingFile = os.path.split(self.destAppNoPaddingFilename)
-        destAppNoPaddingName, destAppNoPaddingType = os.path.splitext(destAppNoPaddingFile)
-        destAppNoPaddingName += '_bee_encrypted'
-        self.destAppNoPaddingFilename = os.path.join(destAppNoPaddingPath, destAppNoPaddingName + destAppNoPaddingType)
+    def _setDestAppFilenameForBee( self ):
+        destAppPath, destAppFile = os.path.split(self.destAppFilename)
+        destAppName, destAppType = os.path.splitext(destAppFile)
+        destAppName += '_bee_encrypted'
+        self.destEncAppFilename = os.path.join(destAppPath, destAppName + destAppType)
 
     def _genBeeDekFile( self, regionIndex, keyContent ):
         if regionIndex == 0:
@@ -545,10 +547,10 @@ class secBootGen(infomgr.secBootInfo):
             else:
                 pass
 
-    def _updateEncBatfileContent( self, userKeyCtrlDict, userKeyCmdDict, originalAppFilename ):
+    def _updateEncBatfileContent( self, userKeyCtrlDict, userKeyCmdDict ):
         batContent = self.imageEncPath
-        batContent += " ifile=" + originalAppFilename
-        batContent += " ofile=" + self.destAppNoPaddingFilename
+        batContent += " ifile=" + self.destAppFilename
+        batContent += " ofile=" + self.destEncAppFilename
         batContent += " base_addr=" + userKeyCmdDict['base_addr']
         if userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_Region0 or userKeyCtrlDict['region_sel'] == uidef.kUserRegionSel_BothRegions:
             if userKeyCtrlDict['region0_key_src'] == uidef.kUserKeySource_OTPMK:
@@ -577,9 +579,8 @@ class secBootGen(infomgr.secBootInfo):
     def encrypteImageUsingFlexibleUserKeys( self ):
         userKeyCtrlDict, userKeyCmdDict = uivar.getAdvancedSettings(uidef.kAdvancedSettings_UserKeys)
         if userKeyCmdDict['is_boot_image'] == '1':
-            originalAppFilename = self.destAppNoPaddingFilename
-            self._changeDestAppNoPaddingFilenameForBee()
-            self._updateEncBatfileContent(userKeyCtrlDict, userKeyCmdDict, originalAppFilename)
+            self._setDestAppFilenameForBee()
+            self._updateEncBatfileContent(userKeyCtrlDict, userKeyCmdDict)
             self._encrypteBootableImage()
             self._genBeeDekFilesAndShow(userKeyCtrlDict, userKeyCmdDict)
         elif userKeyCmdDict['is_boot_image'] == '0':

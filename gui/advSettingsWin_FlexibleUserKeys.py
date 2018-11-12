@@ -107,7 +107,7 @@ class advSettingsWin_FlexibleUserKeys ( wx.Frame ):
 
 		gSizer_region0Info.Add( self.m_staticText_region0keySource, 0, wx.ALL, 5 )
 
-		m_choice_region0keySourceChoices = [ u"Fuse OTPMK[255:128]", u"Fuse SW-GP2", u"Fuse GP4[127:0]" ]
+		m_choice_region0keySourceChoices = [ u"Fuse SW-GP2", u"Fuse GP4[127:0]" ]
 		self.m_choice_region0keySource = wx.Choice( self.m_panel_region0Info, wx.ID_ANY, wx.DefaultPosition, wx.Size( 210,-1 ), m_choice_region0keySourceChoices, 0 )
 		self.m_choice_region0keySource.SetSelection( 1 )
 		gSizer_region0Info.Add( self.m_choice_region0keySource, 0, wx.ALL, 5 )
@@ -228,7 +228,7 @@ class advSettingsWin_FlexibleUserKeys ( wx.Frame ):
 
 		gSizer_region1Info.Add( self.m_staticText_region1keySource, 0, wx.ALL, 5 )
 
-		m_choice_region1keySourceChoices = [ u"Fuse OTPMK[255:128]", u"Fuse SW-GP2", u"Fuse GP4[127:0]" ]
+		m_choice_region1keySourceChoices = [ u"Fuse SW-GP2", u"Fuse GP4[127:0]" ]
 		self.m_choice_region1keySource = wx.Choice( self.m_panel_region1Info, wx.ID_ANY, wx.DefaultPosition, wx.Size( 210,-1 ), m_choice_region1keySourceChoices, 0 )
 		self.m_choice_region1keySource.SetSelection( 1 )
 		gSizer_region1Info.Add( self.m_choice_region1keySource, 0, wx.ALL, 5 )

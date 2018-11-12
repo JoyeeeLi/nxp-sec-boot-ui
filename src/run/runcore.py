@@ -592,6 +592,22 @@ class secBootRun(gencore.secBootGen):
         else:
             pass
 
+    def _genDestEncAppFileWithoutCfgBlock( self ):
+        destEncAppPath, destEncAppFile = os.path.split(self.destEncAppFilename)
+        destEncAppName, destEncAppType = os.path.splitext(destEncAppFile)
+        destEncAppName += '_nocfgblock'
+        self.destEncAppNoCfgBlockFilename = os.path.join(destEncAppPath, destEncAppName + destEncAppType)
+        imageLen = os.path.getsize(self.destEncAppFilename)
+        imageData = None
+        with open(self.destEncAppFilename, 'rb') as fileObj:
+            imageData = fileObj.read(imageLen)
+            if len(imageData) > infodef.kFlexspiNorCfgInfo_Length:
+                imageData = imageData[infodef.kFlexspiNorCfgInfo_Length:len(imageData)]
+            fileObj.close()
+        with open(self.destEncAppNoCfgBlockFilename, 'wb') as fileObj:
+            fileObj.write(imageData)
+            fileObj.close()
+
     def flashBootableImage ( self ):
         self._prepareForBootDeviceOperation()
         imageLen = os.path.getsize(self.destAppFilename)
@@ -615,11 +631,15 @@ class secBootRun(gencore.secBootGen):
                    self.secureBootType == uidef.kSecureBootType_HabAuth or \
                    (self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.keyStorageRegion == uidef.kKeyStorageRegion_FlexibleUserKeys):
                     self._programFlexspiNorConfigBlock()
-            imageLoadAddr = self.bootDeviceMemBase + infodef.kFlexspiNorCfgInfo_Length
-            status, results, cmdStr = self.blhost.writeMemory(imageLoadAddr, self.destAppNoPaddingFilename, self.bootDeviceMemId)
-            self.printLog(cmdStr)
-            if status != boot.status.kStatus_Success:
-                return False
+            if self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.keyStorageRegion == uidef.kKeyStorageRegion_FlexibleUserKeys:
+                self._genDestEncAppFileWithoutCfgBlock()
+                imageLoadAddr = self.bootDeviceMemBase + infodef.kFlexspiNorCfgInfo_Length
+                status, results, cmdStr = self.blhost.writeMemory(imageLoadAddr, self.destEncAppNoCfgBlockFilename, self.bootDeviceMemId)
+                self.printLog(cmdStr)
+            else:
+                imageLoadAddr = self.bootDeviceMemBase + gendef.kIvtOffset_NOR
+                status, results, cmdStr = self.blhost.writeMemory(imageLoadAddr, self.destAppNoPaddingFilename, self.bootDeviceMemId)
+                self.printLog(cmdStr)
             self.isFlexspiNorErasedForImage = False
         else:
             pass

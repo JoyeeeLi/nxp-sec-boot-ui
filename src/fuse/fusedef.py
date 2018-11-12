@@ -38,10 +38,10 @@ kEfuseIndex_SW_GP2_1 = 0x2A
 kEfuseIndex_SW_GP2_2 = 0x2B
 kEfuseIndex_SW_GP2_3 = 0x2C
 
-kEfuseIndex_GP4_0 = 0x4C
-kEfuseIndex_GP4_1 = 0x4D
-kEfuseIndex_GP4_2 = 0x4E
-kEfuseIndex_GP4_3 = 0x4F
+kEfuseIndex_GP4_0 = 0x3C
+kEfuseIndex_GP4_1 = 0x3D
+kEfuseIndex_GP4_2 = 0x3E
+kEfuseIndex_GP4_3 = 0x3F
 
 ##################################################
 
@@ -73,4 +73,9 @@ kBeeKeySel_FromReg   = 0x0
 kBeeKeySel_FromGp4   = 0x1
 kBeeKeySel_FromOtpmk = 0x2
 kBeeKeySel_FromSwGp2 = 0x3
+
+##################################################
+kEfuseRemapIndex_Src  = 0x30
+kEfuseRemapIndex_Dest = 0x40
+kEfuseRemapLen = 16
 

@@ -5,6 +5,7 @@ import os
 import fusedef
 sys.path.append(os.path.abspath(".."))
 from run import runcore
+from ui import uidef
 
 class secBootFuse(runcore.secBootRun):
 
@@ -127,7 +128,7 @@ class secBootFuse(runcore.secBootRun):
         self.m_textCtrl_fuse700.Clear()
         self.m_textCtrl_fuse700.write(self._parseReadFuseValue(self.scannedFuseList[48]))
         self.m_textCtrl_fuse710.Clear()
-        self.m_textCtrl_fuse710.write(self._parseReadFuseValue(self.scannedFuseList[39]))
+        self.m_textCtrl_fuse710.write(self._parseReadFuseValue(self.scannedFuseList[49]))
         self.m_textCtrl_fuse720.Clear()
         self.m_textCtrl_fuse720.write(self._parseReadFuseValue(self.scannedFuseList[50]))
         self.m_textCtrl_fuse730.Clear()
@@ -190,9 +191,20 @@ class secBootFuse(runcore.secBootRun):
         self.m_textCtrl_fuse8f0.Clear()
         self.m_textCtrl_fuse8f0.write(self._parseReadFuseValue(self.scannedFuseList[79]))
 
+    def _swapRemappedScannedFuseIfAppliable( self ):
+        if self.mcuDevice == uidef.kMcuDevice_iMXRT106x:
+            for i in range(fusedef.kEfuseRemapLen):
+                self.scannedFuseList[fusedef.kEfuseRemapIndex_Src + i], self.scannedFuseList[fusedef.kEfuseRemapIndex_Dest + i] = \
+                self.scannedFuseList[fusedef.kEfuseRemapIndex_Dest + i], self.scannedFuseList[fusedef.kEfuseRemapIndex_Src + i]
+        elif self.mcuDevice == uidef.kMcuDevice_iMXRT105x and self.mcuDevice == uidef.kMcuDevice_iMXRT102x:
+            pass
+        else:
+            pass
+
     def scanAllFuseRegions( self ):
         for i in range(fusedef.kMaxEfuseWords):
             self.scannedFuseList[i] = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_START + i, '', False)
+        self._swapRemappedScannedFuseIfAppliable()
         self._setScannedFuse()
 
     def _parseUserFuseValue( self, fuseText ):
@@ -287,8 +299,19 @@ class secBootFuse(runcore.secBootRun):
         self.toBeBurnnedFuseList[78] = self._parseUserFuseValue(self.m_textCtrl_fuse8e0.GetLineText(0))
         self.toBeBurnnedFuseList[79] = self._parseUserFuseValue(self.m_textCtrl_fuse8f0.GetLineText(0))
 
+    def _swapRemappedToBeBurnFuseIfAppliable( self ):
+        if self.mcuDevice == uidef.kMcuDevice_iMXRT106x:
+            for i in range(fusedef.kEfuseRemapLen):
+                self.toBeBurnnedFuseList[fusedef.kEfuseRemapIndex_Src + i], self.toBeBurnnedFuseList[fusedef.kEfuseRemapIndex_Dest + i] = \
+                self.toBeBurnnedFuseList[fusedef.kEfuseRemapIndex_Dest + i], self.toBeBurnnedFuseList[fusedef.kEfuseRemapIndex_Src + i]
+        elif self.mcuDevice == uidef.kMcuDevice_iMXRT105x and self.mcuDevice == uidef.kMcuDevice_iMXRT102x:
+            pass
+        else:
+            pass
+
     def burnAllFuseRegions( self ):
         self._getToBeBurnnedFuse()
+        self._swapRemappedToBeBurnFuseIfAppliable()
         for i in range(fusedef.kMaxEfuseWords):
             if self.toBeBurnnedFuseList[i] != self.scannedFuseList[i] and self.toBeBurnnedFuseList[i] != None:
                 fuseValue = self.toBeBurnnedFuseList[i] | self.scannedFuseList[i]
