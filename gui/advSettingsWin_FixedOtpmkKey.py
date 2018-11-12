@@ -33,7 +33,7 @@ class advSettingsWin_FixedOtpmkKey ( wx.Frame ):
 
 		gSizer_encryptionOpt.Add( self.m_staticText_keySource, 0, wx.ALL, 5 )
 
-		m_choice_keySourceChoices = [ u"Fuse OTPMK[255:128]" ]
+		m_choice_keySourceChoices = [ u"Fuse OTPMK - SNVS" ]
 		self.m_choice_keySource = wx.Choice( self.m_panel_encryptionOpt, wx.ID_ANY, wx.DefaultPosition, wx.Size( 150,-1 ), m_choice_keySourceChoices, 0 )
 		self.m_choice_keySource.SetSelection( 0 )
 		gSizer_encryptionOpt.Add( self.m_choice_keySource, 0, wx.ALL, 5 )

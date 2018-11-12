@@ -57,7 +57,7 @@ class secBootUiSettingsFixedOtpmkKey(advSettingsWin_FixedOtpmkKey.advSettingsWin
 
     def _getKeySource( self ):
         txt = self.m_choice_keySource.GetString(self.m_choice_keySource.GetSelection())
-        if txt == 'Fuse OTPMK[255:128]':
+        if txt == 'Fuse OTPMK - SNVS':
             val = 0x0
         else:
             pass

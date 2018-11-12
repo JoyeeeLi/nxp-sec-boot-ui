@@ -380,7 +380,7 @@ class secBootWin ( wx.Frame ):
 
 		sbSizer_keyStorageRegion.Add( self.m_staticText_keyStorageRegion, 0, wx.ALL, 5 )
 
-		m_choice_keyStorageRegionChoices = [ u"Fixed OTPMK Key", u"Flexible User Keys" ]
+		m_choice_keyStorageRegionChoices = [ u"Fixed SNVS Key", u"Flexible User Keys" ]
 		self.m_choice_keyStorageRegion = wx.Choice( sbSizer_keyStorageRegion.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, m_choice_keyStorageRegionChoices, 0 )
 		self.m_choice_keyStorageRegion.SetSelection( 0 )
 		sbSizer_keyStorageRegion.Add( self.m_choice_keyStorageRegion, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
@@ -1520,5 +1520,4 @@ class secBootWin ( wx.Frame ):
 
 	def callbackClearLog( self, event ):
 		event.Skip()
-
 
