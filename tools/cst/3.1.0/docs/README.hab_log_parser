@@ -1,0 +1,105 @@
+hab_log_parser tool:
+
+********************************************************************************
+
+Introduction:
+
+ROM/HAB allocates certain memory region in Internal RAM (OCRAM) for HAB logs. This space is marked as reserved in Internal RAM memory map and must not be edited. This memory region is called HAB persistent memory. It contains certs, events and other HAB process related information.
+
+********************************************************************************
+
+Description:
+
+HAB persistent memory is used by HAB to store audit logs i.e. logs of various events and status results generated from HAB library functions. HAB uses this memory region to search through existing events to report when requested through API call. HAB stores certificate information of the keys installed as reported in the CSF file.
+
+|-------------------------------|-------------------------------|-------|
+|          Chipset              | HAB Persistent Memory Address | Size  |
+|-------------------------------|-------------------------------|-------|
+| i.MX6 S/DL/D/Q/DP/QP/         |       0x904000                | 0xB80 |
+|      UL/ULL/SL/SLL/SX	        |                               |       |
+|-------------------------------|-------------------------------|-------|
+| i.MX7 S/D                     |       0x9049C0                | 0xB80 |
+|-------------------------------|-------------------------------|-------|
+| i.MX7 ULP1 A7 B0              |       0x2F006840              | 0xB80 |
+| i.MX7 ULP1 M4 B0              |       0x20008040              | 0xB80 |
+|-------------------------------|-------------------------------|-------|
+| MSCALE 850D B0                |       0x9061C0                | 0xB80 |
+|-------------------------------|-------------------------------|-------|
+
+********************************************************************************
+
+Required packages:
+
+	libudev-dev
+	libusb-1.0-0-dev
+
+Build:
+	make
+
+********************************************************************************
+
+Clean:
+	make clean
+
+********************************************************************************
+
+Usage:
+        hab_log_parser [input] [output]
+Input:
+        -s|--sdp <device_name>: SDP mode selected with Device name required
+                 <device_name>:
+                        '-----imx6s
+                        '-----imx6dl
+                        '-----imx6q
+                        '-----imx6d
+                        '-----imx6qp
+                        '-----imx6dp
+                        '-----imx6sl
+                        '-----imx6sll
+                        '-----imx6sx
+                        '-----imx6ul
+                        '-----imx6ull
+                        '-----imx7s
+                        '-----imx7d
+                        '-----imx7ulpa7
+                        '-----imx7ulpm4
+                        '-----imx8mq
+        -b|--input-bin <input file>: Binary file containing a dump of HAB4 persistent memory contents
+        -a|--input-ascii <input file>: Binary file containing a dump of HAB4 persistent memory contents
+Output (Optional):
+        -o|--output <output>: File of the parsed HAB4 persistent memory region
+                            : If output not provided output is sent to stdout
+
+Examples:
+SDP:
+        ./hab_log_parser -s imx6s -o hab_log_parsed.txt
+Binary Input file:
+        ./hab_log_parser -b hab4_pers.bin -o hab_log_parsed.txt
+ASCII Input file:
+        ./hab_log_parser -a hab4_pers.ascii -o hab_log_parsed.txt
+
+********************************************************************************
+
+Extracting debug information:
+
+Via JTAG:
+
+Trace32 (Lauterbach):
+
+    DATA.SAVE.BINARY <filename> <hab persistent memory address>--<hab persistent memory address + size>
+
+DSTREAM (DS5):
+
+    dump binary memory <filename> <hab persistent memory address> <hab persistent memory address + size>
+
+U-Boot:
+    1- Dump persistent memory region with U-Boot md command:
+        //for imx7ulp B0 A7 (u-boot)
+        u-boot=> md.b 0x2f006840 0xb80
+
+        //for imx7ulp B0 M4 (u-boot)
+        u-boot=> md.b 0x20008040 0xb80
+
+    2- Copy the log and save in uboot_dump.txt file
+    3- Adapt U-Boot log to ASCII format
+        $ cat uboot_dump.txt | cut -c 11- | cut -c -48 > uboot_persistent_ascii.txt

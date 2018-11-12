@@ -1,0 +1,27 @@
+CSF Parser:
+This tool is developed to assist users in parsing the CSF binary either from a Signed image or a stand-alone CSF binary and output debug data. The parsed CSF also extracts the certificates, signatures and SRK table.
+
+
+Build:
+	make
+
+Clean:
+	make clean
+
+Usage:
+	csf_parser [-d] [[-s <signed_image>] | [-c <csf_binary>]]
+	options:
+		-d|--enable-debug     -->	Enable Debug information
+	        -s|--signed-image     -->	Input signed image
+	        -c|--csf-binary       -->	Input CSF binary
+
+	Note: Only one image can be parsed at once.
+
+Contents:
+csf_parser.c  - Program to parse CSF binary in the boot image
+csf_parser.h  - Header file for csf_parser.c file
+extract_csf.c - Program to extract CSF binary from a signed image
+extract_csf.h - Header file for extract_csf.c file
+Makefile      - Makefile for csf_parser
+README        - This file
+README.md     - Markdown format README

@@ -1,0 +1,172 @@
+#
+# Copyright 2017-2018 NXP
+#
+##########################################################################
+#!/bin/bash
+#
+# SCRIPT:  	createSRKTable
+#
+# DESCRIPTION: 	This script creats SRK table with input SRK certificates.
+#		Similar to what srktool does.
+#
+##########################################################################
+
+
+#Debug
+DEBUG=0
+
+#remove all temp files
+if [ $DEBUG = 0 ]; then
+	rm -v temp* SRK_table.bin
+fi
+
+# Help
+if [[ "$1" = "-h" || "$1" = "--help" || "$1" = "" ]] ; then
+	echo 
+	echo "./createSRKTable [-h|--help] for help"
+	echo "Usage: createSRKTable <No. of SRKs> <SRK pub key 1> .. <SRK pub key 4>"
+	echo "Number of SRK : 1 - 4"
+	exit 1
+fi
+
+# Number of SRK certs
+if [[ $1 > 0 && $1 < 5 ]] ; then
+	nSRK=$1
+	echo "Number of SRKs are $nSRK"
+else
+	echo "Number of SRKs need to be between 1 and 4"
+	echo
+	echo "./createSRKTable [-h|--help] for help"
+	echo "Usage: createSRKTable <No. of SRKs> <SRK pub key 1> .. <SRK pub key 4>"
+	echo "Number of SRK : 1 - 4"
+	exit 1
+fi
+
+if [[ $nSRK = 1 && -n "$2" && -f "$2" && -z "$3" ]]; then
+	true
+elif [[ $nSRK = 2 && -n "$2" && -f "$2" \
+				  && -n "$3" && -f "$3" \
+				  && -z "$4" ]]; then
+	true
+elif [[ $nSRK = 3 && -n "$2" && -f "$2" \
+				  && -n "$3" && -f "$3" \
+				  && -n "$4" && -f "$4" \
+				  && -z "$5" ]]; then
+	true
+elif [[ $nSRK = 4 && -n "$2" && -f "$2" \
+				  && -n "$3" && -f "$3" \
+				  && -n "$4" && -f "$4" \
+				  && -n "$5" && -f "$5" ]]; then
+	true
+else
+	echo "Number of SRK certs entered are not equal to <No. of SRKs> argument"
+	echo
+	echo "./createSRKTable [-h|--help] for help"
+	echo "Usage: createSRKTable <No. of SRKs> <SRK pub key 1> .. <SRK pub key 4>"
+	echo "Number of SRK : 1 - 4"
+	exit 1
+fi
+
+###### DO NOT CHANGE #######
+#Macros for SRK table header
+SRKTableTag=D7
+#Macros for SRK key header and body
+SRKKeyHdrTag=E1
+SRKKeyAlg=21
+
+ExponentLength=0003
+Exponent=010001
+ModLength=0000
+
+Length=0000
+Reserved=000000
+############################
+
+# HAB Version 
+# HAB4.0 : 40
+# HAB4.1 : 41
+# HAB4.2 : 42
+SRKTableHABVer=40
+#SRK Flag---None 	: 00
+#	'---CA Flag	: 80
+SRKFlagCA=80
+
+#Prepare SRK Table header
+perl -e 'print pack "H*", '"$SRKTableTag$Length$SRKTableHABVer" > SRK_table.bin
+
+#Process each SRK Key to append in SRK table
+append_srk_key ()
+{
+	openssl x509 -modulus -noout -in $1 > temp.bin
+	modSize=`stat -c "%s" temp.bin`
+	dd if=temp.bin of=tempModSRK.bin bs=1 skip=8 count=$((modSize-8-1)) && sync
+	rm temp.bin
+	n=$2
+
+#Prepare SRK key header with Exponent header
+	printf "%s" "$SRKKeyHdrTag$Length$SRKKeyAlg$Reserved$SRKFlagCA" | \
+		perl -e 'print pack "H*", <STDIN>' > tempSRK$n.hex
+	printf "%s" "$ModLength$ExponentLength" | \
+		perl -e 'print pack "H*", <STDIN>' >> tempSRK$n.hex
+
+#Append modulus
+	cat tempModSRK.bin | perl -e 'print pack "H*", <STDIN>' >> tempSRK$n.hex
+
+#Add modulus size
+	modSize=$(printf "%x" $(($(stat -c %s "tempSRK$n.hex") - 12)))
+	printf "%04s" "$modSize" | \
+		perl -e 'print pack "H*", <STDIN>' | \
+			dd of=tempSRK$n.hex bs=1 seek=8 conv=notrunc
+
+#Append Exponent
+	printf "%04s" "$Exponent" | \
+		perl -e 'print pack "H*", <STDIN>' >> tempSRK$n.hex
+
+#Add SRK key size
+	SRKKeySize=$(printf "%x" $(stat -c %s "tempSRK$n.hex"))
+	printf "%04s" $SRKKeySize | \
+		perl -e 'print pack "H*", <STDIN>' | \
+			dd of=tempSRK$n.hex bs=1 seek=1 conv=notrunc
+	dd if=tempSRK$n.hex of=SRK_table.bin bs=1 oflag=append conv=notrunc
+
+	if [ $DEBUG = 0 ]; then
+		rm -v temp*
+	fi
+
+}
+
+#Input SRK keys
+if [[ -n "$2" && -f "$2" ]] ; then
+	append_srk_key "$2" "1"
+ if [[ -n "$3" && -f "$3" ]] ; then
+	 append_srk_key "$3" "2"
+  if [[ -n "$4" && -f "$4" ]] ; then
+	  append_srk_key "$4" "3"
+   if [[ -n "$5" && -f "$5" ]] ; then
+	   append_srk_key "$5" "4"
+   fi
+  fi
+ fi
+elif [[ "$2" = "" ]] ; then
+	echo "SRK certs $2 doesnt exist or is empty"
+	echo
+	echo "./createSRKTable [-h|--help] for help"
+	echo "Usage: createSRKTable <No. of SRKs> <SRK pub key 1> .. <SRK pub key 4>"
+	echo "Number of SRK : 1 - 4"
+	exit 1
+fi
+
+# Add SRK table size
+SRKTableSize=$(printf "%x" $(stat -c %s "SRK_table.bin"))
+printf "%04s" $SRKTableSize | \
+		perl -e 'print pack "H*", <STDIN>' | \
+			dd of=SRK_table.bin bs=1 seek=1 conv=notrunc
+
+
+if [ $DEBUG = 0 ]; then
+
+#If hexdiff utility is installed you can compare SRK table generated
+#with SRK table from SRKTOOL as follows
+
+#hexdiff SRK_table.bin SRK_1_2_3_4_table.bin
+fi
