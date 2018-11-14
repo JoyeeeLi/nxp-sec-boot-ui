@@ -1,5 +1,4 @@
 #! /usr/bin/env python
-import wx
 import sys
 import os
 import boot

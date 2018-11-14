@@ -6,7 +6,6 @@ import boot
 sys.path.append(os.path.abspath(".."))
 from gen import gencore
 from gen import gendef
-from info import infodef
 from fuse import fusedef
 from ui import uidef
 from ui import uivar
@@ -151,12 +150,12 @@ class secBootRun(gencore.secBootGen):
             pass
 
     def _readMcuDeviceRegisterUuid( self ):
-        self._getDeviceRegisterBySdphost( infodef.kRegisterAddr_UUID1, 'OCOTP->B0W1 UUID[31:00]')
-        self._getDeviceRegisterBySdphost( infodef.kRegisterAddr_UUID2, 'OCOTP->B0W2 UUID[63:32]')
+        self._getDeviceRegisterBySdphost( rundef.kRegisterAddr_UUID1, 'OCOTP->B0W1 UUID[31:00]')
+        self._getDeviceRegisterBySdphost( rundef.kRegisterAddr_UUID2, 'OCOTP->B0W2 UUID[63:32]')
 
     def _readMcuDeviceRegisterSrcSmbr( self ):
-        self._getDeviceRegisterBySdphost( infodef.kRegisterAddr_SRC_SBMR1, 'SRC->SMBR1')
-        self._getDeviceRegisterBySdphost( infodef.kRegisterAddr_SRC_SBMR2, 'SRC->SMBR2')
+        self._getDeviceRegisterBySdphost( rundef.kRegisterAddr_SRC_SBMR1, 'SRC->SMBR1')
+        self._getDeviceRegisterBySdphost( rundef.kRegisterAddr_SRC_SBMR2, 'SRC->SMBR2')
 
     def getMcuDeviceInfoViaRom( self ):
         self.printDeviceStatus("--------MCU device Register----------")
@@ -322,18 +321,18 @@ class secBootRun(gencore.secBootGen):
     def _getSemcNandDeviceInfo ( self ):
         filename = 'semcNandFcb.dat'
         filepath = os.path.join(self.blhostVectorsDir, filename)
-        status, results, cmdStr = self.blhost.readMemory(self.bootDeviceMemBase + infodef.kSemcNandFcbInfo_StartAddr, infodef.kSemcNandFcbInfo_Length, filename, self.bootDeviceMemId)
+        status, results, cmdStr = self.blhost.readMemory(self.bootDeviceMemBase + rundef.kSemcNandFcbInfo_StartAddr, rundef.kSemcNandFcbInfo_Length, filename, self.bootDeviceMemId)
         self.printLog(cmdStr)
         if status != boot.status.kStatus_Success:
             return False
-        fingerprint = self.getVal32FromBinFile(filepath, infodef.kSemcNandFcbOffset_Fingerprint)
-        semcTag = self.getVal32FromBinFile(filepath, infodef.kSemcNandFcbOffset_SemcTag)
-        if fingerprint == infodef.kSemcNandFcbTag_Fingerprint and semcTag == infodef.kSemcNandFcbTag_Semc:
-            firmwareCopies = self.getVal32FromBinFile(filepath, infodef.kSemcNandFcbOffset_FirmwareCopies)
-            pageByteSize = self.getVal32FromBinFile(filepath, infodef.kSemcNandFcbOffset_PageByteSize)
-            pagesInBlock = self.getVal32FromBinFile(filepath, infodef.kSemcNandFcbOffset_PagesInBlock)
-            blocksInPlane = self.getVal32FromBinFile(filepath, infodef.kSemcNandFcbOffset_BlocksInPlane)
-            planesInDevice = self.getVal32FromBinFile(filepath, infodef.kSemcNandFcbOffset_PlanesInDevice)
+        fingerprint = self.getVal32FromBinFile(filepath, rundef.kSemcNandFcbOffset_Fingerprint)
+        semcTag = self.getVal32FromBinFile(filepath, rundef.kSemcNandFcbOffset_SemcTag)
+        if fingerprint == rundef.kSemcNandFcbTag_Fingerprint and semcTag == rundef.kSemcNandFcbTag_Semc:
+            firmwareCopies = self.getVal32FromBinFile(filepath, rundef.kSemcNandFcbOffset_FirmwareCopies)
+            pageByteSize = self.getVal32FromBinFile(filepath, rundef.kSemcNandFcbOffset_PageByteSize)
+            pagesInBlock = self.getVal32FromBinFile(filepath, rundef.kSemcNandFcbOffset_PagesInBlock)
+            blocksInPlane = self.getVal32FromBinFile(filepath, rundef.kSemcNandFcbOffset_BlocksInPlane)
+            planesInDevice = self.getVal32FromBinFile(filepath, rundef.kSemcNandFcbOffset_PlanesInDevice)
             self.printDeviceStatus("Page Size (bytes) = " + str(hex(pageByteSize)))
             self.printDeviceStatus("Pages In Block    = " + str(hex(pagesInBlock)))
             self.printDeviceStatus("Blocks In Plane   = " + str(hex(blocksInPlane)))
@@ -355,15 +354,15 @@ class secBootRun(gencore.secBootGen):
     def _getFlexspiNorDeviceInfo ( self ):
         filename = 'flexspiNorCfg.dat'
         filepath = os.path.join(self.blhostVectorsDir, filename)
-        status, results, cmdStr = self.blhost.readMemory(self.bootDeviceMemBase + infodef.kFlexspiNorCfgInfo_StartAddr, infodef.kFlexspiNorCfgInfo_Length, filename, self.bootDeviceMemId)
+        status, results, cmdStr = self.blhost.readMemory(self.bootDeviceMemBase + rundef.kFlexspiNorCfgInfo_StartAddr, rundef.kFlexspiNorCfgInfo_Length, filename, self.bootDeviceMemId)
         self.printLog(cmdStr)
         if status != boot.status.kStatus_Success:
             return False
-        flexspiTag = self.getVal32FromBinFile(filepath, infodef.kFlexspiNorCfgOffset_FlexspiTag)
-        if flexspiTag == infodef.kFlexspiNorCfgTag_Flexspi:
-            pageByteSize = self.getVal32FromBinFile(filepath, infodef.kFlexspiNorCfgOffset_PageByteSize)
-            sectorByteSize = self.getVal32FromBinFile(filepath, infodef.kFlexspiNorCfgOffset_SectorByteSize)
-            blockByteSize = self.getVal32FromBinFile(filepath, infodef.kFlexspiNorCfgOffset_BlockByteSize)
+        flexspiTag = self.getVal32FromBinFile(filepath, rundef.kFlexspiNorCfgOffset_FlexspiTag)
+        if flexspiTag == rundef.kFlexspiNorCfgTag_Flexspi:
+            pageByteSize = self.getVal32FromBinFile(filepath, rundef.kFlexspiNorCfgOffset_PageByteSize)
+            sectorByteSize = self.getVal32FromBinFile(filepath, rundef.kFlexspiNorCfgOffset_SectorByteSize)
+            blockByteSize = self.getVal32FromBinFile(filepath, rundef.kFlexspiNorCfgOffset_BlockByteSize)
             self.printDeviceStatus("Page Size (bytes)   = " + str(hex(pageByteSize)))
             self.printDeviceStatus("Sector Size (bytes) = " + str(hex(sectorByteSize)))
             self.printDeviceStatus("Block Size (bytes)  = " + str(hex(blockByteSize)))
@@ -390,14 +389,14 @@ class secBootRun(gencore.secBootGen):
             pass
 
     def _eraseFlexspiNorForConfigBlockLoading( self ):
-        status, results, cmdStr = self.blhost.flashEraseRegion(rundef.kBootDeviceMemBase_FlexspiNor, infodef.kFlexspiNorCfgInfo_Length, rundef.kBootDeviceMemId_FlexspiNor)
+        status, results, cmdStr = self.blhost.flashEraseRegion(rundef.kBootDeviceMemBase_FlexspiNor, rundef.kFlexspiNorCfgInfo_Length, rundef.kBootDeviceMemId_FlexspiNor)
         self.printLog(cmdStr)
         if status != boot.status.kStatus_Success:
             return False
 
     def _programFlexspiNorConfigBlock ( self ):
         # 0xf000000f is the tag to notify Flashloader to program FlexSPI NOR config block to the start of device
-        status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_LoadCfgBlock, 0x4, infodef.kFlexspiNorCfgInfo_Notify)
+        status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_LoadCfgBlock, 0x4, rundef.kFlexspiNorCfgInfo_Notify)
         self.printLog(cmdStr)
         if status != boot.status.kStatus_Success:
             return False
@@ -601,8 +600,8 @@ class secBootRun(gencore.secBootGen):
         imageData = None
         with open(self.destEncAppFilename, 'rb') as fileObj:
             imageData = fileObj.read(imageLen)
-            if len(imageData) > infodef.kFlexspiNorCfgInfo_Length:
-                imageData = imageData[infodef.kFlexspiNorCfgInfo_Length:len(imageData)]
+            if len(imageData) > rundef.kFlexspiNorCfgInfo_Length:
+                imageData = imageData[rundef.kFlexspiNorCfgInfo_Length:len(imageData)]
             fileObj.close()
         with open(self.destEncAppNoCfgBlockFilename, 'wb') as fileObj:
             fileObj.write(imageData)
@@ -633,7 +632,7 @@ class secBootRun(gencore.secBootGen):
                     self._programFlexspiNorConfigBlock()
             if self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.keyStorageRegion == uidef.kKeyStorageRegion_FlexibleUserKeys:
                 self._genDestEncAppFileWithoutCfgBlock()
-                imageLoadAddr = self.bootDeviceMemBase + infodef.kFlexspiNorCfgInfo_Length
+                imageLoadAddr = self.bootDeviceMemBase + rundef.kFlexspiNorCfgInfo_Length
                 status, results, cmdStr = self.blhost.writeMemory(imageLoadAddr, self.destEncAppNoCfgBlockFilename, self.bootDeviceMemId)
                 self.printLog(cmdStr)
             else:
