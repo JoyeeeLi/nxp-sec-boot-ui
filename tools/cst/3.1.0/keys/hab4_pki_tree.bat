@@ -1,5 +1,12 @@
 @echo off
 
+set existing_ca=%1
+set use_ecc=%2
+set kl=%3
+set duration=%4
+set num_srk=%5
+set srk_ca=%6
+
 :: -----------------------------------------------------------------------------
 ::
 :: File: hab4_pki_tree.bat
@@ -69,7 +76,7 @@ echo     password.
 echo     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 echo.
 
-set /P existing_ca="Do you want to use an existing CA key (y/n)?: "
+::set /P existing_ca="Do you want to use an existing CA key (y/n)?: "
 
 if %existing_ca%==n goto KEY_LENGTH
 set /P ca_key="Enter CA key name: "
@@ -77,12 +84,12 @@ set /P ca_cert="Enter CA certificate name: "
 
 :KEY_LENGTH
 
-set /P use_ecc="Do you want to use Elliptic Curve Cryptography (y/n)?: "
+::set /P use_ecc="Do you want to use Elliptic Curve Cryptography (y/n)?: "
 
 if %use_ecc%==n goto RSA_CERTS
 
 echo Enter length for elliptic curve to be used for PKI tree:
-set /P kl="Possible values p256, p384, p521: "
+::set /P kl="Possible values p256, p384, p521: "
 
 :: Confirm that a valid key length has been entered
 if %kl%==p256 (
@@ -101,7 +108,7 @@ echo Invalid key length. Supported key lengths: 256, 384, 521
 exit /B
 
 :RSA_CERTS
-set /P kl="Enter key length in bits for PKI tree: "
+::set /P kl="Enter key length in bits for PKI tree: "
 
 :: Confirm that a valid key length has been entered
 if %kl%==1024 goto VALID_KEY_LENGTH
@@ -112,13 +119,13 @@ echo Invalid key length. Supported key lengths: 1024, 2048, 3072, 4096
 exit /B
 :VALID_KEY_LENGTH
 
-set /P duration="Enter PKI tree duration (years): "
+::set /P duration="Enter PKI tree duration (years): "
 
 :: Compute validity period
 set /A val_period=%duration%*365
 
 
-set /P num_srk="How many Super Root Keys should be generated? "
+::set /P num_srk="How many Super Root Keys should be generated? "
 
 :: Check that 0 < num_srk < 4 (Max. number of SRKs)
 if %num_srk%==1 goto VALID_NUM_KEYS
@@ -130,7 +137,7 @@ exit /B
 :VALID_NUM_KEYS
 
 :: Check if SRKs should be generated as CA certs or user certs
-set /P srk_ca="Do you want the SRK certificates to have the CA flag set? (y/n)?: "
+::set /P srk_ca="Do you want the SRK certificates to have the CA flag set? (y/n)?: "
 
 :SERIAL
 :: Check that the file "serial" is present, if not create it:

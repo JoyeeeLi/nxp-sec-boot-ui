@@ -14,12 +14,24 @@ class secBootUiSettingsCert(advSettingsWin_Cert.advSettingsWin_Cert):
         self.certSettingsDict = uivar.getAdvancedSettings(uidef.kAdvancedSettings_Cert)
         self._recoverLastSettings()
 
+    def _setPkiTreeKeyLenItems( self ):
+        keySel = None
+        if self.certSettingsDict['cstVersion'] == uidef.kCstVersion_v3_1_0 and self.certSettingsDict['useEllipticCurveCrypto'] == 'y':
+            keySel = uidef.kPkiTreeKeySel_IsEcc
+        else:
+            keySel = uidef.kPkiTreeKeySel_NotEcc
+        self.m_choice_pkiTreeKeyLen.Clear()
+        self.m_choice_pkiTreeKeyLen.SetItems(keySel)
+        self.m_choice_pkiTreeKeyLen.SetSelection(0)
+
     def _recoverLastSettings ( self ):
         cstVersion = self.certSettingsDict['cstVersion']
         if cstVersion == uidef.kCstVersion_v2_3_3:
             self.m_choice_cstVersion.SetSelection(0)
         elif cstVersion == uidef.kCstVersion_v3_0_1:
             self.m_choice_cstVersion.SetSelection(1)
+        elif cstVersion == uidef.kCstVersion_v3_1_0:
+            self.m_choice_cstVersion.SetSelection(2)
         else:
             pass
 
@@ -29,8 +41,28 @@ class secBootUiSettingsCert(advSettingsWin_Cert.advSettingsWin_Cert):
         else:
             pass
 
+        useEllipticCurveCrypto = self.certSettingsDict['useEllipticCurveCrypto']
+        if useEllipticCurveCrypto == 'n':
+            self.m_choice_useEcc.SetSelection(0)
+        elif useEllipticCurveCrypto == 'y':
+            self.m_choice_useEcc.SetSelection(1)
+        else:
+            pass
+
+        self._setPkiTreeKeyLenItems()
+
         pkiTreeKeyLen = self.certSettingsDict['pkiTreeKeyLen']
-        self.m_choice_pkiTreeKeyLen.SetSelection((pkiTreeKeyLen / 1024) - 1)
+        if cstVersion == uidef.kCstVersion_v3_1_0 and useEllipticCurveCrypto == 'y':
+            if pkiTreeKeyLen == 'p256':
+                self.m_choice_pkiTreeKeyLen.SetSelection(0)
+            elif pkiTreeKeyLen == 'p384':
+                self.m_choice_pkiTreeKeyLen.SetSelection(1)
+            elif pkiTreeKeyLen == 'p521':
+                self.m_choice_pkiTreeKeyLen.SetSelection(2)
+            else:
+                pass
+        else:
+            self.m_choice_pkiTreeKeyLen.SetSelection((pkiTreeKeyLen / 1024) - 1)
 
         pkiTreeDuration = self.certSettingsDict['pkiTreeDuration']
         self.m_textCtrl_pkiTreeDuration.Clear()
@@ -52,13 +84,25 @@ class secBootUiSettingsCert(advSettingsWin_Cert.advSettingsWin_Cert):
 
     def _getUseExistingCaKey( self ):
         txt = self.m_choice_useExistingCaKey.GetString(self.m_choice_useExistingCaKey.GetSelection())
-        if txt == 'No':
-            self.certSettingsDict['useExistingCaKey'] = 'n'
-        else:
-            pass
+        self.certSettingsDict['useExistingCaKey'] = txt[0].lower()
+
+    def _getUseEllipticCurveCrypto( self ):
+        txt = self.m_choice_useEcc.GetString(self.m_choice_useEcc.GetSelection())
+        self.certSettingsDict['useEllipticCurveCrypto'] = txt[0].lower()
 
     def _getPkiTreeKeyLen( self ):
-        self.certSettingsDict['pkiTreeKeyLen'] = int(self.m_choice_pkiTreeKeyLen.GetString(self.m_choice_pkiTreeKeyLen.GetSelection()))
+        if self.certSettingsDict['cstVersion'] == uidef.kCstVersion_v3_1_0 and self.certSettingsDict['useEllipticCurveCrypto'] == 'y':
+            self.certSettingsDict['pkiTreeKeyLen'] = self.m_choice_pkiTreeKeyLen.GetString(self.m_choice_pkiTreeKeyLen.GetSelection())
+            if self.certSettingsDict['pkiTreeKeyLen'] == 'p256':
+                self.certSettingsDict['pkiTreeKeyCn'] = 'prime256v1'
+            elif self.certSettingsDict['pkiTreeKeyLen'] == 'p384':
+                self.certSettingsDict['pkiTreeKeyCn'] = 'secp384r1'
+            elif self.certSettingsDict['pkiTreeKeyLen'] == 'p521':
+                self.certSettingsDict['pkiTreeKeyCn'] = 'secp521r1'
+            else:
+                pass
+        else:
+            self.certSettingsDict['pkiTreeKeyLen'] = int(self.m_choice_pkiTreeKeyLen.GetString(self.m_choice_pkiTreeKeyLen.GetSelection()))
 
     def _getPkiTreeDuration( self ):
         self.certSettingsDict['pkiTreeDuration'] = int(self.m_textCtrl_pkiTreeDuration.GetLineText(0))
@@ -68,16 +112,27 @@ class secBootUiSettingsCert(advSettingsWin_Cert.advSettingsWin_Cert):
 
     def _getCaFlagSet( self ):
         txt = self.m_choice_caFlagSet.GetString(self.m_choice_caFlagSet.GetSelection())
-        if txt == 'No - Fast Auth Tree':
-            self.certSettingsDict['caFlagSet'] = 'n'
-        elif txt == 'Yes - Standard PKI Tree':
-            self.certSettingsDict['caFlagSet'] = 'y'
+        self.certSettingsDict['caFlagSet'] = txt[0].lower()
+
+    def callbackSwitchCstVersion( self, event ):
+        self._getCstVersion()
+        if self.certSettingsDict['cstVersion'] == uidef.kCstVersion_v3_1_0:
+            self.m_staticText_useEcc.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
+        elif self.certSettingsDict['cstVersion'] == uidef.kCstVersion_v2_3_3 or self.certSettingsDict['cstVersion'] == uidef.kCstVersion_v3_0_1:
+            self.m_staticText_useEcc.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_GRAYTEXT ) )
         else:
             pass
+        self._setPkiTreeKeyLenItems()
+
+    def callbackUseEcc( self, event ):
+        self._getUseEllipticCurveCrypto()
+        if self.certSettingsDict['cstVersion'] == uidef.kCstVersion_v3_1_0:
+            self._setPkiTreeKeyLenItems()
 
     def callbackOk( self, event ):
         self._getCstVersion()
         self._getUseExistingCaKey()
+        self._getUseEllipticCurveCrypto()
         self._getPkiTreeKeyLen()
         self._getPkiTreeDuration()
         self._getSRKs()

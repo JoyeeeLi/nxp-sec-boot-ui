@@ -97,13 +97,25 @@ class secBootGen(infomgr.secBootInfo):
         return True
 
     def genCertificate( self ):
+        self.updateAllCstPathToCorrectVersion()
         certSettingsDict = uivar.getAdvancedSettings(uidef.kAdvancedSettings_Cert)
         batArg = ''
         batArg += ' ' + certSettingsDict['useExistingCaKey']
-        batArg += ' ' + str(certSettingsDict['pkiTreeKeyLen'])
+        if certSettingsDict['cstVersion'] == uidef.kCstVersion_v3_1_0:
+            batArg += ' ' + certSettingsDict['useEllipticCurveCrypto']
+            if certSettingsDict['useEllipticCurveCrypto'] == 'y':
+                batArg += ' ' + certSettingsDict['pkiTreeKeyLen']
+            elif certSettingsDict['useEllipticCurveCrypto'] == 'n':
+                batArg += ' ' + str(certSettingsDict['pkiTreeKeyLen'])
+            else:
+                pass
+        elif certSettingsDict['cstVersion'] == uidef.kCstVersion_v2_3_3 or certSettingsDict['cstVersion'] == uidef.kCstVersion_v3_0_1:
+            batArg += ' ' + str(certSettingsDict['pkiTreeKeyLen'])
+        else:
+            pass
         batArg += ' ' + str(certSettingsDict['pkiTreeDuration'])
         batArg += ' ' + str(certSettingsDict['SRKs'])
-        if certSettingsDict['cstVersion'] == uidef.kCstVersion_v3_0_1:
+        if certSettingsDict['cstVersion'] == uidef.kCstVersion_v3_0_1 or certSettingsDict['cstVersion'] == uidef.kCstVersion_v3_1_0:
             batArg += ' ' + certSettingsDict['caFlagSet']
         elif certSettingsDict['cstVersion'] == uidef.kCstVersion_v2_3_3:
             pass
@@ -131,20 +143,32 @@ class secBootGen(infomgr.secBootInfo):
         for i in range(certSettingsDict['SRKs']):
             self.crtSrkCaPemFileList[i] = self.cstCrtsFolder + '\\'
             self.crtSrkCaPemFileList[i] += 'SRK' + str(i + 1) + '_sha256'
-            self.crtSrkCaPemFileList[i] += '_' + str(certSettingsDict['pkiTreeKeyLen'])
-            self.crtSrkCaPemFileList[i] += '_65537_v3_ca_crt.pem'
+            if certSettingsDict['cstVersion'] == uidef.kCstVersion_v3_1_0 and certSettingsDict['useEllipticCurveCrypto'] == 'y':
+                self.crtSrkCaPemFileList[i] += '_' + certSettingsDict['pkiTreeKeyCn']
+                self.crtSrkCaPemFileList[i] += '_v3_ca_crt.pem'
+            else:
+                self.crtSrkCaPemFileList[i] += '_' + str(certSettingsDict['pkiTreeKeyLen'])
+                self.crtSrkCaPemFileList[i] += '_65537_v3_ca_crt.pem'
 
     def _getCrtCsfImgUsrPemFilenames( self ):
         certSettingsDict = uivar.getAdvancedSettings(uidef.kAdvancedSettings_Cert)
         for i in range(certSettingsDict['SRKs']):
             self.crtCsfUsrPemFileList[i] = self.cstCrtsFolder + '\\'
             self.crtCsfUsrPemFileList[i] += 'CSF' + str(i + 1) + '_1_sha256'
-            self.crtCsfUsrPemFileList[i] += '_' + str(certSettingsDict['pkiTreeKeyLen'])
-            self.crtCsfUsrPemFileList[i] += '_65537_v3_usr_crt.pem'
+            if certSettingsDict['cstVersion'] == uidef.kCstVersion_v3_1_0 and certSettingsDict['useEllipticCurveCrypto'] == 'y':
+                self.crtSrkCaPemFileList[i] += '_' + certSettingsDict['pkiTreeKeyCn']
+                self.crtSrkCaPemFileList[i] += '_v3_usr_crt.pem'
+            else:
+                self.crtCsfUsrPemFileList[i] += '_' + str(certSettingsDict['pkiTreeKeyLen'])
+                self.crtCsfUsrPemFileList[i] += '_65537_v3_usr_crt.pem'
             self.crtImgUsrPemFileList[i] = self.cstCrtsFolder + '\\'
             self.crtImgUsrPemFileList[i] += 'IMG' + str(i + 1) + '_1_sha256'
-            self.crtImgUsrPemFileList[i] += '_' + str(certSettingsDict['pkiTreeKeyLen'])
-            self.crtImgUsrPemFileList[i] += '_65537_v3_usr_crt.pem'
+            if certSettingsDict['cstVersion'] == uidef.kCstVersion_v3_1_0 and certSettingsDict['useEllipticCurveCrypto'] == 'y':
+                self.crtSrkCaPemFileList[i] += '_' + certSettingsDict['pkiTreeKeyCn']
+                self.crtSrkCaPemFileList[i] += '_v3_usr_crt.pem'
+            else:
+                self.crtImgUsrPemFileList[i] += '_' + str(certSettingsDict['pkiTreeKeyLen'])
+                self.crtImgUsrPemFileList[i] += '_65537_v3_usr_crt.pem'
 
     def _updateSrkBatfileContent( self ):
         self._setSrkFilenames()

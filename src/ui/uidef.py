@@ -41,6 +41,10 @@ kAdvancedSettings_UserKeys  = 4
 kCstVersion_Invalid = 'x.x.x'
 kCstVersion_v2_3_3  = '2.3.3'
 kCstVersion_v3_0_1  = '3.0.1'
+kCstVersion_v3_1_0  = '3.1.0'
+
+kPkiTreeKeySel_IsEcc  = ['p256', 'p384', 'p521']
+kPkiTreeKeySel_NotEcc = ['1024', '2048', '3072', '4096']
 
 kUserRegionSel_Region0     = 'Region 0'
 kUserRegionSel_Region1     = 'Region 1'
