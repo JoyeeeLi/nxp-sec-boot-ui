@@ -739,7 +739,7 @@ class secBootRun(gencore.secBootGen):
             self.printLog(cmdStr)
             if status != boot.status.kStatus_Success:
                 return False
-            status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_LoadKeyBlobContext + 4, 0x4, rundef.kRamFreeSpaceStart_LoadKeyBlobContext)
+            status, results, cmdStr = self.blhost.fillMemory(rundef.kRamFreeSpaceStart_LoadKeyBlobContext + 4, 0x4, rundef.kRamFreeSpaceStart_LoadDekData)
             self.printLog(cmdStr)
             if status != boot.status.kStatus_Success:
                 return False

@@ -19,12 +19,10 @@ from ui import ui_settings_cert
 from ui import ui_settings_fixed_otpmk_key
 from ui import ui_settings_flexible_user_keys
 
-s_flexspiNorFrame = None
-s_flexspiNandFrame = None
-s_semcNorFrame = None
-s_semcNandFrame = None
-s_usdhcSdFrame = None
-s_usdhcMmcFrame = None
+kRetryPingTimes = 5
+
+kBootloaderType_Rom         = 0
+kBootloaderType_Flashloader = 1
 
 class secBootMain(memcore.secBootMem):
 
@@ -56,41 +54,29 @@ class secBootMain(memcore.secBootMem):
 
     def callbackBootDeviceConfiguration( self, event ):
         if self.bootDevice == uidef.kBootDevice_FlexspiNor:
-            global s_flexspiNorFrame
-            if s_flexspiNorFrame == None:
-                s_flexspiNorFrame = ui_cfg_flexspinor.secBootUiCfgFlexspiNor(None)
-                s_flexspiNorFrame.SetTitle(u"FlexSPI NOR Device Configuration")
-            s_flexspiNorFrame.Show(True)
+            flexspiNorFrame = ui_cfg_flexspinor.secBootUiCfgFlexspiNor(None)
+            flexspiNorFrame.SetTitle(u"FlexSPI NOR Device Configuration")
+            flexspiNorFrame.Show(True)
         elif self.bootDevice == uidef.kBootDevice_FlexspiNand:
-            global s_flexspiNandFrame
-            if s_flexspiNandFrame == None:
-                s_flexspiNandFrame = ui_cfg_flexspinand.secBootUiFlexspiNand(None)
-                s_flexspiNandFrame.SetTitle(u"FlexSPI NAND Device Configuration")
-            s_flexspiNandFrame.Show(True)
+            flexspiNandFrame = ui_cfg_flexspinand.secBootUiFlexspiNand(None)
+            flexspiNandFrame.SetTitle(u"FlexSPI NAND Device Configuration")
+            flexspiNandFrame.Show(True)
         elif self.bootDevice == uidef.kBootDevice_SemcNor:
-            global s_semcNorFrame
-            if s_semcNorFrame == None:
-                s_semcNorFrame = ui_cfg_semcnor.secBootUiSemcNor(None)
-                s_semcNorFrame.SetTitle(u"SEMC NOR Device Configuration")
-            s_semcNorFrame.Show(True)
+            semcNorFrame = ui_cfg_semcnor.secBootUiSemcNor(None)
+            semcNorFrame.SetTitle(u"SEMC NOR Device Configuration")
+            semcNorFrame.Show(True)
         elif self.bootDevice == uidef.kBootDevice_SemcNand:
-            global s_semcNandFrame
-            if s_semcNandFrame == None:
-                s_semcNandFrame = ui_cfg_semcnand.secBootUiCfgSemcNand(None)
-                s_semcNandFrame.SetTitle(u"SEMC NAND Device Configuration")
-            s_semcNandFrame.Show(True)
+            semcNandFrame = ui_cfg_semcnand.secBootUiCfgSemcNand(None)
+            semcNandFrame.SetTitle(u"SEMC NAND Device Configuration")
+            semcNandFrame.Show(True)
         elif self.bootDevice == uidef.kBootDevice_UsdhcSd:
-            global s_usdhcSdFrame
-            if s_usdhcSdFrame == None:
-                s_usdhcSdFrame = ui_cfg_usdhcsd.secBootUiUsdhcSd(None)
-                s_usdhcSdFrame.SetTitle(u"uSDHC SD Device Configuration")
-            s_usdhcSdFrame.Show(True)
+            usdhcSdFrame = ui_cfg_usdhcsd.secBootUiUsdhcSd(None)
+            usdhcSdFrame.SetTitle(u"uSDHC SD Device Configuration")
+            usdhcSdFrame.Show(True)
         elif self.bootDevice == uidef.kBootDevice_UsdhcMmc:
-            global s_usdhcMmcFrame
-            if s_usdhcMmcFrame == None:
-                s_usdhcMmcFrame = ui_cfg_usdhcmmc.secBootUiUsdhcMmc(None)
-                s_usdhcMmcFrame.SetTitle(u"uSDHC MMC Device Configuration")
-            s_usdhcMmcFrame.Show(True)
+            usdhcMmcFrame = ui_cfg_usdhcmmc.secBootUiUsdhcMmc(None)
+            usdhcMmcFrame.SetTitle(u"uSDHC MMC Device Configuration")
+            usdhcMmcFrame.Show(True)
         else:
             pass
 
@@ -101,9 +87,22 @@ class secBootMain(memcore.secBootMem):
         usbIdList = self.getUsbid()
         self.setPortSetupValue(self.connectStage, usbIdList)
 
-    def callbackConnectToDevice( self, event ):
-        self._startGaugeTimer()
-        self.printLog("'Connect to xxx' button is clicked")
+    def _retryToPingBootloader( self, bootType ):
+        pingStatus = False
+        pingCnt = kRetryPingTimes
+        while (not pingStatus) and pingCnt > 0:
+            if bootType == kBootloaderType_Rom:
+                pingStatus = self.pingRom()
+            elif bootType == kBootloaderType_Flashloader:
+                pingStatus = self.pingFlashloader()
+            else:
+                pass
+            pingCnt = pingCnt - 1
+            if self.isUsbhidPortSelected:
+                time.sleep(2)
+        return pingStatus
+
+    def _connectStateMachine( self ):
         connectSteps = uidef.kConnectStep_Normal
         self.getOneStepConnectMode()
         if self.isOneStepConnectMode and self.connectStage != uidef.kConnectStage_Reset:
@@ -112,7 +111,7 @@ class secBootMain(memcore.secBootMem):
             self.updatePortSetupValue()
             if self.connectStage == uidef.kConnectStage_Rom:
                 self.connectToDevice(self.connectStage)
-                if self.pingRom():
+                if self._retryToPingBootloader(kBootloaderType_Rom):
                     self.getMcuDeviceInfoViaRom()
                     self.getMcuDeviceHabStatus()
                     if self.jumpToFlashloader():
@@ -127,10 +126,7 @@ class secBootMain(memcore.secBootMem):
                     self.popupMsgBox('Make sure that you have put MCU in Serial Downloader mode (BMOD[1:0] pins = 2\'b01)!')
             elif self.connectStage == uidef.kConnectStage_Flashloader:
                 self.connectToDevice(self.connectStage)
-                # A new USB device is being enumerated, we need to delay some time here
-                if self.isUsbhidPortSelected and connectSteps > uidef.kConnectStep_Normal:
-                    time.sleep(5)
-                if self.pingFlashloader():
+                if self._retryToPingBootloader(kBootloaderType_Flashloader):
                     self.getMcuDeviceInfoViaFlashloader()
                     self.getMcuDeviceBtFuseSel()
                     self.updateConnectStatus('green')
@@ -154,6 +150,11 @@ class secBootMain(memcore.secBootMem):
             else:
                 pass
             connectSteps -= 1
+
+    def callbackConnectToDevice( self, event ):
+        self._startGaugeTimer()
+        self.printLog("'Connect to xxx' button is clicked")
+        self._connectStateMachine()
         self._stopGaugeTimer()
 
     def callbackSetSecureBootType( self, event ):
@@ -295,8 +296,13 @@ class secBootMain(memcore.secBootMem):
             if self.connectStage == uidef.kConnectStage_Reset:
                 self._startGaugeTimer()
                 self.printLog("'Load KeyBlob Data' button is clicked")
+                if self.mcuDeviceHabStatus != fusedef.kHabStatus_Closed0 and \
+                   self.mcuDeviceHabStatus != fusedef.kHabStatus_Closed1:
+                    self.enableHab()
+                    self._connectStateMachine()
+                    while self.connectStage != uidef.kConnectStage_Reset:
+                        self._connectStateMachine()
                 self.flashHabDekToGenerateKeyBlob()
-                self.enableHab()
                 self._stopGaugeTimer()
             else:
                 self.popupMsgBox('Please configure boot device via Flashloader first!')
