@@ -15,6 +15,7 @@ from ui import ui_cfg_semcnor
 from ui import ui_cfg_semcnand
 from ui import ui_cfg_usdhcsd
 from ui import ui_cfg_usdhcmmc
+from ui import ui_cfg_lpspinor
 from ui import ui_settings_cert
 from ui import ui_settings_fixed_otpmk_key
 from ui import ui_settings_flexible_user_keys
@@ -25,6 +26,7 @@ s_semcNorFrame = None
 s_semcNandFrame = None
 s_usdhcSdFrame = None
 s_usdhcMmcFrame = None
+s_lpspiNorFrame = None
 
 class secBootMain(memcore.secBootMem):
 
@@ -91,6 +93,12 @@ class secBootMain(memcore.secBootMem):
                 s_usdhcMmcFrame = ui_cfg_usdhcmmc.secBootUiUsdhcMmc(None)
                 s_usdhcMmcFrame.SetTitle(u"uSDHC MMC Device Configuration")
             s_usdhcMmcFrame.Show(True)
+        elif self.bootDevice == uidef.kBootDevice_LpspiNor:
+            global s_lpspiNorFrame
+            if s_lpspiNorFrame == None:
+                s_lpspiNorFrame = ui_cfg_lpspinor.secBootUiLpspiNor(None)
+                s_lpspiNorFrame.SetTitle(u"Lpspi Nor,EEPROM Device Configuration")
+            s_lpspiNorFrame.Show(True)
         else:
             pass
 
