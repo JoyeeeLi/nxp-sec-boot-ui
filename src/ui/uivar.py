@@ -23,6 +23,9 @@ g_usdhcSdOpt = None
 g_usdhcMmcOpt1 = None
 g_usdhcMmcOpt2 = None
 
+g_lpspiNorOpt0 = None
+g_lpspiNorOpt1 = None
+
 g_certSettingsDict = {'cstVersion':None,
                       'useExistingCaKey':None,
                       'pkiTreeKeyLen':None,
@@ -85,6 +88,11 @@ def initVar():
     g_usdhcMmcOpt1 = 0xD0010101
     g_usdhcMmcOpt2 = 0xD0010101
 
+    global g_lpspiNorOpt0
+    global g_lpspiNorOpt1
+    g_lpspiNorOpt0 = 0xD0010101
+    g_lpspiNorOpt1 = 0xD0010101
+
     global g_certSettingsDict
     g_certSettingsDict['cstVersion'] = uidef.kCstVersion_v3_0_1
     g_certSettingsDict['useExistingCaKey'] = 'n'
@@ -145,7 +153,9 @@ def getBootDeviceConfiguration( group ):
         global g_usdhcMmcOpt2
         return g_usdhcMmcOpt1, g_usdhcMmcOpt2
     elif group == uidef.kBootDevice_LpspiNor:
-        pass
+        global g_lpspiNorOpt0
+        global g_lpspiNorOpt1
+        return g_lpspiNorOpt0, g_lpspiNorOpt1
     else:
         pass
 
@@ -185,7 +195,10 @@ def setBootDeviceConfiguration( group, *args ):
         g_usdhcMmcOpt1 = args[0]
         g_usdhcMmcOpt2 = args[1]
     elif group == uidef.kBootDevice_LpspiNor:
-        pass
+        global g_lpspiNorOpt0
+        global g_lpspiNorOpt1
+        g_lpspiNorOpt0 = args[0]
+        g_lpspiNorOpt1 = args[1]
     else:
         pass
 
