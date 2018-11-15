@@ -19,6 +19,13 @@ from ui import ui_settings_cert
 from ui import ui_settings_fixed_otpmk_key
 from ui import ui_settings_flexible_user_keys
 
+s_flexspiNorFrame = None
+s_flexspiNandFrame = None
+s_semcNorFrame = None
+s_semcNandFrame = None
+s_usdhcSdFrame = None
+s_usdhcMmcFrame = None
+
 class secBootMain(memcore.secBootMem):
 
     def __init__(self, parent):
@@ -49,53 +56,41 @@ class secBootMain(memcore.secBootMem):
 
     def callbackBootDeviceConfiguration( self, event ):
         if self.bootDevice == uidef.kBootDevice_FlexspiNor:
-            if uivar.global_count[1] == 0:
-                global flexspiNorFrame
-                flexspiNorFrame = ui_cfg_flexspinor.secBootUiCfgFlexspiNor(None)
-                flexspiNorFrame.SetTitle(u"FlexSPI NOR Device Configuration")
-                flexspiNorFrame.Show(True)
-            else:
-                flexspiNorFrame.Show(True)
+            global s_flexspiNorFrame
+            if s_flexspiNorFrame == None:
+                s_flexspiNorFrame = ui_cfg_flexspinor.secBootUiCfgFlexspiNor(None)
+                s_flexspiNorFrame.SetTitle(u"FlexSPI NOR Device Configuration")
+            s_flexspiNorFrame.Show(True)
         elif self.bootDevice == uidef.kBootDevice_FlexspiNand:
-            if uivar.global_count[2] == 0:
-                global flexspiNandFrame
-                flexspiNandFrame = ui_cfg_flexspinand.secBootUiFlexspiNand(None)
-                flexspiNandFrame.SetTitle(u"Flexspi NAND Device Configuration")
-                flexspiNandFrame.Show(True)
-            else:
-                flexspiNandFrame.Show(True)
+            global s_flexspiNandFrame
+            if s_flexspiNandFrame == None:
+                s_flexspiNandFrame = ui_cfg_flexspinand.secBootUiFlexspiNand(None)
+                s_flexspiNandFrame.SetTitle(u"FlexSPI NAND Device Configuration")
+            s_flexspiNandFrame.Show(True)
         elif self.bootDevice == uidef.kBootDevice_SemcNor:
-            if uivar.global_count[3] == 0:
-                global semcNorFrame
-                semcNorFrame = ui_cfg_semcnor.secBootUiSemcNor(None)
-                semcNorFrame.SetTitle(u"SEMC NOR Device Configuration")
-                semcNorFrame.Show(True)
-            else:
-                semcNorFrame.Show(True)
+            global s_semcNorFrame
+            if s_semcNorFrame == None:
+                s_semcNorFrame = ui_cfg_semcnor.secBootUiSemcNor(None)
+                s_semcNorFrame.SetTitle(u"SEMC NOR Device Configuration")
+            s_semcNorFrame.Show(True)
         elif self.bootDevice == uidef.kBootDevice_SemcNand:
-            if uivar.global_count[4] == 0:
-                global semcNandFrame
-                semcNandFrame = ui_cfg_semcnand.secBootUiCfgSemcNand(None)
-                semcNandFrame.SetTitle(u"SEMC NAND Device Configuration")
-                semcNandFrame.Show(True)
-            else:
-                semcNandFrame.Show(True)
+            global s_semcNandFrame
+            if s_semcNandFrame == None:
+                s_semcNandFrame = ui_cfg_semcnand.secBootUiCfgSemcNand(None)
+                s_semcNandFrame.SetTitle(u"SEMC NAND Device Configuration")
+            s_semcNandFrame.Show(True)
         elif self.bootDevice == uidef.kBootDevice_UsdhcSd:
-            if uivar.global_count[5] == 0:
-                global usdhcSdFrame
-                usdhcSdFrame = ui_cfg_usdhcsd.secBootUiUsdhcSd(None)
-                usdhcSdFrame.SetTitle(u"Usdhc Sd Device Configuration")
-                usdhcSdFrame.Show(True)
-            else:
-                usdhcSdFrame.Show(True)
+            global s_usdhcSdFrame
+            if s_usdhcSdFrame == None:
+                s_usdhcSdFrame = ui_cfg_usdhcsd.secBootUiUsdhcSd(None)
+                s_usdhcSdFrame.SetTitle(u"uSDHC SD Device Configuration")
+            s_usdhcSdFrame.Show(True)
         elif self.bootDevice == uidef.kBootDevice_UsdhcMmc:
-            if uivar.global_count[6] == 0:
-                global usdhcMmcFrame
-                usdhcMmcFrame = ui_cfg_usdhcmmc.secBootUiUsdhcMmc(None)
-                usdhcMmcFrame.SetTitle(u"Usdhc Mmc Device Configuration")
-                usdhcMmcFrame.Show(True)
-            else:
-                usdhcMmcFrame.Show(True)
+            global s_usdhcMmcFrame
+            if s_usdhcMmcFrame == None:
+                s_usdhcMmcFrame = ui_cfg_usdhcmmc.secBootUiUsdhcMmc(None)
+                s_usdhcMmcFrame.SetTitle(u"uSDHC MMC Device Configuration")
+            s_usdhcMmcFrame.Show(True)
         else:
             pass
 
@@ -343,7 +338,7 @@ class secBootMain(memcore.secBootMem):
         wx.MessageBox(msgText, "Home Page", wx.OK | wx.ICON_INFORMATION)
 
     def callbackShowAboutAuthor( self, event ):
-        author = "Author:  衡杰Jay \n"
+        author = "Author:  衡杰Jay, 李嘉奕Joyee \n"
         blog = "Blog:      痞子衡嵌入式 https://www.cnblogs.com/henjay724/ \n"
         msgText = ((author.encode('utf-8')) +
                    ('Email:     jie.heng@nxp.com \n') +

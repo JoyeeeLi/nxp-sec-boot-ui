@@ -190,7 +190,6 @@ class secBootUiUsdhcMmc(bootDeviceWin_UsdhcMmc.bootDeviceWin_UsdhcMmc):
         self.usdhcMmcOpt2 = (self.usdhcMmcOpt2 & 0xFF7FFFFF) | (val << 23)
 
     def cancel_of_EMMC(self, event):
-        uivar.global_count[6] = 0
         self.Show(False)
 
     def apply_of_EMMC(self, event):
@@ -209,11 +208,9 @@ class secBootUiUsdhcMmc(bootDeviceWin_UsdhcMmc.bootDeviceWin_UsdhcMmc):
         self._getPwrCycle()
         self._getPwrPolarity()
         uivar.setBootDeviceConfiguration(uidef.kBootDevice_UsdhcMmc, self.usdhcMmcOpt1, self.usdhcMmcOpt2)
-        uivar.global_count[6] = 1
         self.Show(False)
 
     def OnClose_EMMC(self, event):
         ret = wx.MessageBox('Do you really want to leave?', 'Confirm', wx.OK | wx.CANCEL)
-        uivar.global_count[6] = 1
         if ret == wx.OK:
             self.Show(False)

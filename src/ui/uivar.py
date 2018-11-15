@@ -18,10 +18,10 @@ g_semcNandOpt = None
 g_semcNandFcbOpt = None
 g_semcNandImageInfo = None
 
-g_usdhcSDOpt = None
+g_usdhcSdOpt = None
 
-g_UsdhcMmcOpt1 = None
-usdhcMmcOpt2 = None
+g_usdhcMmcOpt1 = None
+g_usdhcMmcOpt2 = None
 
 g_certSettingsDict = {'cstVersion':None,
                       'useExistingCaKey':None,
@@ -77,13 +77,13 @@ def initVar():
     g_semcNandImageInfo = [None] * 8
     g_semcNandImageInfo[0] = 0x00020001
 
-    global g_usdhcSDOpt
-    g_usdhcSDOpt = 0xD0010101
+    global g_usdhcSdOpt
+    g_usdhcSdOpt = 0xD0010101
 
-    global g_UsdhcMmcOpt1
-    global g_UsdhcMmcOpt2
-    g_UsdhcMmcOpt1 = 0xD0010101
-    g_UsdhcMmcOpt2 = 0xD0010101
+    global g_usdhcMmcOpt1
+    global g_usdhcMmcOpt2
+    g_usdhcMmcOpt1 = 0xD0010101
+    g_usdhcMmcOpt2 = 0xD0010101
 
     global g_certSettingsDict
     g_certSettingsDict['cstVersion'] = uidef.kCstVersion_v3_0_1
@@ -138,17 +138,16 @@ def getBootDeviceConfiguration( group ):
         global g_semcNandImageInfo
         return g_semcNandOpt, g_semcNandFcbOpt, g_semcNandImageInfo
     elif group == uidef.kBootDevice_UsdhcSd:
-        global g_usdhcSDOpt
-        return g_usdhcSDOpt
+        global g_usdhcSdOpt
+        return g_usdhcSdOpt
     elif group == uidef.kBootDevice_UsdhcMmc:
-        global g_UsdhcMmcOpt1
-        global g_UsdhcMmcOpt2
-        return g_UsdhcMmcOpt1, g_UsdhcMmcOpt2
+        global g_usdhcMmcOpt1
+        global g_usdhcMmcOpt2
+        return g_usdhcMmcOpt1, g_usdhcMmcOpt2
     elif group == uidef.kBootDevice_LpspiNor:
         pass
     else:
         pass
-
 
 def setBootDeviceConfiguration( group, *args ):
     if group == uidef.kBootDevice_FlexspiNor:
@@ -178,13 +177,13 @@ def setBootDeviceConfiguration( group, *args ):
         g_semcNandFcbOpt = args[1]
         g_semcNandImageInfo = args[2]
     elif group == uidef.kBootDevice_UsdhcSd:
-        global g_usdhcSDOpt
-        g_usdhcSDOpt = args[0]
+        global g_usdhcSdOpt
+        g_usdhcSdOpt = args[0]
     elif group == uidef.kBootDevice_UsdhcMmc:
-        global g_UsdhcMmcOpt1
-        global g_UsdhcMmcOpt2
-        g_UsdhcMmcOpt1 = args[0]
-        g_UsdhcMmcOpt2 = args[1]
+        global g_usdhcMmcOpt1
+        global g_usdhcMmcOpt2
+        g_usdhcMmcOpt1 = args[0]
+        g_usdhcMmcOpt2 = args[1]
     elif group == uidef.kBootDevice_LpspiNor:
         pass
     else:
@@ -224,12 +223,3 @@ def setAdvancedSettings( group, *args ):
         g_UserKeyCmdDict = args[1]
     else:
         pass
-
-global_count = {}
-global_count[1] = 0
-global_count[2] = 0
-global_count[3] = 0
-global_count[4] = 0
-global_count[5] = 0
-global_count[6] = 0
-global_count[7] = 0

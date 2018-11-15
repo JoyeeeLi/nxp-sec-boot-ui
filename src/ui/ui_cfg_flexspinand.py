@@ -299,7 +299,6 @@ class secBootUiFlexspiNand(bootDeviceWin_FlexspiNand.bootDeviceWin_FlexspiNand):
         self.flexspiNandKeyBlob = (self.flexspiNandKeyBlob & 0xF0FFFFFF) | (val << 24)
 
     def cancel_of_FLEXSPI_NAND(self, event):
-        uivar.global_count[2] = 0
         self.Show(False)
 
     def apply_of_FLEXSPI_NAND(self, event):
@@ -320,11 +319,9 @@ class secBootUiFlexspiNand(bootDeviceWin_FlexspiNand.bootDeviceWin_FlexspiNand):
         self._getDekSize()
         self._getKeyBlobInfoSize()
         uivar.setBootDeviceConfiguration(uidef.kBootDevice_FlexspiNand, self.flexspiNandOpt, self.flexspiNandFcbOpt, self.flexspiNandImageInfo, self.flexspiNandKeyBlob)
-        uivar.global_count[2] = 1
         self.Show(False)
 
     def OnClose_FLEXSPI_NAND(self, event):
         ret = wx.MessageBox('Do you really want to leave?', 'Confirm', wx.OK | wx.CANCEL)
-        uivar.global_count[2] = 1
         if ret == wx.OK:
             self.Show(False)

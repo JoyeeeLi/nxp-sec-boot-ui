@@ -82,7 +82,6 @@ class secBootUiUsdhcSd(bootDeviceWin_UsdhcSd.bootDeviceWin_UsdhcSd):
         self.usdhcSDOpt = (self.usdhcSDOpt & 0xFF7FFFFF) | (val << 23)
 
     def cancel_of_SD(self, event):
-        uivar.global_count[5] = 0
         self.Show(False)
 
     def apply_of_SD(self, event):
@@ -92,12 +91,10 @@ class secBootUiUsdhcSd(bootDeviceWin_UsdhcSd.bootDeviceWin_UsdhcSd):
         self._getPwrCycle()
         self._getPwrDownTime()
         self._getPwrPolarity()
-        uivar.global_count[5] = 1
         uivar.setBootDeviceConfiguration(uidef.kBootDevice_UsdhcSd, self.usdhcSDOpt)
         self.Show(False)
 
     def OnClose_SD(self, event):
         ret = wx.MessageBox('Do you really want to leave?', 'Confirm', wx.OK | wx.CANCEL)
-        uivar.global_count[5] = 1
         if ret == wx.OK:
             self.Show(False)

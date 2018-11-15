@@ -81,7 +81,6 @@ class secBootUiSemcNor(bootDeviceWin_SemcNor.bootDeviceWin_SemcNor):
         self.semcNorOpt = (self.semcNorOpt & 0xFFFFFFFC) | (val << 2)
 
     def cancel_of_SEMC_NOR(self, event):
-        uivar.global_count[3] = 0
         self.Show(False)
 
     def apply_of_SEMC_NOR(self, event):
@@ -91,11 +90,9 @@ class secBootUiSemcNor(bootDeviceWin_SemcNor.bootDeviceWin_SemcNor):
         self._getTimingMode()
         self._getCommandSet()
         uivar.setBootDeviceConfiguration(uidef.kBootDevice_SemcNor, self.semcNorOpt, self.semcNorSetting)
-        uivar.global_count[3] = 1
         self.Show(False)
 
     def OnClose_SEMC_NOR(self, event):
         ret = wx.MessageBox('Do you really want to leave?', 'Confirm', wx.OK | wx.CANCEL)
         if ret == wx.OK:
-            uivar.global_count[3] = 1
             self.Show(False)
