@@ -42,9 +42,9 @@ class secBootGen(uicore.secBootUi):
         self.srcAppFilename = None
         self.destAppFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bootable_image', 'ivt_application.bin')
         self.destAppNoPaddingFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bootable_image', 'ivt_application_nopadding.bin')
-        self.bdFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bd_file', 'imx_image_gen.bd')
+        self.appBdFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bd_file', 'imx_image_gen.bd')
         self.elftosbPath = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'elftosb', 'win', 'elftosb.exe')
-        self.bdBatFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bd_file', 'imx_image_gen.bat')
+        self.appBdBatFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bd_file', 'imx_image_gen.bat')
         self.updateAllCstPathToCorrectVersion()
         self.imageEncPath = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'tools', 'image_enc', 'win', 'image_enc.exe')
         self.beeDek0Filename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bee_crypto', 'bee_dek0.bin')
@@ -53,6 +53,10 @@ class secBootGen(uicore.secBootUi):
         self.otpmkDekFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bee_crypto', 'otpmk_dek.bin')
         self.destEncAppFilename = None
         self.destEncAppNoCfgBlockFilename = None
+
+        self.flBdFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bd_file', 'imx_flashloader_gen.bd')
+        self.flBdBatFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bd_file', 'imx_flashloader_gen.bat')
+        self.destFlFilename = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'gen', 'bootable_image', 'ivt_flashloader_signed.bin')
 
     def _copyCstBinToElftosbFolder( self ):
         shutil.copy(self.cstBinFolder + '\\cst.exe', os.path.split(self.elftosbPath)[0])
@@ -202,15 +206,15 @@ class secBootGen(uicore.secBootUi):
             val32 = self.getVal32FromBinFile(self.srkFuseFilename, (i * 4))
             self.printSrkData(self.getFormattedHexValue(val32))
 
-    def _getImageInfo( self ):
+    def _getImageInfo( self, srcAppFilename ):
         startAddress = None
         entryPointAddress = None
-        if os.path.isfile(self.srcAppFilename):
-            appPath, appFilename = os.path.split(self.srcAppFilename)
+        if os.path.isfile(srcAppFilename):
+            appPath, appFilename = os.path.split(srcAppFilename)
             appName, appType = os.path.splitext(appFilename)
             if appType == '.elf' or appType == '.out':
                 elfObj = None
-                with open(self.srcAppFilename, 'rb') as f:
+                with open(srcAppFilename, 'rb') as f:
                     e = elf.ELFObject()
                     e.fromFile(f)
                     elfObj = e
@@ -221,7 +225,7 @@ class secBootGen(uicore.secBootUi):
                     except:
                         startAddress = None
                 if startAddress == None:
-                    self.printLog('Cannot get vectorAddr symbol from image file: ' + self.srcAppFilename)
+                    self.printLog('Cannot get vectorAddr symbol from image file: ' + srcAppFilename)
                 #entryPointAddress = elfObj.e_entry
                 for symbol in gendef.kToolchainSymbolList_EntryAddr:
                     try:
@@ -230,27 +234,27 @@ class secBootGen(uicore.secBootUi):
                     except:
                         entryPointAddress = None
                 if entryPointAddress == None:
-                    self.printLog('Cannot get entryAddr symbol from image file: ' + self.srcAppFilename)
+                    self.printLog('Cannot get entryAddr symbol from image file: ' + srcAppFilename)
             elif appType == '.s19' or appType == '.srec':
-                srecObj = bincopy.BinFile(str(self.srcAppFilename))
+                srecObj = bincopy.BinFile(str(srcAppFilename))
                 startAddress = srecObj.minimum_address
                 #entryPointAddress = srecObj.execution_start_address
                 entryPointAddress = self.getVal32FromByteArray(srecObj.as_binary(startAddress + 0x4, startAddress  + 0x8))
             else:
-                self.printLog('Cannot recognise the format of image file: ' + self.srcAppFilename)
+                self.printLog('Cannot recognise the format of image file: ' + srcAppFilename)
         return startAddress, entryPointAddress
 
-    def _updateBdfileContent( self, vectorAddress, entryPointAddress):
+    def _updateBdfileContent( self, secureBootType, bootDevice, vectorAddress, entryPointAddress):
         bdContent = ""
         ############################################################################
         bdContent += "options {\n"
-        if self.secureBootType == uidef.kSecureBootType_Development:
+        if secureBootType == uidef.kSecureBootType_Development:
             flags = gendef.kBootImageTypeFlag_Unsigned
-        elif self.secureBootType == uidef.kSecureBootType_HabAuth:
+        elif secureBootType == uidef.kSecureBootType_HabAuth:
             flags = gendef.kBootImageTypeFlag_Signed
-        elif self.secureBootType == uidef.kSecureBootType_HabCrypto:
+        elif secureBootType == uidef.kSecureBootType_HabCrypto:
             flags = gendef.kBootImageTypeFlag_Encrypted
-        elif self.secureBootType == uidef.kSecureBootType_BeeCrypto:
+        elif secureBootType == uidef.kSecureBootType_BeeCrypto:
             if self.isCertEnabledForBee:
                 flags = gendef.kBootImageTypeFlag_Signed
             else:
@@ -259,27 +263,32 @@ class secBootGen(uicore.secBootUi):
             pass
         bdContent += "    flags = " + flags + ";\n"
         startAddress = 0x0
-        if self.bootDevice == uidef.kBootDevice_FlexspiNor or \
-           self.bootDevice == uidef.kBootDevice_SemcNor:
+        if bootDevice == uidef.kBootDevice_FlexspiNor or \
+           bootDevice == uidef.kBootDevice_SemcNor:
             ivtOffset = gendef.kIvtOffset_NOR
             initialLoadSize = gendef.kInitialLoadSize_NOR
-        elif self.bootDevice == uidef.kBootDevice_FlexspiNand or \
-             self.bootDevice == uidef.kBootDevice_SemcNand or \
-             self.bootDevice == uidef.kBootDevice_UsdhcSdEmmc or \
-             self.bootDevice == kBootDevice_LpspiNor:
+        elif bootDevice == uidef.kBootDevice_FlexspiNand or \
+             bootDevice == uidef.kBootDevice_SemcNand or \
+             bootDevice == uidef.kBootDevice_UsdhcSd or \
+             bootDevice == uidef.kBootDevice_UsdhcMmc or \
+             bootDevice == uidef.kBootDevice_LpspiNor:
             ivtOffset = gendef.kIvtOffset_NAND_SD_EEPROM
             initialLoadSize = gendef.kInitialLoadSize_NAND_SD_EEPROM
+        elif bootDevice == uidef.kBootDevice_RamFlashloader:
+            ivtOffset = gendef.kIvtOffset_RAM_FLASHLOADER
+            initialLoadSize = gendef.kInitialLoadSize_RAM_FLASHLOADER
         else:
             pass
         if vectorAddress < initialLoadSize:
-            self.printLog('Invalid vector address found in image file: ' + self.srcAppFilename)
+            if bootDevice != uidef.kBootDevice_RamFlashloader:
+                self.printLog('Invalid vector address found in image file: ' + self.srcAppFilename)
             return False
         else:
             startAddress = vectorAddress - initialLoadSize
         bdContent += "    startAddress = " + str(hex(startAddress)) + ";\n"
         bdContent += "    ivtOffset = " + str(hex(ivtOffset)) + ";\n"
         bdContent += "    initialLoadSize = " + str(hex(initialLoadSize)) + ";\n"
-        if self.secureBootType == uidef.kSecureBootType_HabAuth:
+        if secureBootType == uidef.kSecureBootType_HabAuth:
             #bdContent += "    cstFolderPath = \"" + self.cstBinFolder + "\";\n"
             #bdContent += "    cstFolderPath = \"" + self.cstBinToElftosbPath + "\";\n"
             pass
@@ -292,13 +301,13 @@ class secBootGen(uicore.secBootUi):
         bdContent += "    elfFile = extern(0);\n"
         bdContent += "}\n"
         ############################################################################
-        if self.secureBootType == uidef.kSecureBootType_Development or \
-           (self.secureBootType == uidef.kSecureBootType_BeeCrypto and (not self.isCertEnabledForBee)):
+        if secureBootType == uidef.kSecureBootType_Development or \
+           (secureBootType == uidef.kSecureBootType_BeeCrypto and (not self.isCertEnabledForBee)):
             bdContent += "\nsection (0) {\n"
             bdContent += "}\n"
-        elif self.secureBootType == uidef.kSecureBootType_HabAuth or \
-             self.secureBootType == uidef.kSecureBootType_HabCrypto or \
-             (self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.isCertEnabledForBee):
+        elif secureBootType == uidef.kSecureBootType_HabAuth or \
+             secureBootType == uidef.kSecureBootType_HabCrypto or \
+             (secureBootType == uidef.kSecureBootType_BeeCrypto and self.isCertEnabledForBee):
             ########################################################################
             bdContent += "\nconstants {\n"
             bdContent += "    SEC_CSF_HEADER              = 20;\n"
@@ -318,10 +327,10 @@ class secBootGen(uicore.secBootUi):
             bdContent += "}\n"
             ########################################################################
             bdContent += "\nsection (SEC_CSF_HEADER;\n"
-            if self.secureBootType == uidef.kSecureBootType_HabAuth or \
-               (self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.isCertEnabledForBee):
+            if secureBootType == uidef.kSecureBootType_HabAuth or \
+               (secureBootType == uidef.kSecureBootType_BeeCrypto and self.isCertEnabledForBee):
                 headerVersion = gendef.kBootImageCsfHeaderVersion_Signed
-            elif self.secureBootType == uidef.kSecureBootType_HabCrypto:
+            elif secureBootType == uidef.kSecureBootType_HabCrypto:
                 headerVersion = gendef.kBootImageCsfHeaderVersion_Encrypted
             else:
                 pass
@@ -366,8 +375,8 @@ class secBootGen(uicore.secBootUi):
             bdContent += "{\n"
             bdContent += "}\n"
             ########################################################################
-            if self.secureBootType == uidef.kSecureBootType_HabAuth or \
-               (self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.isCertEnabledForBee):
+            if secureBootType == uidef.kSecureBootType_HabAuth or \
+               (secureBootType == uidef.kSecureBootType_BeeCrypto and self.isCertEnabledForBee):
                 bdContent += "\nsection (SEC_SET_ENGINE;\n"
                 bdContent += "    SetEngine_HashAlgorithm = \"sha256\",\n"
                 bdContent += "    SetEngine_Engine = \"DCP\",\n"
@@ -380,7 +389,7 @@ class secBootGen(uicore.secBootUi):
                 bdContent += "    )\n"
                 bdContent += "{\n"
                 bdContent += "}\n"
-            elif self.secureBootType == uidef.kSecureBootType_HabCrypto:
+            elif secureBootType == uidef.kSecureBootType_HabCrypto:
                 bdContent += "section (SEC_CSF_INSTALL_SECRET_KEY;\n"
                 bdContent += "    SecretKey_Name=\"" + self.genCryptoToElftosbPath + os.path.split(self.habDekFilename)[1] + "\",\n"
                 bdContent += "    SecretKey_Length=128,\n"
@@ -401,10 +410,15 @@ class secBootGen(uicore.secBootUi):
         else:
             pass
 
-        with open(self.bdFilename, 'wb') as fileObj:
-            fileObj.write(bdContent)
-            fileObj.close()
-        self.showMatchBdFilePath(self.bdFilename)
+        if bootDevice == uidef.kBootDevice_RamFlashloader:
+            with open(self.flBdFilename, 'wb') as fileObj:
+                fileObj.write(bdContent)
+                fileObj.close()
+        else:
+            with open(self.appBdFilename, 'wb') as fileObj:
+                fileObj.write(bdContent)
+                fileObj.close()
+            self.showMatchBdFilePath(self.appBdFilename)
 
         return True
 
@@ -413,10 +427,10 @@ class secBootGen(uicore.secBootUi):
         self._getCrtSrkCaPemFilenames()
         self._getCrtCsfImgUsrPemFilenames()
 
-    def _isCertificateGenerated( self ):
-        if self.secureBootType == uidef.kSecureBootType_HabAuth or \
-           self.secureBootType == uidef.kSecureBootType_HabCrypto or \
-           (self.secureBootType == uidef.kSecureBootType_BeeCrypto and self.isCertEnabledForBee):
+    def _isCertificateGenerated( self, secureBootType ):
+        if secureBootType == uidef.kSecureBootType_HabAuth or \
+           secureBootType == uidef.kSecureBootType_HabCrypto or \
+           (secureBootType == uidef.kSecureBootType_BeeCrypto and self.isCertEnabledForBee):
             if ((self.srkTableFilename == None) or \
                 (self.srkFuseFilename == None) or \
                 (self.crtSrkCaPemFileList[0] == None) or \
@@ -432,22 +446,22 @@ class secBootGen(uicore.secBootUi):
                 return True
             else:
                 return False
-        elif self.secureBootType == uidef.kSecureBootType_Development or \
-             (self.secureBootType == uidef.kSecureBootType_BeeCrypto and (not self.isCertEnabledForBee)):
+        elif secureBootType == uidef.kSecureBootType_Development or \
+             (secureBootType == uidef.kSecureBootType_BeeCrypto and (not self.isCertEnabledForBee)):
             return True
         else:
             pass
 
-    def createMatchedBdfile( self ):
+    def createMatchedAppBdfile( self ):
         self.srcAppFilename = self.getUserAppFilePath()
-        imageStartAddr, imageEntryAddr = self._getImageInfo()
+        imageStartAddr, imageEntryAddr = self._getImageInfo(self.srcAppFilename)
         if imageStartAddr == None or imageEntryAddr == None:
             self.popupMsgBox('You should first specify a source image file (.elf/.srec)!')
             return False
-        if not self._isCertificateGenerated():
+        if not self._isCertificateGenerated(self.secureBootType):
             self.popupMsgBox('You should first generate certificates!')
             return False
-        return self._updateBdfileContent(imageStartAddr, imageEntryAddr)
+        return self._updateBdfileContent(self.secureBootType, self.bootDevice, imageStartAddr, imageEntryAddr)
 
     def _adjustDestAppFilenameForBd( self ):
         srcAppName = os.path.splitext(os.path.split(self.srcAppFilename)[1])[0]
@@ -473,8 +487,8 @@ class secBootGen(uicore.secBootUi):
     def _updateBdBatfileContent( self ):
         self._adjustDestAppFilenameForBd()
         batContent = self.elftosbPath
-        batContent += " -f imx -V -c " + self.bdFilename + ' -o ' + self.destAppFilename + ' ' + self.srcAppFilename
-        with open(self.bdBatFilename, 'wb') as fileObj:
+        batContent += " -f imx -V -c " + self.appBdFilename + ' -o ' + self.destAppFilename + ' ' + self.srcAppFilename
+        with open(self.appBdBatFilename, 'wb') as fileObj:
             fileObj.write(batContent)
             fileObj.close()
 
@@ -506,7 +520,7 @@ class secBootGen(uicore.secBootUi):
         self._updateBdBatfileContent()
         # We have to change system dir to the path of elftosb.exe, or elftosb.exe may not be ran successfully
         os.chdir(os.path.split(self.elftosbPath)[0])
-        process = subprocess.Popen(self.bdBatFilename, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        process = subprocess.Popen(self.appBdBatFilename, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         commandOutput = process.communicate()[0]
         print commandOutput
         self._parseBootableImageGenerationResult(commandOutput)
@@ -608,6 +622,34 @@ class secBootGen(uicore.secBootUi):
             self._genBeeDekFilesAndShow(userKeyCtrlDict, userKeyCmdDict)
         elif userKeyCmdDict['is_boot_image'] == '0':
             pass
+
+    def _createSignedFlBdfile( self, srcFlFilename):
+        imageStartAddr, imageEntryAddr = self._getImageInfo(srcFlFilename)
+        if imageStartAddr == None or imageEntryAddr == None:
+            self.popupMsgBox('Default Flashloader image file is not usable!')
+            return False
+        if not self._isCertificateGenerated(uidef.kSecureBootType_HabAuth):
+            self.popupMsgBox('You should first generate certificates!')
+            return False
+        return self._updateBdfileContent(uidef.kSecureBootType_HabAuth, uidef.kBootDevice_RamFlashloader, imageStartAddr, imageEntryAddr)
+
+    def _updateFlBdBatfileContent( self, srcFlFilename ):
+        batContent = self.elftosbPath
+        batContent += " -f imx -V -c " + self.flBdFilename + ' -o ' + self.destFlFilename + ' ' + srcFlFilename
+        with open(self.flBdBatFilename, 'wb') as fileObj:
+            fileObj.write(batContent)
+            fileObj.close()
+
+    def genSignedFlashloader( self, srcFlFilename ):
+        if self._createSignedFlBdfile(srcFlFilename):
+            self._updateFlBdBatfileContent(srcFlFilename)
+            os.chdir(os.path.split(self.elftosbPath)[0])
+            process = subprocess.Popen(self.flBdBatFilename, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            commandOutput = process.communicate()[0]
+            print commandOutput
+            return self.destFlFilename
+        else:
+            return None
 
     def getReg32FromBinFile( self, filename, offset=0):
         return hex(self.getVal32FromBinFile(filename, offset))

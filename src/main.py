@@ -8,6 +8,7 @@ import os
 import time
 from mem import memcore
 from ui import uidef
+from fuse import fusedef
 from ui import ui_cfg_semcnand
 from ui import ui_cfg_flexspinor
 from ui import ui_settings_cert
@@ -74,6 +75,7 @@ class secBootMain(memcore.secBootMem):
                 self.connectToDevice(self.connectStage)
                 if self.pingRom():
                     self.getMcuDeviceInfoViaRom()
+                    self.getMcuDeviceHabStatus()
                     if self.jumpToFlashloader():
                         self.updateConnectStatus('yellow')
                         self.connectStage = uidef.kConnectStage_Flashloader
@@ -91,7 +93,6 @@ class secBootMain(memcore.secBootMem):
                     time.sleep(5)
                 if self.pingFlashloader():
                     self.getMcuDeviceInfoViaFlashloader()
-                    self.getMcuDeviceHabStatus()
                     self.getMcuDeviceBtFuseSel()
                     self.updateConnectStatus('green')
                     self.connectStage = uidef.kConnectStage_ExternalMemory
@@ -157,7 +158,7 @@ class secBootMain(memcore.secBootMem):
         else:
             self._startGaugeTimer()
             self.printLog("'Generate Bootable Image' button is clicked")
-            if self.createMatchedBdfile():
+            if self.createMatchedAppBdfile():
                 self.genBootableImage()
                 self.showHabDekIfApplicable()
             self._stopGaugeTimer()
