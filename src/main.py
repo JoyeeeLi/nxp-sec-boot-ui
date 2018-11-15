@@ -9,8 +9,12 @@ import time
 from mem import memcore
 from ui import uidef
 from fuse import fusedef
-from ui import ui_cfg_semcnand
 from ui import ui_cfg_flexspinor
+from ui import ui_cfg_flexspinand
+from ui import ui_cfg_semcnor
+from ui import ui_cfg_semcnand
+from ui import ui_cfg_usdhcsd
+from ui import ui_cfg_usdhcmmc
 from ui import ui_settings_cert
 from ui import ui_settings_fixed_otpmk_key
 from ui import ui_settings_flexible_user_keys
@@ -44,14 +48,54 @@ class secBootMain(memcore.secBootMem):
         self.setSecureBootSeqColor()
 
     def callbackBootDeviceConfiguration( self, event ):
-        if self.bootDevice == uidef.kBootDevice_SemcNand:
-            semcNandFrame = ui_cfg_semcnand.secBootUiCfgSemcNand(None)
-            semcNandFrame.SetTitle(u"SEMC NAND Device Configuration")
-            semcNandFrame.Show(True)
-        elif self.bootDevice == uidef.kBootDevice_FlexspiNor:
-            flexspiNorFrame = ui_cfg_flexspinor.secBootUiCfgFlexspiNor(None)
-            flexspiNorFrame.SetTitle(u"FlexSPI NOR Device Configuration")
-            flexspiNorFrame.Show(True)
+        if self.bootDevice == uidef.kBootDevice_FlexspiNor:
+            if uivar.global_count[1] == 0:
+                global flexspiNorFrame
+                flexspiNorFrame = ui_cfg_flexspinor.secBootUiCfgFlexspiNor(None)
+                flexspiNorFrame.SetTitle(u"FlexSPI NOR Device Configuration")
+                flexspiNorFrame.Show(True)
+            else:
+                flexspiNorFrame.Show(True)
+        elif self.bootDevice == uidef.kBootDevice_FlexspiNand:
+            if uivar.global_count[2] == 0:
+                global flexspiNandFrame
+                flexspiNandFrame = ui_cfg_flexspinand.secBootUiFlexspiNand(None)
+                flexspiNandFrame.SetTitle(u"Flexspi NAND Device Configuration")
+                flexspiNandFrame.Show(True)
+            else:
+                flexspiNandFrame.Show(True)
+        elif self.bootDevice == uidef.kBootDevice_SemcNor:
+            if uivar.global_count[3] == 0:
+                global semcNorFrame
+                semcNorFrame = ui_cfg_semcnor.secBootUiSemcNor(None)
+                semcNorFrame.SetTitle(u"SEMC NOR Device Configuration")
+                semcNorFrame.Show(True)
+            else:
+                semcNorFrame.Show(True)
+        elif self.bootDevice == uidef.kBootDevice_SemcNand:
+            if uivar.global_count[4] == 0:
+                global semcNandFrame
+                semcNandFrame = ui_cfg_semcnand.secBootUiCfgSemcNand(None)
+                semcNandFrame.SetTitle(u"SEMC NAND Device Configuration")
+                semcNandFrame.Show(True)
+            else:
+                semcNandFrame.Show(True)
+        elif self.bootDevice == uidef.kBootDevice_UsdhcSd:
+            if uivar.global_count[5] == 0:
+                global usdhcSdFrame
+                usdhcSdFrame = ui_cfg_usdhcsd.secBootUiUsdhcSd(None)
+                usdhcSdFrame.SetTitle(u"Usdhc Sd Device Configuration")
+                usdhcSdFrame.Show(True)
+            else:
+                usdhcSdFrame.Show(True)
+        elif self.bootDevice == uidef.kBootDevice_UsdhcMmc:
+            if uivar.global_count[6] == 0:
+                global usdhcMmcFrame
+                usdhcMmcFrame = ui_cfg_usdhcmmc.secBootUiUsdhcMmc(None)
+                usdhcMmcFrame.SetTitle(u"Usdhc Mmc Device Configuration")
+                usdhcMmcFrame.Show(True)
+            else:
+                usdhcMmcFrame.Show(True)
         else:
             pass
 

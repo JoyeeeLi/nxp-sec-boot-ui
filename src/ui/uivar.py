@@ -3,18 +3,29 @@ import sys
 import os
 import uidef
 
+g_flexspiNorOpt0 = None
+g_flexspiNorOpt1 = None
+
+g_flexspiNandOpt = None
+g_flexspiNandFcbOpt = None
+g_flexspiNandImageInfo = None
+g_flexspiNandKeyBlob = None
+
+g_semcNorOpt = None
+g_semcNorSetting = None
+
 g_semcNandOpt = None
 g_semcNandFcbOpt = None
 g_semcNandImageInfo = None
 
-g_flexspiNorOpt0 = None
-g_flexspiNorOpt1 = None
+g_usdhcSDOpt = None
+
+g_UsdhcMmcOpt1 = None
+usdhcMmcOpt2 = None
 
 g_certSettingsDict = {'cstVersion':None,
                       'useExistingCaKey':None,
-                      'useEllipticCurveCrypto':None,
                       'pkiTreeKeyLen':None,
-                      'pkiTreeKeyCn':None,
                       'pkiTreeDuration':None,
                       'SRKs':None,
                       'caFlagSet':None}
@@ -39,23 +50,44 @@ g_UserKeyCmdDict = {'base_addr':None,
                     'is_boot_image':None}
 
 def initVar():
-    global g_semcNandOpt
-    global g_semcNandFcbOpt
-    global g_semcNandImageInfo
-    g_semcNandOpt = 0xD0010101
-    g_semcNandFcbOpt = 0x00010101
-    g_semcNandImageInfo = [None] * 8
-    g_semcNandImageInfo[0] = 0x00020001
-
     global g_flexspiNorOpt0
     global g_flexspiNorOpt1
     g_flexspiNorOpt0 = 0xc0000006
     g_flexspiNorOpt1 = 0x00000000
 
+    global g_flexspiNandOpt
+    global g_flexspiNandFcbOpt
+    global g_flexspiNandKeyBlob
+    global g_flexspiNandImageInfo
+    g_flexspiNandOpt = 0xD0010101
+    g_flexspiNandFcbOpt = 0x00010601
+    g_flexspiNandImageInfo = 0x0
+    g_flexspiNandKeyBlob = 0x0
+
+    global g_semcNorOpt
+    global g_semcNorSetting
+    g_semcNorOpt = 0xD0010101
+    g_semcNorSetting = 0x00010601
+
+    global g_semcNandOpt
+    global g_semcNandFcbOpt
+    global g_semcNandImageInfo
+    g_semcNandOpt = 0xD0010101
+    g_semcNandFcbOpt = 0x00010601
+    g_semcNandImageInfo = [None] * 8
+    g_semcNandImageInfo[0] = 0x00020001
+
+    global g_usdhcSDOpt
+    g_usdhcSDOpt = 0xD0010101
+
+    global g_UsdhcMmcOpt1
+    global g_UsdhcMmcOpt2
+    g_UsdhcMmcOpt1 = 0xD0010101
+    g_UsdhcMmcOpt2 = 0xD0010101
+
     global g_certSettingsDict
     g_certSettingsDict['cstVersion'] = uidef.kCstVersion_v3_0_1
     g_certSettingsDict['useExistingCaKey'] = 'n'
-    g_certSettingsDict['useEllipticCurveCrypto'] = 'n'
     g_certSettingsDict['pkiTreeKeyLen'] = 2048
     g_certSettingsDict['pkiTreeDuration'] = 10
     g_certSettingsDict['SRKs'] = 4
@@ -86,31 +118,75 @@ def initVar():
     g_UserKeyCmdDict['is_boot_image'] = '1'
 
 def getBootDeviceConfiguration( group ):
-    if group == uidef.kBootDevice_SemcNand:
+    if group == uidef.kBootDevice_FlexspiNor:
+        global g_flexspiNorOpt0
+        global g_flexspiNorOpt1
+        return g_flexspiNorOpt0, g_flexspiNorOpt1
+    elif group == uidef.kBootDevice_FlexspiNand:
+        global g_flexspiNandOpt
+        global g_flexspiNandFcbOpt
+        global g_flexspiNandKeyBlob
+        global g_flexspiNandImageInfo
+        return g_flexspiNandOpt, g_flexspiNandFcbOpt, g_flexspiNandImageInfo, g_flexspiNandKeyBlob
+    elif group == uidef.kBootDevice_SemcNor:
+        global g_semcNorOpt
+        global g_semcNorSetting
+        return g_semcNorOpt, g_semcNorSetting
+    elif group == uidef.kBootDevice_SemcNand:
         global g_semcNandOpt
         global g_semcNandFcbOpt
         global g_semcNandImageInfo
         return g_semcNandOpt, g_semcNandFcbOpt, g_semcNandImageInfo
-    elif group == uidef.kBootDevice_FlexspiNor:
-        global g_flexspiNorOpt0
-        global g_flexspiNorOpt1
-        return g_flexspiNorOpt0, g_flexspiNorOpt1
+    elif group == uidef.kBootDevice_UsdhcSd:
+        global g_usdhcSDOpt
+        return g_usdhcSDOpt
+    elif group == uidef.kBootDevice_UsdhcMmc:
+        global g_UsdhcMmcOpt1
+        global g_UsdhcMmcOpt2
+        return g_UsdhcMmcOpt1, g_UsdhcMmcOpt2
+    elif group == uidef.kBootDevice_LpspiNor:
+        pass
     else:
         pass
 
+
 def setBootDeviceConfiguration( group, *args ):
-    if group == uidef.kBootDevice_SemcNand:
+    if group == uidef.kBootDevice_FlexspiNor:
+        global g_flexspiNorOpt0
+        global g_flexspiNorOpt1
+        g_flexspiNorOpt0 = args[0]
+        g_flexspiNorOpt1 = args[1]
+    elif group == uidef.kBootDevice_FlexspiNand:
+        global g_flexspiNandOpt
+        global g_flexspiNandFcbOpt
+        global g_flexspiNandKeyBlob
+        global g_flexspiNandImageInfo
+        g_flexspiNandOpt = args[0]
+        g_flexspiNandFcbOpt = args[1]
+        g_flexspiNandImageInfo = args[2]
+        g_flexspiNandKeyBlob = args[3]
+    elif group == uidef.kBootDevice_SemcNor:
+        global g_semcNorOpt
+        global g_semcNorSetting
+        g_semcNorOpt = args[0]
+        g_semcNorSetting = args[1]
+    elif group == uidef.kBootDevice_SemcNand:
         global g_semcNandOpt
         global g_semcNandFcbOpt
         global g_semcNandImageInfo
         g_semcNandOpt = args[0]
         g_semcNandFcbOpt = args[1]
         g_semcNandImageInfo = args[2]
-    elif group == uidef.kBootDevice_FlexspiNor:
-        global g_flexspiNorOpt0
-        global g_flexspiNorOpt1
-        g_flexspiNorOpt0 = args[0]
-        g_flexspiNorOpt1 = args[1]
+    elif group == uidef.kBootDevice_UsdhcSd:
+        global g_usdhcSDOpt
+        g_usdhcSDOpt = args[0]
+    elif group == uidef.kBootDevice_UsdhcMmc:
+        global g_UsdhcMmcOpt1
+        global g_UsdhcMmcOpt2
+        g_UsdhcMmcOpt1 = args[0]
+        g_UsdhcMmcOpt2 = args[1]
+    elif group == uidef.kBootDevice_LpspiNor:
+        pass
     else:
         pass
 
@@ -149,3 +225,11 @@ def setAdvancedSettings( group, *args ):
     else:
         pass
 
+global_count = {}
+global_count[1] = 0
+global_count[2] = 0
+global_count[3] = 0
+global_count[4] = 0
+global_count[5] = 0
+global_count[6] = 0
+global_count[7] = 0
