@@ -132,17 +132,19 @@ class secBootRun(gencore.secBootGen):
         self.printLog(cmdStr)
         return (status == boot.status.kSDP_Status_HabEnabled or status == boot.status.kSDP_Status_HabDisabled)
 
-    def _getDeviceRegisterBySdphost( self, regAddr, regName):
+    def _getDeviceRegisterBySdphost( self, regAddr, regName, needToShow=True):
         filename = 'readReg.dat'
         filepath = os.path.join(self.sdphostVectorsDir, filename)
         status, results, cmdStr = self.sdphost.readRegister(regAddr, 32, 4, filename)
         self.printLog(cmdStr)
         if (status == boot.status.kSDP_Status_HabEnabled or status == boot.status.kSDP_Status_HabDisabled):
-            regVal = self.getReg32FromBinFile(filepath)
-            self.printDeviceStatus(regName + " = " + str(regVal))
+            regVal = self.getVal32FromBinFile(filepath)
+            if needToShow:
+                self.printDeviceStatus(regName + " = " + str(hex(regVal)))
             return regVal
         else:
-            self.printDeviceStatus(regName + " = --------")
+            if needToShow:
+                self.printDeviceStatus(regName + " = --------")
             return None
         try:
             os.remove(filepath)
@@ -162,6 +164,19 @@ class secBootRun(gencore.secBootGen):
         self._readMcuDeviceRegisterUuid()
         self._readMcuDeviceRegisterSrcSmbr()
 
+    def getMcuDeviceHabStatus( self ):
+        secConfig = self._getDeviceRegisterBySdphost( rundef.kRegisterAddr_SRC_SBMR2, '', False)
+        if secConfig != None:
+            self.mcuDeviceHabStatus = ((secConfig & rundef.kRegisterMask_SecConfig) >> rundef.kRegisterShift_SecConfig)
+            if self.mcuDeviceHabStatus == fusedef.kHabStatus_FAB:
+                self.printDeviceStatus('HAB status = FAB')
+            elif self.mcuDeviceHabStatus == fusedef.kHabStatus_Open:
+                self.printDeviceStatus('HAB status = Open')
+            elif self.mcuDeviceHabStatus == fusedef.kHabStatus_Closed0 or self.mcuDeviceHabStatus == fusedef.kHabStatus_Closed1:
+                self.printDeviceStatus('HAB status = Closed')
+            else:
+                pass
+
     def jumpToFlashloader( self ):
         if self.mcuDevice == uidef.kMcuDevice_iMXRT102x:
             cpu = "MIMXRT1021"
@@ -177,7 +192,16 @@ class secBootRun(gencore.secBootGen):
             jumpAddr = 0x20000400
         else:
             pass
-        flashloaderBinFile = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'targets', cpu, 'ivt_flashloader.bin')
+        flashloaderBinFile = None
+        if self.mcuDeviceHabStatus == fusedef.kHabStatus_Closed0 or self.mcuDeviceHabStatus == fusedef.kHabStatus_Closed1:
+            flashloaderSrecFile = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'targets', cpu, 'flashloader.srec')
+            flashloaderBinFile = self.genSignedFlashloader(flashloaderSrecFile)
+            if flashloaderBinFile == None:
+                return False
+        elif self.mcuDeviceHabStatus == fusedef.kHabStatus_FAB or self.mcuDeviceHabStatus == fusedef.kHabStatus_Open:
+            flashloaderBinFile = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'targets', cpu, 'ivt_flashloader.bin')
+        else:
+            pass
         status, results, cmdStr = self.sdphost.writeFile(loadAddr, flashloaderBinFile)
         self.printLog(cmdStr)
         if status != boot.status.kSDP_Status_HabEnabled and status != boot.status.kSDP_Status_HabDisabled:
@@ -227,15 +251,10 @@ class secBootRun(gencore.secBootGen):
         self.fillVal32IntoBinFile(self.otpmkDekFilename, otpmk7)
 
     def _readMcuDeviceFuseOtpmkDek( self ):
-        otpmk0 = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_OTPMK4, '(0x500) OTPMK0')
-        otpmk1 = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_OTPMK5, '(0x510) OTPMK1')
-        otpmk2 = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_OTPMK6, '(0x520) OTPMK2')
-        otpmk3 = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_OTPMK7, '(0x530) OTPMK3')
-
-        otpmk4 = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_OTPMK4, '(0x540) OTPMK4')
-        otpmk5 = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_OTPMK5, '(0x550) OTPMK5')
-        otpmk6 = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_OTPMK6, '(0x560) OTPMK6')
-        otpmk7 = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_OTPMK7, '(0x570) OTPMK7')
+        otpmk4 = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_OTPMK4, '', False)
+        otpmk5 = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_OTPMK5, '', False)
+        otpmk6 = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_OTPMK6, '', False)
+        otpmk7 = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseIndex_OTPMK7, '', False)
         if otpmk4 != None and otpmk5 != None and otpmk6 != None and otpmk7 != None:
             self._genOtpmkDekFile(otpmk4, otpmk5, otpmk6, otpmk7)
 
@@ -260,23 +279,8 @@ class secBootRun(gencore.secBootGen):
         self._readMcuDeviceFuseTester()
         self._readMcuDeviceFuseBootCfg()
         self._readMcuDeviceFuseOtpmkDek()
-        self._readMcuDeviceFuseSrk()
-        self._readMcuDeviceFuseSwGp2()
-
-    def getMcuDeviceHabStatus( self ):
-        secConfig0 = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseLocation_SecConfig0, '', False)
-        secConfig1 = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseLocation_SecConfig1, '', False)
-        if secConfig0 != None and secConfig1 != None:
-            self.mcuDeviceHabStatus = (((secConfig1 & fusedef.kEfuseMask_SecConfig1) >> fusedef.kEfuseShift_SecConfig1) << 1) | \
-                                       ((secConfig0 & fusedef.kEfuseMask_SecConfig0) >> fusedef.kEfuseShift_SecConfig0)
-            if self.mcuDeviceHabStatus == fusedef.kHabStatus_FAB:
-                self.printDeviceStatus('HAB status = FAB')
-            elif self.mcuDeviceHabStatus == fusedef.kHabStatus_Open:
-                self.printDeviceStatus('HAB status = Open')
-            elif self.mcuDeviceHabStatus == fusedef.kHabStatus_Closed0 or self.mcuDeviceHabStatus == fusedef.kHabStatus_Closed1:
-                self.printDeviceStatus('HAB status = Closed')
-            else:
-                pass
+        #self._readMcuDeviceFuseSrk()
+        #self._readMcuDeviceFuseSwGp2()
 
     def getMcuDeviceBtFuseSel( self ):
         btFuseSel = self.readMcuDeviceFuseByBlhost(fusedef.kEfuseLocation_BtFuseSel, '', False)

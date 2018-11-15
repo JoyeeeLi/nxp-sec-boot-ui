@@ -42,7 +42,7 @@ kRegisterMask_Bmod = 0x03000000
 kRegisterShift_Bmod = 24
 
 kRegisterMask_BtFuseSel = 0x00000010
-kRegisterShift_SecConfig = 4
+kRegisterShift_BtFuseSel = 4
 
 kRegisterMask_SecConfig = 0x00000003
 kRegisterShift_SecConfig = 0
