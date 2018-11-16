@@ -581,7 +581,7 @@ class secBootWin ( wx.Frame ):
 		sbSizer_showHabDek.Fit( self.m_panel_progDek1_showHabDek )
 		bSizer_progDek.Add( self.m_panel_progDek1_showHabDek, 1, wx.EXPAND |wx.ALL, 5 )
 
-		self.m_button_progDek = wx.Button( self.m_panel_progDek, wx.ID_ANY, u"Load KeyBlob Data, Enable HAB", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_button_progDek = wx.Button( self.m_panel_progDek, wx.ID_ANY, u"Enable HAB, Load KeyBlob Data", wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer_progDek.Add( self.m_button_progDek, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
 
@@ -1520,4 +1520,5 @@ class secBootWin ( wx.Frame ):
 
 	def callbackClearLog( self, event ):
 		event.Skip()
+
 
